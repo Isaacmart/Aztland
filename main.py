@@ -1,15 +1,16 @@
-from get_currencies import trader_robot
-import csv, json, pandas
+from flask import Flask, request, abort
+
+app = Flask(__name__)
 
 
-data = trader_robot.get_products()
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    if request.method == 'POST':
+        print(request.json)
+        return 'success', 200
+    else:
+        abort(400)
 
-cvs_file = open('csv_files/get_products.csv', 'w')
 
-new_writer = csv.writer(cvs_file, delimiter=',')
-
-for value in data:
-    value = pandas.read_json(value)
-    value = pandas.to_csv
-    print(value)
-    #new_writer.writerow(value)
+if __name__ == '__main__':
+    app.run()
