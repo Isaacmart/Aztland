@@ -9,12 +9,14 @@
 
     <div id="chart"></div>
 
-    <div id="tradeDiv"></div>
+    <script src = char.js></script>
 
+    <div id="tradeDiv"></div>
+    
     <script>
         var stockSocket = new WebSocket("wss://stream.binance.com:9443/ws/!ticker@arr");
 
-        var tradeDiv = document.getElementById('trades')
+        var tradeDiv = document.getElementById('tradeDiv')
 
         stockSocket.addEventListener('message', function (event) {
             console.log(event.data);
@@ -26,10 +28,7 @@
         
     </script>
 
-    <script src = char.js></script>
-
     <div id="webhooks"></div>
-
     <script src = webhook.php></script>
 
 </body>
