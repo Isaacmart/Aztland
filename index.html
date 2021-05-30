@@ -16,7 +16,6 @@
 
         var tradeDiv = document.getElementById('trades')
 
-        
         stockSocket.addEventListener('message', function (event) {
             console.log(event.data);
 
@@ -26,8 +25,12 @@
         });
         
     </script>
-
+    
     <script src = char.js></script>
+
+    <div id="webhooks"></div>
+
+    <script src = webhook.php></script>
 
 </body>
 
