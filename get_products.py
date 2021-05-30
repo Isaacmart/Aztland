@@ -1,5 +1,5 @@
 import csv, json, pandas
-
+from get_currencies import trader_robot
 
 data = trader_robot.get_products()
 
