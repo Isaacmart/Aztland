@@ -1,13 +1,3 @@
-<html> 
-<head>
-    <title> Webhook Listener</title>
+<?php echo '<p>Hello World</p>'; ?> 
 
-
-<body>
-    <h1>Hello World</h1>
-
-    <div id="newHook"></div>
-    
-</body>
-</head>
-</html>
+ 
