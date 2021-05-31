@@ -11,9 +11,11 @@
     <div id="webhook"></div>
 
     <?php 
-    $json = file_get_contents('php://input');
-    $data =  json_decode('$json');
+    
+    $new_json = file_get_contents('php://input');
+    $data =  json_decode('$new_json');
     echo $data;
+
     ?>
 
 </body>
