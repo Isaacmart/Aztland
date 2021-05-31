@@ -3,11 +3,15 @@ import schedule
 import time
 
 
-def job():
-    print("hello world")
+def job(_text):
+    _text.write("hello world \n")
 
 
-schedule.every(10).second.do(job)
+text = open("listener.txt", "a")
+
+
+schedule.every(10).second.do(job(text))
+
 
 while True:
     schedule.run_pending()
