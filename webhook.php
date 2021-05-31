@@ -15,9 +15,7 @@
     // decode json
     $object = json_decode($json);
     // expecting valid json
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        die(header('HTTP/1.0 415 Unsupported Media Type'));
-    }
+    
     echo $post;
 
     ?>
