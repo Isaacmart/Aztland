@@ -11,25 +11,33 @@
 
     <script src = char.js></script>
 
-    <div id="tradeDiv"></div>
-    
-    <script>
-        var stockSocket = new WebSocket("wss://stream.binance.com:9443/ws/!ticker@arr");
+    <div id="trades"></div>
 
-        var tradeDiv = document.getElementById('tradeDiv')
+    <script>
+        var stockSocket = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@kline_1m");
+
+        var tradeDiv = document.getElementById("trades")
 
         stockSocket.addEventListener('message', function (event) {
             console.log(event.data);
 
             var messageObject = JSON.parse(event.data)
 
-            tradeDiv.append(messageObject.k.o)
+            /*if (messageObject.k.x === "true") { */
+            tradeDiv.append(messageObject.k.t + "\n")
+            tradeDiv.append(messageObject.k.o + "\n")
+            tradeDiv.append(messageObject.k.h + "\n")
+            tradeDiv.append(messageObject.k.l + "\n")
+            tradeDiv.append(messageObject.k.c + "\n")
+            /*}*/
+
         });
         
     </script>
 
     <div id="webhooks"></div>
-    <script src = webhook.php></script>
+
+    <script src="webhook.php"></script>
 
 </body>
 
