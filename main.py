@@ -5,7 +5,7 @@ from flup.server.fcgi import WSGIServer
 app = Flask(__name__)
 
 
-@app.route('/webhook.py', methods=['POST'])
+@app.route('/webhookListener.py')
 def webhook():
     if request.method == 'POST':
         print(request.json)
@@ -14,7 +14,7 @@ def webhook():
         abort(400)
 
 
-while True:
-    WSGIServer(app).run()
+if __name__ == '__name__':
+    WSGIServer(app(), bindAddress='/var/www/jdsdkf.xyz/html/CryptoTrader').run()
 
 
