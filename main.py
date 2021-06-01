@@ -5,7 +5,7 @@ from flup.server.fcgi import WSGIServer
 app = Flask(__name__)
 
 
-@app.route('/webhook', methods=['POST'])
+@app.route('/webhook.py', methods=['POST'])
 def webhook():
     if request.method == 'POST':
         print(request.json)
