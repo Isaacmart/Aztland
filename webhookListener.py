@@ -1,14 +1,5 @@
-#!/usr/bin/env python3
-import schedule
+#!/usr/bin/python3
+from flup.server.fcgi import WSGIServer
 
 
-def job():
-    print("hello world")
-
-
-schedule.every(10).seconds.do(job)
-
-
-while True:
-    schedule.run_pending()
 

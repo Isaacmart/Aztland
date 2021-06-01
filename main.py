@@ -1,4 +1,6 @@
 from flask import Flask, request, abort
+from flup.server.fcgi import WSGIServer
+
 
 app = Flask(__name__)
 
@@ -13,4 +15,4 @@ def webhook():
 
 
 if __name__ == '__main__':
-    app.run()
+    WSGIServer(app).run()
