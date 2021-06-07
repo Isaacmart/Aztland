@@ -16,8 +16,7 @@ def application():
     else:
         abort(400)
 
-
-#if __name__ == '__name__':
-#    WSGIServer(app(), bindAddress='/var/www/jdsdkf.xyz/html/CryptoTrader').run()
+if __name__ == '__main__':
+    app.run()
 
 
