@@ -1,13 +1,11 @@
-from flask import Flask, request
+def application(environ, start_response):
+    status = '200 OK'
+    output = b'Hello World!'
 
+    response_headers = [('Content-type', 'text/plain'),
+                        ('Content-Length', str(len(output)))]
+    start_response(status, response_headers)
 
-app = Flask(__name__)
-
-
-@app.route('/', methods=['POST'])
-def Listener():
-    print(request.data)
-    print(request.json)
-    print(request.get_json(force=True))
+    return [output]
 
 
