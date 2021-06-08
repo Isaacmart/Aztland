@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 
 
-@app.route("/webhooks", methods=["POST"])
+@app.route("/", methods=["POST"])
 def application():
     if request.method == 'POST':
         to_write = open('webhook_log.csv', 'a')
