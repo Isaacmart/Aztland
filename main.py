@@ -1,4 +1,4 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, render_template
 from webhookListener import write_to_csv
 
 
@@ -11,7 +11,7 @@ def application():
         print(request.json)
         return 'success!', 200, request.json
     elif request.method == 'GET':
-        return 'waiting for a webhook'
+        return render_template('index.html')
     else:
         abort(400)
 
