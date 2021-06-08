@@ -1,4 +1,4 @@
-import cStringIO
+from io import cStringIO
 import os
 
 def application(environ, start_response):
