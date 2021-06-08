@@ -11,7 +11,7 @@ def application():
         print(request.json)
         return 'success!', 200, request.json
     elif request.method == 'GET':
-        return render_template('index.html')
+        return render_template('index.html', webhook=request.json)
     else:
         abort(400)
 
