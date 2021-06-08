@@ -1,17 +1,20 @@
 from flask import Flask, request, abort
+import csv
 #from flup.server.fcgi import WSGIServer
 
 
 app = Flask(__name__)
 
-#to_write = open("webhooks_log.txt", "a")
 
 
-@app.route("/", methods=["POST"])
+@app.route("/webhooks", methods=["POST"])
 def application():
     if request.method == 'POST':
+        to_write = open('webhook_log.csv', 'a')
+        writer = csv.writer(to_write)
+        writer.writerow(request.json + "\n")
+        to_write.close()
         print(request.json)
-        #to_write.write(request.json + "\n")
         return 'success!', 200, request.json
     else:
         abort(400)
