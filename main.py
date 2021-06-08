@@ -5,12 +5,13 @@ from webhookListener import write_to_csv
 app = Flask(__name__)
 
 
-@app.route("/", methods=["POST"])
+@app.route("/", methods=['GET', 'POST'])
 def application():
     if request.method == 'POST':
-        write_to_csv(request.json)
         print(request.json)
-        return 'success!', 200
+        return 'success!', 200, request.json
+    elif request.method == 'GET':
+        return 'waiting for a webhook'
     else:
         abort(400)
 
