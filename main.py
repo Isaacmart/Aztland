@@ -7,7 +7,7 @@ app = Flask(__name__)
 #to_write = open("webhooks_log.txt", "a")
 
 
-@app.route()
+@app.route("/", methods=["POST"])
 def application():
     if request.method == 'POST':
         print(request.json)
