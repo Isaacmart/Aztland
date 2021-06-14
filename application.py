@@ -1,5 +1,6 @@
-from io import cStringIO
+from io import StringIO
 import os
+
 
 def application(environ, start_response):
     headers = []
@@ -7,7 +8,7 @@ def application(environ, start_response):
     write = start_response('200 OK', headers)
 
     input = environ['wsgi.input']
-    output = cStringIO.StringIO()
+    output = StringIO()
 
     print >> output, "PID: %s" % os.getpid()
     print >> output, "UID: %s" % os.getuid()
