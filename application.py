@@ -19,13 +19,14 @@ def application(environ, start_response):
     #print >> output, "UID: %s" % os.getuid()
     #print >> output, "GID: %s" % os.getgid()
     #print >> output
-
-    keys = environ.keys()
+    # 
+    # 
+    #keys = environ.keys()
     #keys.sort()
-    for key in keys:
-        print('%s: %s' % (key, repr(environ[key])), file=output)
+    #for key in keys:
+    #    print('%s: %s' % (key, repr(environ[key])), file=output)
         #print >> output, '%s: %s' % (key, repr(environ[key]))
-    print(file=output)    
+    #print(file=output)    
     #print >> output
 
     output.write(input.read(int(environ.get('CONTENT_LENGTH', '0'))))
