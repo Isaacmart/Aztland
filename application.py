@@ -29,7 +29,7 @@ def application(environ, start_response):
     #print(file=output)    
     #print >> output
 
-    output.write(input.read(int(environ.get('CONTENT_LENGTH', '0'))))
+    output.write(input.read(str(environ.get('CONTENT_LENGTH', '0'))))
 
     return [output.getvalue()]
 
