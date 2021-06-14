@@ -7,4 +7,4 @@ with open(activate_this) as file_:
 
 sys.path.insert(0, '/var/www/jdsdkf.xyz/html/CryptoTrader')
 
-from application import application as application
+from main import application as application
