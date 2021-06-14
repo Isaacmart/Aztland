@@ -26,7 +26,7 @@ def application(environ, start_response):
         print('%s: %s' % (key, repr(environ[key])), file=output)
         #print >> output, '%s: %s' % (key, repr(environ[key]))
     print(file=output)    
-    print >> output
+    #print >> output
 
     output.write(input.read(int(environ.get('CONTENT_LENGTH', '0'))))
 
