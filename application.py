@@ -10,10 +10,14 @@ def application(environ, start_response):
     input = environ['wsgi.input']
     output = StringIO()
 
-    print >> output, "PID: %s" % os.getpid()
-    print >> output, "UID: %s" % os.getuid()
-    print >> output, "GID: %s" % os.getgid()
-    print >> output
+
+    print("PID: %s" % os.getpid(), file=output)
+    print("UID: %s" % os.getuid(), file=output)
+    print("GID; %s" % os.getgid(), file=output)
+    #print >> output, "PID: %s" % os.getpid()
+    #print >> output, "UID: %s" % os.getuid()
+    #print >> output, "GID: %s" % os.getgid()
+    #print >> output
 
     keys = environ.keys()
     keys.sort()
