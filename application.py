@@ -3,6 +3,7 @@ import pprint
 import time
 import os
 
+
 class LoggingInstance:
     def __init__(self, start_response, oheaders, ocontent):
         self.__start_response = start_response
@@ -10,7 +11,7 @@ class LoggingInstance:
         self.__ocontent = ocontent
 
     def __call__(self, status, headers, *args):
-        pprint.pprint((status, headers)+args), stream=self.__oheaders)
+        pprint.pprint(((status, headers)+args), stream=self.__oheaders)
         self.__oheaders.close()
 
         self.__write = self.__start_response(status, headers, *args)
