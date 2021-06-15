@@ -39,6 +39,7 @@ class LoggingInstance:
     def link(self, iterable):
         self.__iterable = iter(iterable)
 
+
 class LoggingMiddleware:
 
     def __init__(self, application, savedir):
@@ -89,6 +90,6 @@ class LoggingMiddleware:
         iterable.link(self.__application(environ, iterable))
         return iterable
 
-application = LoggingMiddleware(application, '/tmp/wsgi')
+#application = LoggingMiddleware(application, '/tmp/wsgi')
 
 
