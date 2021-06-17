@@ -17,6 +17,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/get_accounts.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/get_product_historic_rates.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/wehokListener.py">
           <value>
             <Attribute>

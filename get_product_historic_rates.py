@@ -1,49 +1,74 @@
 import cbpro
-import time
-import pytz
-from datetime import datetime
 import talib
 import numpy
+from webhookListener import get_time
 
 
-def get_time(amount):
-    tz = pytz.timezone('US/Eastern')
-    _time = datetime.fromtimestamp(time.time() - amount, tz).isoformat()
-    return _time
+class GetAnyMACD:
+
+    #initiate variables
+    def __init__(self):
+        self.macd = 0.0
+        self.hist = 0.0
+        self.signal = 0.0
+        self.candle = []
+        self.new_client = cbpro.PublicClient()
+        self.data_array = []
+
+    #request candlesticks from coinbase
+    #callback = get_time(amount) where amount is weights  * 3.45 * 60
+    #new_gra is the granularity of the weigths in seconds, for example,
+    #to get the macd for each minute the granularity will
+    #be 60
+    def set_candles(self, product, callback, new_gra):
+        self.candle = self.new_client.get_product_historic_rates(product_id=product, start=callback, end=get_time(0), granularity=new_gra)
+
+    #returns a list with the actual candlesticks
+    def get_candles(self):
+        return self.candle
+
+    #Returns the macd from the list of candlesticks
+    def set_any_MACD(self):
+
+        for minute_candle in self.candle:
+            self.data_array.append(minute_candle[4])
+
+        #Obtain the most recent measure at the end
+        self.data_array.reverse()
+
+        #Convert to a type of array that can be processed by ta-lib
+        npy_array = numpy.array(self.data_array)
+        macd, macdsignal, macdhist = talib.MACD(real=npy_array, fastperiod=12, slowperiod=26, signalperiod=9)
+
+        #Only get the most recent measures
+        self.macd = macd[-1]
+        self.signal = macdsignal[-1]
+        self.hist = macdhist[-1]
+
+    def get_macd(self):
+        return self.macd
+
+    def get_signal(self):
+        return self.signal
+
+    def get_hist(self):
+        return self.hist
 
 
-def get_any_MACD(product, period, callback, a_granularity):
-    data_array = []
-    new_client = cbpro.PublicClient()
-    candle = new_client.get_product_historic_rates(product_id=product, start=callback, end=get_time(), granularity=a_granularity)
-    for minute_candle in candle:
-        data_array.append(minute_candle[4])
-    data_array.reverse()
-    npy_array = numpy.array(data_array)
-    macd, macdsignal, macdhist = talib.MACD(real=npy_array, fastperiod=12, slowperiod=26, signalperiod=9)
-    new_dict = {
-        "macd": macd,
-        "signal": macdsignal,
-        "hist": macdhist
-    }
-    return new_dict
+test5 = GetAnyMACD()
+test5.set_candles(product="ETH-USD", callback=get_time(27945), new_gra=300)
+test5.set_any_MACD()
+
+test15 = GetAnyMACD()
+test15.set_candles(product="ETH-USD", callback=get_time(83835), new_gra=900)
+test15.set_any_MACD()
 
 
+print(test5.get_hist())
+print(test5.get_macd())
+print(test5.get_signal())
 
-
-#new_socket = cbpro.PublicClient()
-#to_write = open("files/get_product_historic_rates.txt", "w")
-#data =  new_socket.get_product_historic_rates(product_id="ETH-USD", start=get_time(5580), end=get_time(0), granularity=60)
-#to_write.write("[ time, low, high, open, close, volume ], \n")
-#new_array = []
-#for line in data:
-#    to_write.write(str(line) + ",\n")
-#    new_array.append((line[4]))
-#new_array.reverse()
-#np_array = numpy.array(new_array)
-#macd, macdsignal, macdhist = talib.MACD(real=np_array, fastperiod=12, slowperiod=26, signalperiod=9)
-#print(new_array[-1])
-#print(macd[-1])
-#print(macdsignal[-1])
-#print(macdhist[-1])
+print(test15.get_hist())
+print(test15.get_macd())
+print(test15.get_signal())
 
