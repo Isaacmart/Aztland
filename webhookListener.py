@@ -4,6 +4,8 @@ from datetime import datetime
 import time
 
 
+#multiple methods used throughout the program
+
 def write_to_csv(a_string):
     to_write = open('webhook_log.csv', 'w')
     writer = csv.writer(to_write)
