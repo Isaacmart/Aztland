@@ -1,5 +1,4 @@
 from flask import Flask, request, abort, render_template
-from webhookListener import write_to_csv
 
 
 app = Flask(__name__)
