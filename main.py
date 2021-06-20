@@ -7,7 +7,7 @@ app = Flask(__name__)
 @app.route("/", methods=['GET', 'POST'])
 def application():
     if request.method == 'POST':
-        print(request.json)
+        print(request.get_json(force=True))
         return 'success!', 200
     elif request.method == 'GET':
         return render_template('index.html')

@@ -13,3 +13,4 @@ for value in data:
     print(value)
     '''new_writer.writerow(value)'''
 
+cd
