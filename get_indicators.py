@@ -55,6 +55,7 @@ class GetAnyMACD:
         return self.hist
 
 
+'''
 test5 = GetAnyMACD()
 test5.set_candles(product="ETH-USD", callback=get_time(27945), new_gra=300)
 test5.set_any_MACD()
@@ -72,3 +73,4 @@ print(test15.get_hist())
 print(test15.get_macd())
 print(test15.get_signal())
 
+'''

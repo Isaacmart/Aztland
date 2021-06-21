@@ -3,14 +3,17 @@ import time
 import pytz
 import talib
 import numpy
+from datetime import datetime
 
 
+#method in webhookListener
 def get_time(amount):
     tz = pytz.timezone('US/Eastern')
     _time = datetime.fromtimestamp(time.time() - amount, tz).isoformat()
     return _time
 
 
+#Coded into a class in get_product_historic_rates
 new_socket = cbpro.PublicClient()
 to_write = open("get_product_historic_rates.txt", "w")
 data = new_socket.get_product_historic_rates(product_id="ETH-USD", start=get_time(5580), end=get_time(0), granularity=60)
