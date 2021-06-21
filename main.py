@@ -1,7 +1,4 @@
 from flask import Flask, request, abort, render_template
-from open_position import OpenPosition
-from open_authenticated import Order
-from get_indicators import GetAnyMACD
 
 
 app = Flask(__name__)
