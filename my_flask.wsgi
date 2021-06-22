@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/var/www/jdsdkf.xyz/html/CryptoTrader/env/
 import sys
 
 activate_this = '/var/www/jdsdkf.xyz/html/CryptoTrader/env/bin/activate_this.py'
