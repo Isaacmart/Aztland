@@ -1,7 +1,13 @@
 import cbpro
 import talib
 import numpy
-from webhookListener import get_time
+from app_methods import get_time
+
+'''
+Example of data received from talib.MACD
+[time, low, high, open, close, volume], 
+[1623815280, 2523.54, 2525.23, 2523.74, 2525.12, 17.41924777]
+'''
 
 
 class GetAnyMACD:
@@ -16,7 +22,7 @@ class GetAnyMACD:
         self.data_array = []
 
     #request candlesticks from coinbase
-    #callback = get_time(amount) where amount is weights  * 3.45 * 60
+    #callback = get_time(amount) where amount equals period * weights(27)  * 3.45 * 60
     #new_gra is the granularity of the weigths in seconds, for example,
     #to get the macd for each minute the granularity will
     #be 60

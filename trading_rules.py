@@ -1,9 +1,9 @@
-from flask import request
 from open_position import OpenPosition
 from open_authenticated import Order
 from get_indicators import GetAnyMACD
 from cbpro.authenticated_client import AuthenticatedClient
-from webhookListener import get_time
+from app_methods import get_time
+from eth_data import webhooks
 import Data
 
 key = Data.API_Public_Key
@@ -15,42 +15,58 @@ client = AuthenticatedClient(key, b64secret, passphrase)
 new_order = Order()
 x = OpenPosition(order=new_order)
 
-new_request = request.get_json()
+#new_request = {"exchange": "COINBASE", "TICKER": "ETHUSD", "price": "2054.43", "volume": "975.23", "hist": "0.23", "macd": "-20.28", "signal": "-20.52"}
 
-if (new_request['hist'] > 0) and (x.get_position() == False):
+for new_request in webhooks:
+    if (float(new_request['hist']) > 0) and (x.get_position() is False):
 
-    macd_15m_period = GetAnyMACD()
-    macd_15m_period.set_candles(product="ETH-USD", callback=get_time(27945), new_gra=300)
-    macd_15m_period.set_any_MACD()
+        macd_15m_period = GetAnyMACD()
+        macd_15m_period.set_candles(product="ETH-USD", callback=get_time(27945), new_gra=300)
+        macd_15m_period.set_any_MACD()
 
-    if macd_15m_period.get_hist() > 0:
+        if macd_15m_period.get_hist() > 0:
 
-        macd_5m_period = GetAnyMACD
-        macd_5m_period.set_candles(product="ETH-USD", callback=get_time(83835), new_gra=900)
-        macd_5m_period.set_any_MACD()
+            macd_5m_period = GetAnyMACD()
+            macd_5m_period.set_candles(product="ETH-USD", callback=get_time(83835), new_gra=900)
+            macd_5m_period.set_any_MACD()
 
-        if macd_5m_period.get_hist() > 0:
-            track_trade = client.place_market_order(product_id="ETH-USD", side="buy", funds="5.00")
-            new_order.id = track_trade.get("id")
-            track_order = client.get_order(str(new_order.id))
-            new_order.status = track_order.get("done_reason")
+            if macd_5m_period.get_hist() > 0:
+                track_trade = client.place_market_order(product_id="ETH-USD", side="buy", funds="5.00")
+                new_order.id = track_trade.get("id")
+                track_order = client.get_order(str(new_order.id))
+                new_order.status = track_order.get("done_reason")
 
-            if new_order.status is not None:
+                if new_order.status is not None:
+                    new_order.side = track_order.get("side")
+                    new_order.product = track_order.get("product_id")
+                    new_order.fill_time = track_order.get("done_at")
+                    new_order.executed_value = track_order.get("executed_value")
+                    new_order.size = order_size = track_order.get("filled_size")
 
-                new_order.side = track_order.get("side")
-                new_order.product = track_order.get("product_id")
-                new_order.fill_time = track_order.get("done_at")
-                new_order.executed_value = track_order.get("executed_value")
-                new_order.size = order_size = track_order.get("filled_size")
+                    x.set_position()
+                    print("New buy order was filled")
+                else:
+                    print("New buy order cannot be filled")
 
-                x.set_position()
+            else:
+                print("5 minutes period MACD is less than 0")
+        else:
+            print("15 minutes period MACD is less than 0")
 
-elif (new_request['hist'] < 0) and (x.get_position() == True):
+    elif (float(new_request['hist']) < 0) and (x.get_position()):
 
-    track_trade = client.place_market_order(product_id=new_order.product, side="sell", funds=new_order.funds)
-    new_order.id = track_trade.get("id")
-    track_order = client.get_order(str(new_order.id))
-    new_order.status = track_order.get("done_reason")
+        track_trade = client.place_market_order(product_id=new_order.product, side="sell", funds=new_order.funds)
+        new_order.id = track_trade.get("id")
+        track_order = client.get_order(str(new_order.id))
+        new_order.status = track_order.get("done_reason")
 
-    if new_order.status == 'filled':
-        x.open_position = False
+        if new_order.status == 'filled':
+            x.open_position = False
+
+        print("Sell order was filled")
+
+    elif (float(new_request['hist']) > 0) and (x.get_position()):
+        print("There is a open position")
+
+    elif (float(new_request['hist']) < 0) and (x.get_position() is False):
+        print("Condition: Histogram must be greater than zero was not met")

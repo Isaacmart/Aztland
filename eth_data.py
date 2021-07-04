@@ -1,3 +1,5 @@
+
+
 webhooks = []
 
 webhooks.append({'exchange': 'COINBASE', 'ticker': 'ETHUSD', 'price': '2091.5', 'volume': '4.0421003', 'hist': '0.0004361752785138', 'macd': '-0.7505213797057877', 'signal': '-0.7509575549843015'})
@@ -11,4 +13,3 @@ webhooks.append({'exchange': 'COINBASE', 'ticker': 'ETHUSD', 'price': '2101.01',
 webhooks.append({'exchange': 'COINBASE', 'ticker': 'ETHUSD', 'price': '2101', 'volume': '0.02273733', 'hist': '-0.0476702001553033', 'macd': '1.4842769169758867', 'signal': '1.53194711713119'})
 webhooks.append({'exchange': 'COINBASE', 'ticker': 'ETHUSD', 'price': '2110', 'volume': '53.718921139999985', 'hist': '-0.0055306641802302', 'macd': '3.3199818479943133', 'signal': '3.3255125121745435'})
 
-print(webhooks)

@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="$USER_HOME$/Documents/Trader/venv/lib/python3.9/site-packages/cbpro/websocket_client.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/application.py">
           <value>
             <Attribute>
@@ -24,7 +31,21 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/get_indicators.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/get_product_historic_rates.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/get_products.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

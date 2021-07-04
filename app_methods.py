@@ -20,3 +20,12 @@ def get_time(amount):
     tz = pytz.timezone('US/Eastern')
     _time = datetime.fromtimestamp(time.time() - amount, tz).isoformat()
     return _time
+
+
+#Gets a flask.request ticker key and returns a matching product in coinbase
+def get_ticker_product(new_request):
+    new_ticker = new_request['ticker']
+    new_coin = new_ticker[0:-3]
+    coin_currency = new_ticker[-3:]
+    ticker_product = new_coin + "-" + coin_currency
+    return ticker_product
