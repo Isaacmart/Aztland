@@ -52,6 +52,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/order.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/wehokListener.py">
           <value>
             <Attribute>

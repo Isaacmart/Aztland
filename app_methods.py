@@ -25,7 +25,14 @@ def get_time(amount):
 #Gets a flask.request ticker key and returns a matching product in coinbase
 def get_ticker_product(new_request):
     new_ticker = new_request['ticker']
+    # limit is equal to -3 products quoted in USD
     new_coin = new_ticker[0:-3]
     coin_currency = new_ticker[-3:]
     ticker_product = new_coin + "-" + coin_currency
     return ticker_product
+
+
+#Gets the available balance of a currency held
+def get_capital(account_id, client):
+    data = client.get_account(account_id)
+    return data['available']

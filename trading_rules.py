@@ -1,5 +1,5 @@
 from open_position import OpenPosition
-from open_authenticated import Order
+from order import Order
 from get_indicators import GetAnyMACD
 from cbpro.authenticated_client import AuthenticatedClient
 from app_methods import get_time

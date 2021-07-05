@@ -1,7 +1,6 @@
 import cbpro
 import talib
 import numpy
-from app_methods import get_time
 
 '''
 Example of data received from talib.MACD
@@ -26,8 +25,9 @@ class GetAnyMACD:
     #new_gra is the granularity of the weigths in seconds, for example,
     #to get the macd for each minute the granularity will
     #be 60
-    def set_candles(self, product, callback, new_gra):
-        self.candle = self.new_client.get_product_historic_rates(product_id=product, start=callback, end=get_time(0), granularity=new_gra)
+    def set_candles(self, product, callback, begin_here, new_gra):
+        self.candle = self.new_client.get_product_historic_rates(product_id=product,
+                                                                 start=callback, end=begin_here, granularity=new_gra)
 
     #returns a list with the actual candlesticks
     def get_candles(self):

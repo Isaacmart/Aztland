@@ -8,66 +8,48 @@ b64secret = Data.API_Secret_Key
 passphrase = Data.Passphrase
 '''
 
-#Collects the data from the order response
-#and packs it into a single data structure to
-#facilitate its use in other places
+'''Collects the data from the order response
+and packs it into a single data structure to
+facilitate its use in other places'''
 
 
 class Order:
 
     def __init__(self):
         self.id = None
-        self.funds = None
-        self.product = None
-        self.status = None
         self.size = None
-        self.fill_time = None
-        self.executed_value = None
+        self.product = None
         self.side = None
+        self.funds = None
+        self.done_at = None
+        self.executed_value = None
+        self.status = None
+
+
 
 
 
 '''
-client = AuthenticatedClient(key, b64secret, passphrase)
+Example of get_order() response:
 
-new_order = Order()
-
-track_trade = client.place_market_order(product_id="ETH-USD", side="buy", funds="5.00")
-new_order.id = track_trade.get("id")
-
-track_order = client.get_order(str(new_order.id))
-
-new_order.status = track_order.get("done_reason")
-
-if new_order.status is not None:
-
-    new_order.side = track_order.get("side")
-    new_order.product = track_order.get("product_id")
-    new_order.fill_time = track_order.get("done_at")
-    new_order.executed_value = track_order.get("executed_value")
-    new_order.size = order_size = track_order.get("filled_size")
-    new_order.print_values()
-
-else:
-    print("waiting")
-'''
-
-'''
-track_trade = client.place_market_order(product_id="ETH-USD", side="buy", funds="5.00")
-trade_id = track_trade.get("id")
-
-
-track_order = client.get_order(str(trade_id))
-order_funds = track_order.get("funds")
-order_product = track_order.get("product_id")
-order_status = track_order.get("done_reason")
-order_size = track_order.get("filled_size")
-order_fill_time = track_order.get("done_at")
-
-print(order_funds)
-print(order_product)
-print(order_status)
-print(order_size)
-print(order_fill_time)
+{
+    "id": "68e6a28f-ae28-4788-8d4f-5ab4e5e5ae08",
+    "size": "1.00000000",
+    "product_id": "BTC-USD",
+    "side": "buy",
+    "stp": "dc",
+    "funds": "9.9750623400000000",
+    "specified_funds": "10.0000000000000000",
+    "type": "market",
+    "post_only": false,
+    "created_at": "2016-12-08T20:09:05.508883Z",
+    "done_at": "2016-12-08T20:09:05.527Z",
+    "done_reason": "filled",
+    "fill_fees": "0.0249376391550000",
+    "filled_size": "0.01291771",
+    "executed_value": "9.9750556620000000",
+    "status": "done",
+    "settled": true
+}
 '''
 

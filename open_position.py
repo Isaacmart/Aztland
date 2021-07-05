@@ -1,4 +1,4 @@
-from open_authenticated import Order
+from order import Order
 
 #Verifies that there is a long position by getting
 #the last order collected

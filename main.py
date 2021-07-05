@@ -1,10 +1,9 @@
 from flask import Flask, request, abort, render_template
 from open_position import OpenPosition
-from open_authenticated import Order
+from order import Order
 from get_indicators import GetAnyMACD
 from cbpro.authenticated_client import AuthenticatedClient
-from webhookListener import get_time
-
+from app_methods import *
 import Data
 
 app = Flask(__name__)
