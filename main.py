@@ -55,6 +55,7 @@ def application():
                     new_order.set_details(new_trade.get('id'))
                     position.set_position()
                     print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
+                    return 'success', 200
 
                 # Buy if True
                 elif macd_5m.macd[-2] > macd_5m.macd[-3]:
@@ -64,10 +65,11 @@ def application():
                     new_order.set_details(new_trade.get('id'))
                     position.set_position()
                     print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
+                    return 'success', 200
 
                 # Does nothing if both statements are False
                 else:
-                    pass
+                    return 'success', 200
 
         # If the Post request ticker is the same as the order's it will trigger a sell order
         elif position.get_position() and new_request['ticker'] == new_order.get_key('product_id'):
@@ -82,11 +84,12 @@ def application():
                 funds.capital = float(new_order.get_key('executed_value'))
                 print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
                 position.set_position()
+                return 'success', 200
 
         # If there is a long position but the ticker is not the same as the order's
         # the program will just ignore it
         else:
-            pass
+            return 'success', 200
     elif request.method == 'GET':
         return render_template('index.html')
     else:
