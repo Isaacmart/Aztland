@@ -34,6 +34,9 @@ class Indicator:
     def reverse_data(self):
 
         self.data_array.reverse()
+        return self.data_array
+
+    def get_np_array(self):
         self.np_array = numpy.array(self.data_array)
 
         return self.np_array
