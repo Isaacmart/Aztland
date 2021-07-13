@@ -1,6 +1,7 @@
 from flask import request
 from open_position import OpenPosition
 from order import Order
+from capital import Capital
 from cbpro.authenticated_client import AuthenticatedClient
 from app_methods import *
 from indicators import *
@@ -14,7 +15,7 @@ passphrase = Data.Passphrase
 client = AuthenticatedClient(key, b64secret, passphrase)
 new_order = Order()
 position = OpenPosition(new_order)
-funds = float(get_capital('42d739b5-f5cd-48c0-baf6-b905836a1ca4', client))
+funds = Capital(client)
 
 
 if request.method == 'POST':
@@ -27,7 +28,7 @@ if request.method == 'POST':
         new_ticker = new_request['ticker']
         if new_request['hist'] > 0 and float(new_request['volume']) > float(new_request['volumema']):
 
-            indicator = Indicator()
+            indicator = Indicator(client)
             indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
             indicator.get_data_set()
             indicator.reverse_data()
@@ -43,7 +44,7 @@ if request.method == 'POST':
             if macd_5m.hist[-1] > 0 and volume_5m.real[-1] > volume_5m.candles[-1]:
                 new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                       side="buy",
-                                                      funds=funds)
+                                                      funds=funds.get_capital())
                 new_order.set_details(new_trade.get('id'))
                 position.set_position()
                 print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
@@ -52,7 +53,7 @@ if request.method == 'POST':
             elif macd_5m.macd[-2] > macd_5m.macd[-3]:
                 new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                       side="buy",
-                                                      funds=funds)
+                                                      funds=funds.get_capital())
                 new_order.set_details(new_trade.get('id'))
                 position.set_position()
                 print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
@@ -72,7 +73,7 @@ if request.method == 'POST':
                                                   size=new_order.get_key('filled_size'))
 
             new_order.set_details(new_trade.get("id"))
-            funds = float(new_order.get_key('executed_value'))
+            funds.capital = float(new_order.get_key('executed_value'))
             print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
             position.set_position()
 
