@@ -1,27 +1,31 @@
 Example of a webhook sent from TradingView:
-  {
+{
   "exchange": "{{exchange}}",
   "ticker": "{{ticker}}",
   "price": "{{close}}",
   "volume": "{{volume}}",
-  "hist": "{{hist_plot}}",
-  "macd": "{{macd_plot}}",
-  "signal": "{{signal_line_plot}}"
-  }
+  "hist": "{{plot_0}}",
+  "macd": "{{plot_1}}",
+  "signal": "{{plot_2}}",
+  "volumema": "{{plot_4}}"
+}
 
 
 Example of POST request received
-  {
-  'COINBASE': 'ETHUSD',
-  'price': '2054.43',
-  'volume': '975.2331753599979',
-  'hist': '0.2372997887135568',
-  'macd': '-20.288610775320194',
-  'signal': '-20.52591056403375'
-  }
+{
+  'exchange': 'COINBASE',
+  'ticker': 'CHZUSD',
+  'price': '0.2577',
+  'volume': '653.1999999999999',
+  'hist': '-0.000003781264981',
+  'macd': '0.0001377367253008',
+  'signal': '0.0001415179902818',
+  'volumema': '1096.8900000000067'
+}
 
-ips used by Tradingview
+ips used by TradingView
 52.89.214.238
 34.212.75.30
 54.218.53.128
 52.32.178.7
+

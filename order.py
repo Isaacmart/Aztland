@@ -1,34 +1,4 @@
-import Data
-import time
 from cbpro.authenticated_client import AuthenticatedClient
-
-'''
-key = Data.API_Public_Key
-b64secret = Data.API_Secret_Key
-passphrase = Data.Passphrase
-'''
-
-'''Collects the data from the order response
-and packs it into a single data structure to
-facilitate its use in other places'''
-
-
-class Order:
-
-    def __init__(self):
-        self.id = None
-        self.size = None
-        self.product = None
-        self.side = None
-        self.funds = None
-        self.done_at = None
-        self.executed_value = None
-        self.status = None
-
-
-
-
-
 '''
 Example of get_order() response:
 
@@ -51,5 +21,68 @@ Example of get_order() response:
     "status": "done",
     "settled": true
 }
-'''
+
+Collects the data from the order response
+and packs it into a single data structure to
+facilitate its use in other places'''
+
+
+class Order:
+
+    def __init__(self, client=AuthenticatedClient):
+        self.client = client
+        self.details = {
+            "id": "",
+            "size": "",
+            "product_id": "",
+            "side": "",
+            "stp": "",
+            "funds": "",
+            "specified_funds": "",
+            "type": "",
+            "post_only": None,
+            "created_at": "",
+            "done_at": "",
+            "done_reason": "",
+            "fill_fees": "",
+            "filled_size": "",
+            "executed_value": "",
+            "status": "",
+            "settled": None
+        }
+
+    def get_id(self):
+        return self.id
+
+    def set_details(self, new_id):
+
+        while self.details["status"] != 'done':
+            self.details = self.client.get_order(new_id)
+            confirm = True
+
+            if self.details["message"] == 'Not found':
+                confirm = False
+
+
+            return confirm
+
+    def get_key(self, key):
+        return self.details[key]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

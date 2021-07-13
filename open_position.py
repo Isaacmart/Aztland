@@ -9,12 +9,14 @@ from order import Order
 class OpenPosition:
 
     def __init__(self, order=Order()):
-        self.open_position = False
+        self.long_position = False
         self.order = order
 
     def get_position(self):
-        return self.open_position
+        return self.long_position
 
     def set_position(self):
-        if self.order.status == 'filled' and self.order.side == 'buy':
-            self.open_position = True
+        if self.order.get_key('side') == 'buy':
+            self.long_position = True
+        elif self.order.get_key('side') == 'sell' and self.order.get_key('status') == 'done':
+            self.long_position = False

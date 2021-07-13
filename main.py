@@ -1,7 +1,6 @@
 from flask import Flask, request, abort, render_template
 from open_position import OpenPosition
 from order import Order
-from get_indicators import GetAnyMACD
 from cbpro.authenticated_client import AuthenticatedClient
 from app_methods import *
 import Data
@@ -21,6 +20,7 @@ x = OpenPosition(order=new_order)
 @app.route("/", methods=['GET', 'POST'])
 def application():
     if request.method == 'POST':
+        new_request = request.get_json(force=True)
         print(request.get_json(force=True))
         return 'success!', 200
     elif request.method == 'GET':
