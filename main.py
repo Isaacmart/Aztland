@@ -15,7 +15,7 @@ passphrase = Data.Passphrase
 
 
 client = AuthenticatedClient(key, b64secret, passphrase)
-new_order = Order()
+new_order = Order(client)
 position = OpenPosition(new_order)
 funds = Capital(client)
 
@@ -62,7 +62,7 @@ def application():
                     new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                           side="buy",
                                                           funds=funds.get_capital())
-                    new_order.set_details(str(new_trade.get('id')))
+                    new_order.set_details(new_id=new_trade.get('id'))
                     position.set_position()
                     print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
 
