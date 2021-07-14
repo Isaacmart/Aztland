@@ -53,6 +53,7 @@ def application():
                     new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                           side="buy",
                                                           funds=funds.get_capital())
+                    print(new_trade)
                     new_order.set_details(new_id=new_trade.get('id'))
                     position.set_position()
                     print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
@@ -62,6 +63,7 @@ def application():
                     new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                           side="buy",
                                                           funds=funds.get_capital())
+                    print(new_trade)
                     new_order.set_details(new_id=new_trade.get('id'))
                     position.set_position()
                     print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
@@ -78,6 +80,7 @@ def application():
                 new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
                                                       side='sell',
                                                       size=new_order.get_key('filled_size'))
+                print(new_trade)
 
                 new_order.set_details(new_trade.get("id"))
                 funds.capital = float(new_order.get_key('executed_value'))
