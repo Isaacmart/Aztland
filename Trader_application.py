@@ -17,7 +17,6 @@ new_order = Order()
 position = OpenPosition(new_order)
 funds = Capital(client)
 
-
 if request.method == 'POST':
 
     new_request = request.get_json(force=True)
@@ -26,22 +25,25 @@ if request.method == 'POST':
     if position.get_position() is False:
 
         new_ticker = new_request['ticker']
-        if new_request['hist'] > 0 and float(new_request['volume']) > float(new_request['volumema']):
+        if float(new_request['hist']) > 0 and float(new_request['volume']) > float(new_request['volumema']):
 
             indicator = Indicator(client)
             indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
             indicator.get_data_set()
             indicator.reverse_data()
+            indicator.get_np_array()
             macd_5m = MACD()
             macd_5m.np_array = indicator.np_array
             macd_5m.get_MACD()
             volume_5m = VolSMA()
             volume_5m.candles = indicator.candles
             volume_5m.get_data_set()
+            volume_5m.reverse_data()
+            volume_5m.get_np_array()
             volume_5m.get_volume()
 
-            #Buy if True
-            if macd_5m.hist[-1] > 0 and volume_5m.real[-1] > volume_5m.candles[-1]:
+            # Buy if True
+            if macd_5m.hist[-1] > 0 and volume_5m.data_array[-1] > volume_5m.real[-1]:
                 new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                       side="buy",
                                                       funds=funds.get_capital())
@@ -49,7 +51,7 @@ if request.method == 'POST':
                 position.set_position()
                 print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
 
-            #Buy if True
+            # Buy if True
             elif macd_5m.macd[-2] > macd_5m.macd[-3]:
                 new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                       side="buy",
@@ -58,16 +60,13 @@ if request.method == 'POST':
                 position.set_position()
                 print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
 
-            #Does nothing if both statements are False
-            else:
-                pass
+            # Does nothing if both statements are False
 
-    #If the Post request ticker is the same as the order's it will trigger a sell order
+    # If the Post request ticker is the same as the order's it will trigger a sell order
     elif position.get_position() and new_request['ticker'] == new_order.get_key('product_id'):
 
-        #Sell if True
+        # Sell if True
         if new_request['hist'] < 0 and float(new_request['volume']) > float(new_request['volumema']):
-
             new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
                                                   side='sell',
                                                   size=new_order.get_key('filled_size'))
@@ -81,6 +80,5 @@ if request.method == 'POST':
     # the program will just ignore it
     else:
         pass
-
 
 
