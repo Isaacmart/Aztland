@@ -24,7 +24,8 @@ funds = Capital(client)
 def application():
     if request.method == 'POST':
         new_request = request.get_json(force=True)
-        print(new_request['ticker'])
+        if float(new_request['hist']) >= 0 and float(new_request['volume']) >= float(new_request['volumema']):
+            print(new_request['ticker'])
         return 'success', 200
     elif request.method == 'GET':
         return render_template('index.html')
