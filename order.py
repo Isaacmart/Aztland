@@ -63,7 +63,6 @@ class Order:
             if self.details["message"] == 'Not found':
                 confirm = False
 
-
             return confirm
 
     def get_key(self, key):

@@ -55,7 +55,7 @@ class MACD(Indicator):
 
     def get_MACD(self):
 
-        self.macd, self.signal, self.hist  = talib.MACD(real=self.np_array, fastperiod=self.fast_period,
+        self.macd, self.signal, self.hist = talib.MACD(real=self.np_array, fastperiod=self.fast_period,
                                                           slowperiod=self.slow_period, signalperiod=self.signal_period)
 
 
@@ -92,7 +92,7 @@ class VolSMA(Indicator):
 
 '''
 new_client = PublicClient()
-volume = VOL_SMA(client=new_client, timeperiod=20)
+volume = VOLSMA(client=new_client, timeperiod=20)
 volume.set_candles(product='ETH-USD', callback=get_time(27976), begin=get_time(0), granularity=300)
 volume.get_data_set()
 volume.reverse_data()

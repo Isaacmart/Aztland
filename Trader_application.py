@@ -3,6 +3,7 @@ from open_position import OpenPosition
 from order import Order
 from capital import Capital
 from cbpro.authenticated_client import AuthenticatedClient
+from eth_data import webhooks
 from app_methods import *
 from indicators import *
 import Data
@@ -13,13 +14,13 @@ passphrase = Data.Passphrase
 
 
 client = AuthenticatedClient(key, b64secret, passphrase)
-new_order = Order()
+new_order = Order(client)
 position = OpenPosition(new_order)
 funds = Capital(client)
 
-if request.method == 'POST':
+for request in webhooks:
 
-    new_request = request.get_json(force=True)
+    new_request = request
 
     # If there is no a position opened it will trigger a buy order
     if position.get_position() is False:
@@ -28,14 +29,15 @@ if request.method == 'POST':
         if float(new_request['hist']) > 0 and float(new_request['volume']) > float(new_request['volumema']):
 
             indicator = Indicator(client)
-            indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
+            indicator.set_candles(product=get_key('ticker', new_request), callback=get_time(27976), begin=get_time(0),
+                                  granularity=300)
             indicator.get_data_set()
             indicator.reverse_data()
             indicator.get_np_array()
-            macd_5m = MACD()
+            macd_5m = MACD(client=client)
             macd_5m.np_array = indicator.np_array
             macd_5m.get_MACD()
-            volume_5m = VolSMA()
+            volume_5m = VolSMA(client=client, timeperiod=20)
             volume_5m.candles = indicator.candles
             volume_5m.get_data_set()
             volume_5m.reverse_data()
@@ -47,7 +49,7 @@ if request.method == 'POST':
                 new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                       side="buy",
                                                       funds=funds.get_capital())
-                new_order.set_details(new_trade.get('id'))
+                new_order.set_details(new_id=new_trade.get('id'))
                 position.set_position()
                 print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
 
@@ -56,14 +58,16 @@ if request.method == 'POST':
                 new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                       side="buy",
                                                       funds=funds.get_capital())
-                new_order.set_details(new_trade.get('id'))
+                new_order.set_details(str(new_trade.get('id')))
                 position.set_position()
                 print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
 
+            else:
+                print("requirements were not met for ", get_key('ticker', new_request))
             # Does nothing if both statements are False
 
     # If the Post request ticker is the same as the order's it will trigger a sell order
-    elif position.get_position() and new_request['ticker'] == new_order.get_key('product_id'):
+    elif position.get_position() and get_key('ticker', new_request) == new_order.get_key('product_id'):
 
         # Sell if True
         if new_request['hist'] < 0 and float(new_request['volume']) > float(new_request['volumema']):
@@ -76,9 +80,14 @@ if request.method == 'POST':
             print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
             position.set_position()
 
+    elif position.get_position() and get_key('ticker', new_request) != new_order.get_key('product_id'):
+
+        print("ticker does not match the product id from order")
+
     # If there is a long position but the ticker is not the same as the order's
     # the program will just ignore it
     else:
+        print("Nothing to do")
         pass
 
 
