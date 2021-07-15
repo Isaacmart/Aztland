@@ -6,6 +6,7 @@ from cbpro.authenticated_client import AuthenticatedClient
 from eth_data import webhooks
 from app_methods import *
 from indicators import *
+from initialize import *
 import Data
 
 key = Data.API_Public_Key
@@ -14,10 +15,6 @@ passphrase = Data.Passphrase
 
 
 client = AuthenticatedClient(key, b64secret, passphrase)
-new_order = Order(client)
-position = OpenPosition(new_order)
-funds = Capital(client)
-funds.set_capital()
 
 for request in webhooks:
 

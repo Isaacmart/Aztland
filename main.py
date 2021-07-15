@@ -5,6 +5,7 @@ from capital import Capital
 from cbpro.authenticated_client import AuthenticatedClient
 from indicators import *
 from app_methods import *
+from initialize import *
 import Data
 
 app = Flask(__name__)
@@ -15,10 +16,6 @@ passphrase = Data.Passphrase
 
 
 client = AuthenticatedClient(key, b64secret, passphrase)
-new_order = Order(client)
-position = OpenPosition(new_order)
-funds = Capital(client)
-funds.set_capital()
 
 
 @app.route("/", methods=['GET', 'POST'])
