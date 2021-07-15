@@ -78,7 +78,6 @@ for request in webhooks:
                                                   size=new_order.get_key('filled_size'))
             print(new_trade)
             if new_order.set_details(new_id=new_trade.get('id')):
-                position.set_position()
                 print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
                 funds.capital = float(new_order.get_key('executed_value'))
                 position.set_position()
