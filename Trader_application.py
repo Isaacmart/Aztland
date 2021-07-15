@@ -49,18 +49,20 @@ for request in webhooks:
                 new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                       side="buy",
                                                       funds=funds.get_capital())
-                new_order.set_details(new_id=new_trade.get('id'))
-                position.set_position()
-                print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
+                print(new_trade)
+                if new_order.set_details(new_id=new_trade.get('id')):
+                    position.set_position()
+                    print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
 
             # Buy if True
             elif macd_5m.macd[-2] > macd_5m.macd[-3]:
                 new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                       side="buy",
                                                       funds=funds.get_capital())
-                new_order.set_details(str(new_trade.get('id')))
-                position.set_position()
-                print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
+                print(new_trade)
+                if new_order.set_details(new_id=new_trade.get('id')):
+                    position.set_position()
+                    print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
 
             else:
                 print("requirements were not met for ", get_key('ticker', new_request))
@@ -74,11 +76,13 @@ for request in webhooks:
             new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
                                                   side='sell',
                                                   size=new_order.get_key('filled_size'))
-
-            new_order.set_details(new_trade.get("id"))
-            funds.capital = float(new_order.get_key('executed_value'))
+            print(new_trade)
+            if new_order.set_details(new_id=new_trade.get('id')):
+                position.set_position()
+                print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
+                funds.capital = float(new_order.get_key('executed_value'))
+                position.set_position()
             print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
-            position.set_position()
 
     elif position.get_position() and get_key('ticker', new_request) != new_order.get_key('product_id'):
 
