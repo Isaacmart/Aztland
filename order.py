@@ -55,14 +55,12 @@ class Order:
         return self.id
 
     def set_details(self, new_id):
-
-        while self.details["status"] != 'done':
+        confirm = False
+        while confirm is False:
             self.details = self.client.get_order(new_id)
-            confirm = True
-
-            if self.details["message"] == 'Not found':
-                confirm = False
-
+            if 'status' in self.details:
+                if self.details['status'] == 'done':
+                    confirm = True
             return confirm
 
     def get_key(self, key):

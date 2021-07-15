@@ -12,7 +12,13 @@ passphrase = Data.Passphrase
 
 
 client = AuthenticatedClient(key, b64secret, passphrase)
-
+funds = Capital(client)
+funds.set_capital()
 new_order = Order(client=client)
-new_order.set_details(new_id="68e6a28f-ae28-4788-8d4f-5ab4e5e5ae08")
+
+#new_trade = client.place_market_order(product_id="ETH-USD", side="buy", funds=funds.get_capital())
+new_order.set_details(new_id="8fe53ce3-0fdc-4b94-8906-16c075697d5")
+print(funds.get_capital())
+#print(new_trade)
+print(new_order.set_details(new_id="8fe53ce3-0fdc-4b94-8906-16c075697d5"))
 print(new_order.details)

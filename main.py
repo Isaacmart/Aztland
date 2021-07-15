@@ -18,6 +18,7 @@ client = AuthenticatedClient(key, b64secret, passphrase)
 new_order = Order(client)
 position = OpenPosition(new_order)
 funds = Capital(client)
+funds.set_capital()
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -28,7 +29,6 @@ def application():
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
 
-            new_ticker = new_request['ticker']
             if float(new_request['hist']) > 0 and float(new_request['volume']) > float(new_request['volumema']):
 
                 indicator = Indicator(client)
@@ -57,6 +57,8 @@ def application():
                     if new_order.set_details(new_id=new_trade.get('id')):
                         position.set_position()
                         print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
+                    else:
+                        print(new_order.details)
 
                 # Buy if True
                 elif macd_5m.macd[-2] > macd_5m.macd[-3]:
@@ -67,6 +69,8 @@ def application():
                     if new_order.set_details(new_id=new_trade.get('id')):
                         position.set_position()
                         print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
+                    else:
+                        print(new_order.details)
 
                 else:
                     print("requirements were not met for ", get_key('ticker', new_request))
@@ -85,6 +89,8 @@ def application():
                     print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
                     funds.capital = float(new_order.get_key('executed_value'))
                     position.set_position()
+                else:
+                    print(new_order.details)
 
         elif position.get_position() and get_key('ticker', new_request) != new_order.get_key('product_id'):
 

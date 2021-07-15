@@ -17,6 +17,7 @@ client = AuthenticatedClient(key, b64secret, passphrase)
 new_order = Order(client)
 position = OpenPosition(new_order)
 funds = Capital(client)
+funds.set_capital()
 
 for request in webhooks:
 
