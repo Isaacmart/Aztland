@@ -31,7 +31,7 @@ def application():
 
             if float(new_request['hist']) > 0 and float(new_request['volume']) > float(new_request['volumema']):
 
-                indicator = Indicator(client)
+                indicator = Indicator(client=client)
                 indicator.set_candles(product=get_key('ticker', new_request), callback=get_time(27976),
                                       begin=get_time(0),
                                       granularity=300)
