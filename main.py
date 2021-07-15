@@ -25,6 +25,9 @@ funds.set_capital()
 def application():
     if request.method == 'POST':
         new_request = request.get_json(force=True)
+        print("new_order = ", new_order)
+        print("Position: ", position.get_position())
+        print("capital: ", funds.get_capital())
 
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
