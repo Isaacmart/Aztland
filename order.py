@@ -1,4 +1,5 @@
 from cbpro.authenticated_client import AuthenticatedClient
+from singleton import Singleton
 '''
 Example of get_order() response:
 
@@ -27,6 +28,7 @@ and packs it into a single data structure to
 facilitate its use in other places'''
 
 
+@Singleton
 class Order:
 
     def __init__(self, client=AuthenticatedClient):
