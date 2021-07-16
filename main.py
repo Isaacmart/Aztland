@@ -51,6 +51,7 @@ def application():
 
                 # Buy if True
                 if macd_5m.hist[-1] > 0 and volume_5m.data_array[-1] > volume_5m.real[-1]:
+                    print(funds.get_capital())
                     new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                           side="buy",
                                                           funds=funds.get_capital())
