@@ -22,7 +22,8 @@ client = AuthenticatedClient(key, b64secret, passphrase)
 def application():
     if request.method == 'POST':
         new_request = request.get_json(force=True)
-        print("new_order = ", new_order.details)
+        print("new_order pointer: ", new_order)
+        print("new_order details = ", new_order.details)
         print("Position: ", position.get_position())
         print("capital: ", funds.get_capital())
 
