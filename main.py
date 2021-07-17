@@ -19,6 +19,7 @@ new_order = Order(client)
 new_order.get_id()
 new_order.set_details()
 position = OpenPosition(new_order)
+position.set_position()
 funds = Capital(client)
 funds.set_capital()
 print("client otuside method: ", client)
@@ -89,6 +90,8 @@ def application():
                 else:
                     print("requirements were not met for ", get_key('ticker', new_request))
                     # Does nothing if both statements are False
+            else:
+                print("position: ", position.order)
 
         # If the Post request ticker is the same as the order's it will trigger a sell order
         elif position.get_position() and get_key('ticker', new_request) == new_order.get_key('product_id'):
@@ -108,6 +111,8 @@ def application():
                     position.set_position()
                 else:
                     print(new_order.details)
+            else:
+                print("coin is not ready to be sold")
 
         elif position.get_position() and get_key('ticker', new_request) != new_order.get_key('product_id'):
 
