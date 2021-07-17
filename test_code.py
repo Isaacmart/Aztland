@@ -13,7 +13,9 @@ writer = open("data.txt", 'r')
 
 new_id = writer.read()
 
-new_order.set_details(new_id)
+new_order.get_id()
+
+new_order.set_details()
 
 print(new_order.details["id"])
 

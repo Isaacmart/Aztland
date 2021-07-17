@@ -28,6 +28,7 @@ def application():
     if request.method == 'POST':
         new_request = request.get_json(force=True)
         print("new_order pointer: ", new_order)
+        print(new_order.get_id())
 
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
