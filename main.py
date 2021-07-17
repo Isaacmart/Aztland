@@ -5,7 +5,6 @@ from capital import Capital
 from cbpro.authenticated_client import AuthenticatedClient
 from indicators import *
 from app_methods import *
-
 import Data
 
 app = Flask(__name__)
@@ -15,12 +14,16 @@ b64secret = Data.API_Secret_Key
 passphrase = Data.Passphrase
 
 client = AuthenticatedClient(key, b64secret, passphrase)
+pclient = PublicClient()
 new_order = Order(client)
 new_order.get_id()
 new_order.set_details()
 position = OpenPosition(new_order)
 funds = Capital(client)
 funds.set_capital()
+print("client otuside method: ", client)
+print("these is executed")
+print("Position is opened", position.long_position)
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -35,17 +38,17 @@ def application():
 
             if float(new_request['hist']) > 0 and float(new_request['volume']) > float(new_request['volumema']):
 
-                indicator = Indicator(client=client)
+                indicator = Indicator(client=pclient)
                 indicator.set_candles(product=get_key('ticker', new_request), callback=get_time(27976),
                                       begin=get_time(0),
                                       granularity=300)
                 indicator.get_data_set()
                 indicator.reverse_data()
                 indicator.get_np_array()
-                macd_5m = MACD(client=client)
+                macd_5m = MACD(client=pclient)
                 macd_5m.np_array = indicator.np_array
                 macd_5m.get_MACD()
-                volume_5m = VolSMA(client=client, timeperiod=20)
+                volume_5m = VolSMA(client=pclient, timeperiod=20)
                 volume_5m.candles = indicator.candles
                 volume_5m.get_data_set()
                 volume_5m.reverse_data()
