@@ -55,7 +55,7 @@ class Order:
     def set_details(self):
         confirm = False
         while confirm is False:
-            self.details = self.client.get_order(self.new_id)
+            self.details = self.client.get_order(order_id=self.new_id)
             if 'status' in self.details:
                 if self.details['status'] == 'done':
                     confirm = True
