@@ -65,7 +65,7 @@ class Order:
         return self.details[key]
 
     def get_id(self):
-        writer = open("data.txt", 'r')
+        writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", 'r')
         self.new_id = writer.read()
         writer.close()
         return self.new_id
