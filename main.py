@@ -5,7 +5,7 @@ from capital import Capital
 from cbpro.authenticated_client import AuthenticatedClient
 from indicators import *
 from app_methods import *
-from initialize import *
+
 import Data
 
 app = Flask(__name__)
@@ -14,8 +14,13 @@ key = Data.API_Public_Key
 b64secret = Data.API_Secret_Key
 passphrase = Data.Passphrase
 
-
 client = AuthenticatedClient(key, b64secret, passphrase)
+new_order = Order()
+new_order.get_id()
+new_order.set_details()
+position = OpenPosition(new_order)
+funds = Capital(client)
+funds.set_capital()
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -23,9 +28,6 @@ def application():
     if request.method == 'POST':
         new_request = request.get_json(force=True)
         print("new_order pointer: ", new_order)
-        print("new_order details = ", new_order.details)
-        print("Position: ", position.get_position())
-        print("capital: ", funds.get_capital())
 
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
@@ -51,12 +53,15 @@ def application():
 
                 # Buy if True
                 if macd_5m.hist[-1] > 0 and volume_5m.data_array[-1] > volume_5m.real[-1]:
-                    print(funds.get_capital())
                     new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                           side="buy",
                                                           funds=funds.get_capital())
-                    print(new_trade)
-                    if new_order.set_details(new_id=new_trade.get('id')):
+
+                    writer = open("data.txt", "w")
+                    writer.write(new_trade['id'])
+                    writer.close()
+                    new_order.get_id()
+                    if new_order.set_details():
                         position.set_position()
                         print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
                     else:
@@ -67,8 +72,11 @@ def application():
                     new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                           side="buy",
                                                           funds=funds.get_capital())
-                    print(new_trade)
-                    if new_order.set_details(new_id=new_trade.get('id')):
+                    writer = open("data.txt", "w")
+                    writer.write(new_trade['id'])
+                    writer.close()
+                    new_order.get_id()
+                    if new_order.set_details():
                         position.set_position()
                         print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
                     else:
@@ -86,8 +94,11 @@ def application():
                 new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
                                                       side='sell',
                                                       size=new_order.get_key('filled_size'))
-                print(new_trade)
-                if new_order.set_details(new_id=new_trade.get('id')):
+                writer = open("data.txt", "w")
+                writer.write(new_trade['id'])
+                writer.close()
+                new_order.get_id()
+                if new_order.set_details():
                     print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
                     funds.capital = float(new_order.get_key('executed_value'))
                     position.set_position()

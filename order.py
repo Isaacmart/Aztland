@@ -1,5 +1,4 @@
 from cbpro.authenticated_client import AuthenticatedClient
-from singleton import Singleton
 '''
 Example of get_order() response:
 
@@ -28,11 +27,11 @@ and packs it into a single data structure to
 facilitate its use in other places'''
 
 
-@Singleton
 class Order:
 
     def __init__(self, client=AuthenticatedClient):
         self.client = client
+        self.new_id = None
         self.details = {
             "id": "",
             "size": "",
@@ -53,13 +52,10 @@ class Order:
             "settled": None
         }
 
-    def get_id(self):
-        return self.id
-
-    def set_details(self, new_id):
+    def set_details(self):
         confirm = False
         while confirm is False:
-            self.details = self.client.get_order(new_id)
+            self.details = self.client.get_order(self.new_id)
             if 'status' in self.details:
                 if self.details['status'] == 'done':
                     confirm = True
@@ -67,6 +63,18 @@ class Order:
 
     def get_key(self, key):
         return self.details[key]
+
+    def get_id(self):
+        writer = open("data.txt", 'r')
+        self.new_id = writer.read()
+        writer.close()
+        return self.new_id
+
+
+
+
+
+
 
 
 

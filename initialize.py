@@ -10,7 +10,7 @@ passphrase = Data.Passphrase
 
 
 client = AuthenticatedClient(key, b64secret, passphrase)
-new_order = Order.instance(client)
+new_order = Order()
 position = OpenPosition(new_order)
 funds = Capital(client)
 funds.set_capital()
