@@ -15,7 +15,7 @@ b64secret = Data.API_Secret_Key
 passphrase = Data.Passphrase
 
 client = AuthenticatedClient(key, b64secret, passphrase)
-new_order = Order()
+new_order = Order(client)
 new_order.get_id()
 new_order.set_details()
 position = OpenPosition(new_order)
