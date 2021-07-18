@@ -65,7 +65,7 @@ def application():
                         position.set_position()
                         print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
                     else:
-                        print(new_order.details)
+                        print("opening position details: ", new_order.details)
 
                 # Buy if True
                 elif macd_5m.macd[-2] > macd_5m.macd[-3]:
@@ -80,7 +80,7 @@ def application():
                         position.set_position()
                         print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
                     else:
-                        print(new_order.details)
+                        print("buy order details: ", new_order.details)
 
                 else:
                     # Does nothing if both statements are False
@@ -106,7 +106,7 @@ def application():
                     funds.capital = float(new_order.get_key('executed_value'))
                     position.set_position()
                 else:
-                    print(new_order.details)
+                    print("order details", new_order.details)
             else:
                 print("coin is not ready to be sold")
 
