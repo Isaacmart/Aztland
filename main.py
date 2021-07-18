@@ -116,7 +116,7 @@ def application():
 
         elif position.get_position() and get_key('ticker', new_request) != new_order.get_key('product_id'):
 
-            print("ticker does not match the product id from order", get_key('ticker', new_request))
+            print("ticker does not match the product id from order", new_order.get_key('product_id'))
 
         # If there is a long position but the ticker is not the same as the order's
         # the program will just ignore it
