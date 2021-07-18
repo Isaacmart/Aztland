@@ -32,7 +32,7 @@ def application():
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
 
-            if float(new_request['hist']) > 0 and float(new_request['volume']) > float(new_request['volumema']):
+            if float(new_request['hist']) > 0:
 
                 indicator = Indicator(client=pclient)
                 indicator.set_candles(product=get_key('ticker', new_request), callback=get_time(27976),
@@ -93,7 +93,7 @@ def application():
         elif position.get_position() and get_key('ticker', new_request) == new_order.get_key('product_id'):
 
             # Sell if True
-            if float(new_request['hist']) < 0.0 and float(new_request['volume']) > float(new_request['volumema']):
+            if float(new_request['hist']) < 0.0:
                 new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
                                                       side='sell',
                                                       size=new_order.get_key('filled_size'))
