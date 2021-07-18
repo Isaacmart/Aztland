@@ -94,7 +94,7 @@ def application():
                 print("position: ", position.order)
 
         # If the Post request ticker is the same as the order's it will trigger a sell order
-        elif position.get_position() and get_key('ticker', new_request) == new_order.get_key('product_id'):
+        elif position.get_position() and get_key('ticker', new_request) is new_order.get_key('product_id'):
 
             # Sell if True
             if float(new_request['hist']) < 0 and float(new_request['volume']) > float(new_request['volumema']):
@@ -116,7 +116,8 @@ def application():
 
         elif position.get_position() and get_key('ticker', new_request) != new_order.get_key('product_id'):
 
-            print("ticker does not match the product id from order", new_order.get_key('product_id'))
+            print(get_key('ticker', new_request), "ticker does not match the product id from order",
+                  new_order.get_key('product_id'))
 
         # If there is a long position but the ticker is not the same as the order's
         # the program will just ignore it
