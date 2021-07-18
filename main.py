@@ -22,17 +22,12 @@ position = OpenPosition(new_order)
 position.set_position()
 funds = Capital(client)
 funds.set_capital()
-print("client otuside method: ", client)
-print("these is executed")
-print("Position is opened", position.long_position)
 
 
 @app.route("/", methods=['GET', 'POST'])
 def application():
     if request.method == 'POST':
         new_request = request.get_json(force=True)
-        print("new_order pointer: ", new_order)
-        print(new_order.get_id())
 
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
@@ -62,7 +57,7 @@ def application():
                                                           side="buy",
                                                           funds=funds.get_capital())
 
-                    writer = open("data.txt", "w")
+                    writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", "w")
                     writer.write(new_trade['id'])
                     writer.close()
                     new_order.get_id()
@@ -77,7 +72,7 @@ def application():
                     new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                           side="buy",
                                                           funds=funds.get_capital())
-                    writer = open("data.txt", "w")
+                    writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", "w")
                     writer.write(new_trade['id'])
                     writer.close()
                     new_order.get_id()
@@ -88,20 +83,21 @@ def application():
                         print(new_order.details)
 
                 else:
-                    print("requirements were not met for ", get_key('ticker', new_request))
                     # Does nothing if both statements are False
+                    print("requirements were not met for ", get_key('ticker', new_request))
+
             else:
-                print("position: ", position.order)
+                print("position: ", position.order.details)
 
         # If the Post request ticker is the same as the order's it will trigger a sell order
-        elif position.get_position() and get_key('ticker', new_request) is new_order.get_key('product_id'):
+        elif position.get_position() and get_key('ticker', new_request) == new_order.get_key('product_id'):
 
             # Sell if True
-            if float(new_request['hist']) < 0 and float(new_request['volume']) > float(new_request['volumema']):
+            if float(new_request['hist']) < 0.0 and float(new_request['volume']) > float(new_request['volumema']):
                 new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
                                                       side='sell',
                                                       size=new_order.get_key('filled_size'))
-                writer = open("data.txt", "w")
+                writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", "w")
                 writer.write(new_trade['id'])
                 writer.close()
                 new_order.get_id()
