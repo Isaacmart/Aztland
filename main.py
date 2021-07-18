@@ -97,7 +97,7 @@ def application():
         elif position.get_position() and get_key('ticker', new_request) == new_order.get_key('product_id'):
 
             # Sell if True
-            if new_request['hist'] < 0 and float(new_request['volume']) > float(new_request['volumema']):
+            if float(new_request['hist']) < 0 and float(new_request['volume']) > float(new_request['volumema']):
                 new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
                                                       side='sell',
                                                       size=new_order.get_key('filled_size'))
