@@ -19,7 +19,6 @@ def application():
     if request.method == 'POST':
 
         new_request = request.get_json(force=True)
-        print(new_request)
 
         client = AuthenticatedClient(key, b64secret, passphrase)
         pclient = PublicClient()
@@ -66,7 +65,7 @@ def application():
                         new_order.get_id()
 
                     else:
-                        print("order cannot be completed")
+                        print("order cannot be completed for: ", get_key('ticker', new_request))
 
                     if new_order.set_details():
                         position.set_position()
@@ -105,7 +104,7 @@ def application():
                 else:
                     print("order details", new_trade)
             else:
-                print("coin is not ready to be sold")
+                print("coin is not ready to be sold", new_order.get_key('product_id'))
 
         elif position.get_position() and get_key('ticker', new_request) != new_order.get_key('product_id'):
 
