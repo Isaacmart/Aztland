@@ -31,9 +31,8 @@ def application():
 
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
-
+            
             if float(new_request['hist']) > 0:
-
                 indicator = Indicator(client=pclient)
                 indicator.set_candles(product=get_key('ticker', new_request), callback=get_time(27976),
                                       begin=get_time(0),
@@ -52,36 +51,27 @@ def application():
                 volume_5m.get_volume()
 
                 # Buy if True
-                if macd_5m.hist[-1] > 0 and volume_5m.data_array[-1] > volume_5m.real[-1]:
+                if (macd_5m.hist[-1] > 0 and volume_5m.data_array[-1] > volume_5m.real[-1]) or (macd_5m.hist[-2] >= macd_5m.hist[-3]):
+
                     new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                           side="buy",
                                                           funds=funds.get_capital())
-                    print(new_trade)
-                    writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", "w")
-                    writer.write(new_trade['id'])
-                    writer.close()
-                    new_order.get_id()
+
+                    if "id" in new_trade:
+                        writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", "w")
+                        writer.write(new_trade['id'])
+                        writer.close()
+                        new_order.get_id()
+
+                    else:
+                        print("order cannot be completed")
+
                     if new_order.set_details():
                         position.set_position()
                         print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
+
                     else:
                         print("opening position details: ", new_order.details)
-
-                # Buy if True
-                elif macd_5m.macd[-2] > macd_5m.macd[-3]:
-                    new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
-                                                          side="buy",
-                                                          funds=funds.get_capital())
-                    print(new_trade)
-                    writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", "w")
-                    writer.write(new_trade['id'])
-                    writer.close()
-                    new_order.get_id()
-                    if new_order.set_details():
-                        position.set_position()
-                        print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
-                    else:
-                        print("buy order details: ", new_order.details)
 
                 else:
                     # Does nothing if both statements are False
@@ -98,15 +88,18 @@ def application():
                 new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
                                                       side='sell',
                                                       size=new_order.get_key('filled_size'))
-                print(new_trade)
-                writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", "w")
-                writer.write(new_trade['id'])
-                writer.close()
-                new_order.get_id()
+
+                if "id" in new_trade:
+                    writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", "w")
+                    writer.write(new_trade['id'])
+                    writer.close()
+                    new_order.get_id()
+
                 if new_order.set_details():
                     print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
                     funds.capital = float(new_order.get_key('executed_value'))
                     position.set_position()
+
                 else:
                     print("order details", new_order.details)
             else:
@@ -121,9 +114,12 @@ def application():
         # the program will just ignore it
         else:
             print("Nothing to do", get_key('ticker', new_request))
+
         return 'success', 200
+
     elif request.method == 'GET':
         return render_template('index.html')
+
     else:
         abort(400)
 
