@@ -70,7 +70,7 @@ def application():
 
                     if new_order.set_details():
                         position.set_position()
-                        print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
+                        print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('price'))
 
                     else:
                         print("opening position details: ", new_trade)
