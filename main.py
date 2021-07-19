@@ -31,7 +31,7 @@ def application():
 
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
-            
+
             if float(new_request['hist']) > 0:
                 indicator = Indicator(client=pclient)
                 indicator.set_candles(product=get_key('ticker', new_request), callback=get_time(27976),
@@ -71,7 +71,7 @@ def application():
                         print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
 
                     else:
-                        print("opening position details: ", new_order.details)
+                        print("opening position details: ", new_trade)
 
                 else:
                     # Does nothing if both statements are False
@@ -101,7 +101,7 @@ def application():
                     position.set_position()
 
                 else:
-                    print("order details", new_order.details)
+                    print("order details", new_trade)
             else:
                 print("coin is not ready to be sold")
 
