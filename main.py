@@ -56,7 +56,7 @@ def application():
                     new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                           side="buy",
                                                           funds=funds.get_capital())
-
+                    print(new_trade)
                     writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", "w")
                     writer.write(new_trade['id'])
                     writer.close()
@@ -72,6 +72,7 @@ def application():
                     new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                           side="buy",
                                                           funds=funds.get_capital())
+                    print(new_trade)
                     writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", "w")
                     writer.write(new_trade['id'])
                     writer.close()
@@ -97,6 +98,7 @@ def application():
                 new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
                                                       side='sell',
                                                       size=new_order.get_key('filled_size'))
+                print(new_trade)
                 writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", "w")
                 writer.write(new_trade['id'])
                 writer.close()
