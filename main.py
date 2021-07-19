@@ -13,21 +13,23 @@ key = Data.API_Public_Key
 b64secret = Data.API_Secret_Key
 passphrase = Data.Passphrase
 
-client = AuthenticatedClient(key, b64secret, passphrase)
-pclient = PublicClient()
-new_order = Order(client)
-new_order.get_id()
-new_order.set_details()
-position = OpenPosition(new_order)
-position.set_position()
-funds = Capital(client)
-funds.set_capital()
-
 
 @app.route("/", methods=['GET', 'POST'])
 def application():
     if request.method == 'POST':
+
         new_request = request.get_json(force=True)
+        print(new_request)
+
+        client = AuthenticatedClient(key, b64secret, passphrase)
+        pclient = PublicClient()
+        new_order = Order(client)
+        new_order.get_id()
+        new_order.set_details()
+        position = OpenPosition(new_order)
+        position.set_position()
+        funds = Capital(client)
+        funds.set_capital()
 
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
