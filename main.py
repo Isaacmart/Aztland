@@ -59,7 +59,7 @@ def application():
 
                     new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                           side="buy",
-                                                          funds=funds.get_capital())
+                                                          funds=(funds.get_capital() - 1))
 
                     if "id" in new_trade:
                         writer = open(Data.Path, "w")
