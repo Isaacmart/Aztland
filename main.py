@@ -120,8 +120,39 @@ def application():
 
         elif position.get_position() and (get_key('ticker', new_request) != new_order.get_key('product_id')):
 
-            print(get_key('ticker', new_request), "ticker does not match the product id from order",
-                  new_order.get_key('product_id'))
+            macd_5m = MACD(client=client)
+            macd_5m.set_candles(new_order.get_key('product_id'), callback=get_time(27976), begin=get_time(0),
+                                granularity=300)
+            macd_5m.get_data_set()
+            macd_5m.reverse_data()
+            macd_5m.get_np_array()
+            macd_5m.get_MACD()
+
+            if macd_5m.hist[-2] > macd_5m.hist[-1]:
+
+                new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
+                                                      side='sell',
+                                                      size=new_order.get_key('filled_size'))
+
+                if "id" in new_trade:
+                    writer = open(Data.Path, "w")
+                    writer.write(new_trade['id'])
+                    writer.close()
+                    new_order.get_id()
+
+                    if new_order.set_details():
+                        print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
+                        funds.capital = float(new_order.get_key('executed_value'))
+                        position.set_position()
+
+                    else:
+                        print("trade was not closed: ", new_trade)
+
+                else:
+                    print("order details", new_trade)
+            else:
+                print(get_key('ticker', new_request), "ticker does not match the product id from order",
+                      new_order.get_key('product_id'))
 
         # If there is a long position but the ticker is not the same as the order's
         # the program will just ignore it
