@@ -84,8 +84,9 @@ def application():
 
                 else:
                     # Does nothing if both statements are False
-                    print("requirements were not met for ", get_key('ticker', new_request) + " " + macd_5m.hist[-1]
-                          + " " + macd_5m.hist[-2] + " " + volume_5m.real[-1] + ' ' + volume_5m.data_array[-1])
+                    print("requirements were not met for ", get_key('ticker', new_request) + " " + str(macd_5m.hist[-1])
+                          + " " + str(macd_5m.hist[-2]) + " " + str(volume_5m.real[-1]) + ' ' +
+                          str(volume_5m.data_array[-1]))
 
             else:
                 print("request- ", new_request["ticker"] + ", " + new_request['hist'])
