@@ -3,6 +3,7 @@ from open_position import OpenPosition
 from order import Order
 from capital import Capital
 from cbpro.authenticated_client import AuthenticatedClient
+from talib import _ta_lib
 from indicators import *
 from app_methods import *
 import Data
@@ -38,21 +39,27 @@ def application():
                 indicator.set_candles(product=get_key('ticker', new_request), callback=get_time(27976),
                                       begin=get_time(0),
                                       granularity=300)
-                indicator.get_data_set()
-                indicator.reverse_data()
-                indicator.get_np_array()
                 macd_5m = MACD(client=pclient)
-                macd_5m.np_array = indicator.np_array
-                macd_5m.get_MACD()
                 volume_5m = VolSMA(client=pclient, timeperiod=20)
-                volume_5m.candles = indicator.candles
-                volume_5m.get_data_set()
-                volume_5m.reverse_data()
-                volume_5m.get_np_array()
-                volume_5m.get_volume()
+                try:
+                    indicator.get_data_set()
+                    indicator.reverse_data()
+                    indicator.get_np_array()
+
+                    macd_5m.np_array = indicator.np_array
+                    macd_5m.get_MACD()
+
+                    volume_5m.candles = indicator.candles
+                    volume_5m.get_data_set()
+                    volume_5m.reverse_data()
+                    volume_5m.get_np_array()
+                    volume_5m.get_volume()
+                except Exception as e:
+                    print("talib failed", indicator.candles[-1])
+                    pass
 
                 # Buy if True
-                if (macd_5m.hist[-1] > 0 or macd_5m.hist[-1] >= macd_5m.hist[-2]) and \
+                if ((macd_5m.hist[-1] > 0) or (macd_5m.hist[-1] >= macd_5m.hist[-2])) and \
                         (volume_5m.data_array[-1] > volume_5m.real[-1]):
 
                     new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
@@ -78,7 +85,7 @@ def application():
                 else:
                     # Does nothing if both statements are False
                     print("requirements were not met for ", get_key('ticker', new_request) + " " + macd_5m.hist[-1]
-                          + " " + macd_5m.hist[-2] + volume_5m.real[-1] + ' ' + volume_5m.data_array[-1])
+                          + " " + macd_5m.hist[-2] + " " + volume_5m.real[-1] + ' ' + volume_5m.data_array[-1])
 
             else:
                 print("request- ", new_request["ticker"] + ", " + new_request['hist'])
@@ -111,7 +118,7 @@ def application():
             else:
                 print("coin is not ready to be sold", new_order.get_key('product_id'))
 
-        elif position.get_position() and get_key('ticker', new_request) != new_order.get_key('product_id'):
+        elif position.get_position() and (get_key('ticker', new_request) != new_order.get_key('product_id')):
 
             print(get_key('ticker', new_request), "ticker does not match the product id from order",
                   new_order.get_key('product_id'))
