@@ -29,6 +29,8 @@ def application():
         position.set_position()
         funds = Capital(client)
         funds.set_capital()
+        print(get_key('ticker', new_request))
+        print(funds.get_capital())
 
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:

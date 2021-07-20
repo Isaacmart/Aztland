@@ -37,6 +37,7 @@ class Indicator:
         return self.data_array
 
     def get_np_array(self):
+
         self.np_array = numpy.array(self.data_array)
 
         return self.np_array
@@ -89,6 +90,7 @@ class VolSMA(Indicator):
     def get_volume(self):
 
         self.real = talib.SMA(real=self.np_array, timeperiod=self.timeperiod)
+        return self.real
 
 '''
 new_client = PublicClient()
