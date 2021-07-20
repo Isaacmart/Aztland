@@ -52,24 +52,26 @@ def application():
                 volume_5m.get_volume()
 
                 # Buy if True
-                if (macd_5m.hist[-1] > 0 and volume_5m.data_array[-1] > volume_5m.real[-1]) or (macd_5m.hist[-2] >= macd_5m.hist[-3]):
+                if (macd_5m.hist[-1] > 0 or macd_5m.hist[-1] >= macd_5m.hist[-2]) and \
+                        (volume_5m.data_array[-1] > volume_5m.real[-1]):
 
                     new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
                                                           side="buy",
                                                           funds=funds.get_capital())
 
                     if "id" in new_trade:
-                        writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", "w")
+                        writer = open(Data.Path, "w")
                         writer.write(new_trade['id'])
                         writer.close()
                         new_order.get_id()
+                        print("buy id obtained")
 
                     else:
                         print("order cannot be completed for: ", get_key('ticker', new_request))
 
                     if new_order.set_details():
                         position.set_position()
-                        print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('price'))
+                        print("order sent: ", new_order.details)
 
                     else:
                         print("opening position details: ", new_trade)
@@ -79,7 +81,7 @@ def application():
                     print("requirements were not met for ", get_key('ticker', new_request))
 
             else:
-                print("position: ", position.order.details)
+                print("request: ", new_request)
 
         # If the Post request ticker is the same as the order's it will trigger a sell order
         elif position.get_position() and get_key('ticker', new_request) == new_order.get_key('product_id'):
@@ -91,7 +93,7 @@ def application():
                                                       size=new_order.get_key('filled_size'))
 
                 if "id" in new_trade:
-                    writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", "w")
+                    writer = open(Data.Path, "w")
                     writer.write(new_trade['id'])
                     writer.close()
                     new_order.get_id()

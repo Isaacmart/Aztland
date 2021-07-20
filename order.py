@@ -1,4 +1,5 @@
 from cbpro.authenticated_client import AuthenticatedClient
+from Data import Path
 '''
 Example of get_order() response:
 
@@ -65,7 +66,7 @@ class Order:
         return self.details[key]
 
     def get_id(self):
-        writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/data.txt", 'r')
+        writer = open(Path, 'r')
         self.new_id = writer.read()
         writer.close()
         return self.new_id
