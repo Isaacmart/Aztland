@@ -66,22 +66,22 @@ def application():
                         new_order.get_id()
                         print("buy id obtained")
 
-                    else:
-                        print("order cannot be completed for: ", get_key('ticker', new_request))
+                        if new_order.set_details():
+                            position.set_position()
+                            print("order sent: ", new_order.details)
 
-                    if new_order.set_details():
-                        position.set_position()
-                        print("order sent: ", new_order.details)
+                        else:
+                            print("opening position details: ", new_trade)
 
                     else:
-                        print("opening position details: ", new_trade)
+                        print("order cannot be completed for: ", get_key('ticker', new_request), new_trade)
 
                 else:
                     # Does nothing if both statements are False
                     print("requirements were not met for ", get_key('ticker', new_request))
 
             else:
-                print("request: ", new_request)
+                print("request- ", new_request["ticker"] + ", " + new_request['hist'])
 
         # If the Post request ticker is the same as the order's it will trigger a sell order
         elif position.get_position() and get_key('ticker', new_request) == new_order.get_key('product_id'):
@@ -98,10 +98,13 @@ def application():
                     writer.close()
                     new_order.get_id()
 
-                if new_order.set_details():
-                    print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
-                    funds.capital = float(new_order.get_key('executed_value'))
-                    position.set_position()
+                    if new_order.set_details():
+                        print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
+                        funds.capital = float(new_order.get_key('executed_value'))
+                        position.set_position()
+
+                    else:
+                        print("trade was not closed: ", new_trade)
 
                 else:
                     print("order details", new_trade)
