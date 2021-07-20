@@ -13,7 +13,7 @@ class Capital:
         self.capital = get_capital('42d739b5-f5cd-48c0-baf6-b905836a1ca4', self.client)
 
     def get_capital(self):
-        return self.capital
+        return float(self.capital) - 1.0
 
 
 
