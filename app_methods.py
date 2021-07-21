@@ -78,7 +78,12 @@ def round_down(n, decimals=0):
 def get_size(ticker, size):
 
     if ticker in new_dict:
+        new_size = round_down(float(size), int(new_dict[ticker]))
 
-        return round_down(float(size), int(new_dict[ticker]))
+    else:
+        new_size = size
+
+    return new_size
+
 
 

@@ -31,12 +31,14 @@ def application():
         funds = Capital(client)
         funds.set_capital()
 
+        new_ticker = get_key('ticker', new_request)
+
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
 
             if float(new_request['hist']) > 0:
                 indicator = Indicator(client=pclient)
-                indicator.set_candles(product=get_key('ticker', new_request), callback=get_time(27976),
+                indicator.set_candles(product=new_ticker, callback=get_time(27976),
                                       begin=get_time(0),
                                       granularity=300)
                 macd_5m = MACD(client=pclient)
@@ -54,6 +56,7 @@ def application():
                     volume_5m.reverse_data()
                     volume_5m.get_np_array()
                     volume_5m.get_volume()
+
                 except Exception as e:
                     print("talib failed", indicator.candles[-1])
                     pass
@@ -62,7 +65,7 @@ def application():
                 if ((macd_5m.hist[-1] > 0) or (macd_5m.hist[-1] >= macd_5m.hist[-2])) and \
                         (volume_5m.data_array[-1] > volume_5m.real[-1]):
 
-                    new_trade = client.place_market_order(product_id=get_key('ticker', new_request),
+                    new_trade = client.place_market_order(product_id=new_ticker,
                                                           side="buy",
                                                           funds=funds.get_capital())
 
@@ -80,11 +83,11 @@ def application():
                             print("opening position details: ", new_trade)
 
                     else:
-                        print("order cannot be completed for: ", get_key('ticker', new_request), new_trade)
+                        print("order cannot be completed for: ", new_ticker, new_trade)
 
                 else:
                     # Does nothing if both statements are False
-                    print("requirements were not met for ", get_key('ticker', new_request) + " " + str(macd_5m.hist[-1])
+                    print("requirements were not met for ", new_ticker + " " + str(macd_5m.hist[-1])
                           + " " + str(macd_5m.hist[-2]) + " " + str(volume_5m.real[-1]) + ' ' +
                           str(volume_5m.data_array[-1]))
 
@@ -92,7 +95,7 @@ def application():
                 print("request- ", new_request["ticker"] + ", " + new_request['hist'])
 
         # If the Post request ticker is the same as the order's it will trigger a sell order
-        elif position.get_position() and get_key('ticker', new_request) == new_order.get_key('product_id'):
+        elif position.get_position() and new_ticker == new_order.get_key('product_id'):
 
             # Sell if True
             if float(new_request['hist']) < 0.0:
@@ -120,9 +123,9 @@ def application():
             else:
                 print("coin is not ready to be sold", new_order.get_key('product_id'))
 
-        elif position.get_position() and (get_key('ticker', new_request) != new_order.get_key('product_id')):
+        elif position.get_position() and (new_ticker != new_order.get_key('product_id')):
 
-            macd_5m = MACD(client=client)
+            macd_5m = MACD(client=pclient)
             macd_5m.set_candles(new_order.get_key('product_id'), callback=get_time(27976), begin=get_time(0),
                                 granularity=300)
             macd_5m.get_data_set()
@@ -130,7 +133,7 @@ def application():
             macd_5m.get_np_array()
             macd_5m.get_MACD()
 
-            if macd_5m.hist[-2] > macd_5m.hist[-1]:
+            if (macd_5m.hist[-2] > macd_5m.hist[-1]) and (macd_5m.data_array[-1] < macd_5m.data_array[-5]):
 
                 #Sell if True
                 new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
@@ -161,7 +164,7 @@ def application():
         # If there is a long position but the ticker is not the same as the order's
         # the program will just ignore it
         else:
-            print("Nothing to do", get_key('ticker', new_request))
+            print("Nothing to do", new_ticker)
 
         return 'success', 200
 
