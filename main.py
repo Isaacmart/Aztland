@@ -62,8 +62,8 @@ def application():
                     pass
 
                 # Buy if True
-                if ((macd_5m.hist[-1] > 0) or (macd_5m.hist[-1] >= macd_5m.hist[-2])) and \
-                        (volume_5m.data_array[-1] > volume_5m.real[-1]):
+                if (macd_5m.hist[-1] and macd_5m.hist[-2] > 0) and (macd_5m.macd[-1] > macd_5m.macd[-2]) and \
+                        (volume_5m.data_array[-1] < volume_5m.real[-1]):
 
                     new_trade = client.place_market_order(product_id=new_ticker,
                                                           side="buy",
@@ -111,7 +111,7 @@ def application():
                     new_order.get_id()
 
                     if new_order.set_details():
-                        print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
+                        print("order sent " + new_order.get_key('product_id'))
                         funds.capital = float(new_order.get_key('executed_value'))
                         position.set_position()
 
@@ -125,13 +125,23 @@ def application():
 
         elif position.get_position() and (new_ticker != new_order.get_key('product_id')):
 
+            indicator = Indicator(client=pclient)
+            indicator.set_candles(product=new_ticker, callback=get_time(27976),
+                                  begin=get_time(0),
+                                  granularity=300)
             macd_5m = MACD(client=pclient)
-            macd_5m.set_candles(new_order.get_key('product_id'), callback=get_time(27976), begin=get_time(0),
-                                granularity=300)
-            macd_5m.get_data_set()
-            macd_5m.reverse_data()
-            macd_5m.get_np_array()
-            macd_5m.get_MACD()
+            volume_5m = VolSMA(client=pclient, timeperiod=20)
+            try:
+                indicator.get_data_set()
+                indicator.reverse_data()
+                indicator.get_np_array()
+
+                macd_5m.np_array = indicator.np_array
+                macd_5m.get_MACD()
+
+            except Exception as e:
+                print("talib failed", indicator.candles[-1])
+                pass
 
             if (macd_5m.hist[-2] > macd_5m.hist[-1]) and (macd_5m.data_array[-1] < macd_5m.data_array[-5]):
 
@@ -148,7 +158,7 @@ def application():
                     new_order.get_id()
 
                     if new_order.set_details():
-                        print("order sent " + new_order.get_key('product_id') + " " + new_order.get_key('funds'))
+                        print("order sent " + new_order.get_key('product_id'))
                         funds.capital = float(new_order.get_key('executed_value'))
                         position.set_position()
 
