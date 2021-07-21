@@ -3,7 +3,7 @@ from open_position import OpenPosition
 from order import Order
 from capital import Capital
 from cbpro.authenticated_client import AuthenticatedClient
-from talib import _ta_lib
+from dict import new_dict
 from indicators import *
 from app_methods import *
 import Data
@@ -98,7 +98,8 @@ def application():
             if float(new_request['hist']) < 0.0:
                 new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
                                                       side='sell',
-                                                      size=new_order.get_key('filled_size'))
+                                                      size=get_size(new_order.get_key("product_id"),
+                                                                    new_order.get_key('filled_size')))
 
                 if "id" in new_trade:
                     writer = open(Data.Path, "w")
@@ -131,9 +132,11 @@ def application():
 
             if macd_5m.hist[-2] > macd_5m.hist[-1]:
 
+                #Sell if True
                 new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
                                                       side='sell',
-                                                      size=new_order.get_key('filled_size'))
+                                                      size=get_size(new_order.get_key("product_id"),
+                                                                    new_order.get_key('filled_size')))
 
                 if "id" in new_trade:
                     writer = open(Data.Path, "w")

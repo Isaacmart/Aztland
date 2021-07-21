@@ -1,15 +1,31 @@
-from cbpro import AuthenticatedClient
-from capital import Capital
+from dict import new_dict
+import math
 
-key = Data.API_Public_Key
-b64secret = Data.API_Secret_Key
-passphrase = Data.Passphrase
 
-client = AuthenticatedClient(key, b64secret, passphrase)
+def round_down(n, decimals=0):
+    if decimals >= 0:
+        multiplier = 10 ** decimals
+        round_n = math.floor(n * multiplier) / multiplier
+    else:
+        round_n = int(n)
+    return round_n
 
-funds = Capital(client)
-funds.set_capital()
-print(funds.get_capital())
+
+def get_size(ticker, size):
+
+    if ticker in new_dict:
+
+        return round_down(float(size), int(new_dict[ticker]))
+
+
+print(get_size("ETH-USD", 3.1234567890))
+
+
+
+
+
+
+
 
 
 

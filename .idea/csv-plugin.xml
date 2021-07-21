@@ -73,6 +73,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/dict.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/get_accounts.py">
           <value>
             <Attribute>

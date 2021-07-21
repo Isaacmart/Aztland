@@ -2,6 +2,8 @@ import csv
 import pytz
 from datetime import datetime
 import time
+import math
+from dict import new_dict
 
 
 #multiple methods used throughout the program
@@ -22,7 +24,9 @@ def get_time(amount):
     return _time
 
 
-#Gets a flask.request ticker key and returns a matching product in coinbase
+'''Gets a flask.request ticker key and returns a matching product in coinbase'''
+
+
 def get_key(key, new_request):
 
     if key in new_request:
@@ -60,3 +64,21 @@ def get_begin(current=0, granularity=60):
     else:
         begin = 0
         return begin
+
+
+def round_down(n, decimals=0):
+    if decimals >= 0:
+        multiplier = 10 ** decimals
+        round_n = math.floor(n * multiplier) / multiplier
+    else:
+        round_n = int(n)
+    return round_n
+
+
+def get_size(ticker, size):
+
+    if ticker in new_dict:
+
+        return round_down(float(size), int(new_dict[ticker]))
+
+
