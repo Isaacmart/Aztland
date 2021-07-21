@@ -59,6 +59,6 @@ new_dict = {
     "SNX-USD": "3",
     "ADA-USD": "2",
     "MATIC-USD": "1",
-    "BAL-USD": "3"
-
+    "BAL-USD": "3",
+    "DASH-USD": "3"
 }

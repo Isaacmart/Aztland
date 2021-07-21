@@ -12,7 +12,7 @@ passphrase = Data.Passphrase
 client = AuthenticatedClient(key, b64secret, passphrase)
 
 new_order = Order(client)
-new_order.new_id = "36dfc4e9-9826-45dd-bcb3-268cc67e0b79"
+new_order.new_id = "ecb6d574-5498-4c0d-a971-8d7dea00a412"
 new_order.set_details()
 
 size = get_size(new_order.get_key("product_id"), new_order.get_key('filled_size'))
