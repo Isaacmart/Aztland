@@ -37,12 +37,14 @@ def application():
         if position.get_position() is False:
 
             if float(new_request['hist']) > 0:
+
                 indicator = Indicator(client=pclient)
-                indicator.set_candles(product=new_ticker, callback=get_time(27976),
-                                      begin=get_time(0),
+                indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0),
                                       granularity=300)
                 macd_5m = MACD(client=pclient)
                 volume_5m = VolSMA(client=pclient, timeperiod=20)
+                bands_5m = BB(client=pclient)
+
                 try:
                     indicator.get_data_set()
                     indicator.reverse_data()
@@ -50,6 +52,9 @@ def application():
 
                     macd_5m.np_array = indicator.np_array
                     macd_5m.get_MACD()
+
+                    bands_5m.np_array = indicator.np_array
+                    bands_5m.get_BB()
 
                     volume_5m.candles = indicator.candles
                     volume_5m.get_data_set()
@@ -61,13 +66,33 @@ def application():
                     print("talib failed", indicator.candles[-1])
                     pass
 
-                # Buy if True
-                if (macd_5m.hist[-1] and macd_5m.hist[-2] > 0) and (macd_5m.macd[-1] > macd_5m.macd[-2]) and \
+                ready_to_trade = None
+
+                # Rules to make ready_to_trade True
+                if ((macd_5m.hist[-1] and macd_5m.hist[-2]) > 0) and (macd_5m.macd[-1] > macd_5m.macd[-2]) and \
                         (volume_5m.data_array[-1] < volume_5m.real[-1]):
 
-                    new_trade = client.place_market_order(product_id=new_ticker,
-                                                          side="buy",
-                                                          funds=funds.get_capital())
+                    ready_to_trade = True
+
+                elif ((macd_5m.macd[-1] and macd_5m.signal[-1]) < 0) and (macd_5m.hist[-1] > 0) and \
+                        (bands_5m.middleband[-1] > bands_5m.middleband[-2]):
+
+                    ready_to_trade = True
+
+                elif (indicator.data_array[-1] > indicator.data_array[-2]) and (volume_5m.real[-2] < volume_5m[-1]):
+
+                    ready_to_trade = True
+
+                # Rules that will make ready_to_trade false again
+                if (indicator.data_array[-1] > (bands_5m.upperband[-1] or bands_5m.middleband[-1])) and \
+                        (indicator.data_array[-1] < bands_5m.middleband[-1]):
+
+                    ready_to_trade = False
+
+                #Will trigger a buy order if a rule is True
+                if ready_to_trade is True:
+
+                    new_trade = client.place_market_order(product_id=new_ticker, side="buy", funds=funds.get_capital())
 
                     if "id" in new_trade:
                         writer = open(Data.Path, "w")
@@ -95,42 +120,17 @@ def application():
                 print("request- ", new_request["ticker"] + ", " + new_request['hist'])
 
         # If the Post request ticker is the same as the order's it will trigger a sell order
-        elif position.get_position() and new_ticker == new_order.get_key('product_id'):
+        elif position.get_position():
 
-            # Sell if True
-            if float(new_request['hist']) < 0.0:
-                new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
-                                                      side='sell',
-                                                      size=get_size(new_order.get_key("product_id"),
-                                                                    new_order.get_key('filled_size')))
-
-                if "id" in new_trade:
-                    writer = open(Data.Path, "w")
-                    writer.write(new_trade['id'])
-                    writer.close()
-                    new_order.get_id()
-
-                    if new_order.set_details():
-                        print("order sent " + new_order.get_key('product_id'))
-                        funds.capital = float(new_order.get_key('executed_value'))
-                        position.set_position()
-
-                    else:
-                        print("trade was not closed: ", new_trade)
-
-                else:
-                    print("order details", new_trade)
-            else:
-                print("coin is not ready to be sold", new_order.get_key('product_id'))
-
-        elif position.get_position() and (new_ticker != new_order.get_key('product_id')):
+            ready_to_trade = False
 
             indicator = Indicator(client=pclient)
-            indicator.set_candles(product=new_ticker, callback=get_time(27976),
-                                  begin=get_time(0),
-                                  granularity=300)
+            indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
+
             macd_5m = MACD(client=pclient)
             volume_5m = VolSMA(client=pclient, timeperiod=20)
+            bands_5m = BB(indicator)
+
             try:
                 indicator.get_data_set()
                 indicator.reverse_data()
@@ -139,15 +139,43 @@ def application():
                 macd_5m.np_array = indicator.np_array
                 macd_5m.get_MACD()
 
+                bands_5m.np_array = indicator.np_array
+                bands_5m.get_BB()
+
+                volume_5m.candles = indicator.candles
+                volume_5m.get_data_set()
+                volume_5m.reverse_data()
+                volume_5m.get_np_array()
+                volume_5m.get_volume()
+
             except Exception as e:
                 print("talib failed", indicator.candles[-1])
                 pass
 
-            if (macd_5m.hist[-2] > macd_5m.hist[-1]) and (macd_5m.data_array[-1] < macd_5m.data_array[-5]):
+            #rules for when the request ticker is the same as the position's
+            if new_ticker == new_order.get_key("product_id"):
 
-                #Sell if True
-                new_trade = client.place_market_order(product_id=new_order.get_key("product_id"),
-                                                      side='sell',
+                if float(new_request['hist']) < 0.0:
+
+                    ready_to_trade = True
+
+            #rules for when the request ticker is other than the position's
+            else:
+
+                if (macd_5m.hist[-2] > macd_5m.hist[-1]) and (indicator.data_array[-1] < indicator.data_array[-2]) \
+                        and (volume_5m.real[-2] > volume_5m.real[-1]):
+
+                    ready_to_trade = True
+
+                elif (indicator.data_array[-1] < bands_5m.middleband[-1]) and \
+                        (indicator.data_array[-1] < indicator.data_array[-2]):
+
+                    ready_to_trade = True
+
+            #Triggers a sell order if a rule is met:
+            if ready_to_trade:
+
+                new_trade = client.place_market_order(product_id=new_order.get_key("product_id"), side='sell',
                                                       size=get_size(new_order.get_key("product_id"),
                                                                     new_order.get_key('filled_size')))
 
@@ -167,9 +195,10 @@ def application():
 
                 else:
                     print("order details", new_trade)
+
+            #Not rules were true
             else:
-                print(get_key('ticker', new_request), "ticker does not match the product id from order",
-                      new_order.get_key('product_id'))
+                print("coin is not ready to be sold", new_order.get_key('product_id'))
 
         # If there is a long position but the ticker is not the same as the order's
         # the program will just ignore it
@@ -183,9 +212,5 @@ def application():
 
     else:
         abort(400)
-
-
-
-
 
 
