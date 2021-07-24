@@ -7,7 +7,7 @@ from app_methods import *
 class Indicator:
 
     '''
-    Index 5 will create a list with close price values
+    Index 4 will create a list with close price values
     Gets a initialized PublicClient as parameter
     '''
     def __init__(self, client=PublicClient, index=4, weight=True):
@@ -91,6 +91,31 @@ class VolSMA(Indicator):
 
         self.real = talib.SMA(real=self.np_array, timeperiod=self.timeperiod)
         return self.real
+
+
+class RSI(Indicator):
+
+    def __init__(self, client=PublicClient, timeperiod=14, index=4, weight=False):
+        super(RSI, self).__init__(client=client, index=index, weight=weight)
+        self.timperiod = timeperiod
+        self.real = []
+
+    def get_RSI(self):
+
+        self.real = talib.RSI(real=self.np_array, timeperiod=self.timperiod)
+
+
+class EMA(Indicator):
+
+    def __init__(self, client=PublicClient, time_period=12, index=4):
+        super(EMA, self).__init__(client=client, index=index)
+        self.timeperiod = time_period
+        self.real = []
+
+    def get_EMA(self):
+
+        self.real = talib.EMA(real=self.np_array, timeperiod=self.timeperiod)
+
 
 '''
 new_client = PublicClient()

@@ -143,6 +143,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/trading_rules.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/websocket_connect.py">
           <value>
             <Attribute>
