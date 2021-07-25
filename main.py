@@ -80,7 +80,7 @@ def application():
             volume_15m.get_volume()
 
         except Exception as e:
-            print("talib failed", indicator.candles[-1])
+            print(e)
             pass
 
         #Will let us know what rule was used to trigger the sale
