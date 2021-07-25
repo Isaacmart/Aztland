@@ -101,7 +101,7 @@ def application():
             is_bottom = True
             rule_used = "price < lowerband 1, macd hist increasing"
 
-        elif (rsi_15m.real < 30) and (macd_15m.macd[-1] > macd_15m.macd[-2]):
+        elif (rsi_15m.real[-1] < 30) and (macd_15m.macd[-1] > macd_15m.macd[-2]):
             is_bottom = True
             rule_used = "rsi < 30, mcad increasing"
 
@@ -128,7 +128,7 @@ def application():
         if indicator.data_array[-1] > bands_2dev.upperband[-1]:
             is_top = True
 
-        elif rsi_15m.real > 70:
+        elif rsi_15m.real[-1] > 70:
             is_top = True
 
         else:
