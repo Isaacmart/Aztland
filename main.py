@@ -148,7 +148,7 @@ def application():
             is_falling = True
             rule_used = "price crossing down upperband 2"
 
-        elif float(indicator.candles[0][3]) < indicator.candles[-1] < bands_1dev.upperband[-1]:
+        elif float(indicator.candles[0][3]) < indicator.data_array[-1] < bands_1dev.upperband[-1]:
             is_falling = True
             rule_used = "close price < open price over upperband 1"
 
