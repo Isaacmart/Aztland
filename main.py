@@ -118,9 +118,9 @@ def application():
             is_raising = True
             rule_used = "price > uppperband 1, macd increasing"
 
-        elif indicator.data_array[-1] > indicator.data_array[-2] > ema_12p.real[-2]:
+        elif bands_1dev.upperband[-1] > indicator.data_array[-1] > indicator.data_array[-2] > ema_12p.real[-2]:
             is_raising = True
-            rule_used = "pirce > 12 ema"
+            rule_used = "price > 12 ema"
 
         else:
             is_raising = False
@@ -147,6 +147,10 @@ def application():
         elif (indicator.data_array[-2] > bands_2dev.upperband[-2]) and (indicator.data_array[-1] < bands_2dev.upperband[-1]):
             is_falling = True
             rule_used = "price crossing down upperband 2"
+
+        elif indicator.candles[0][3] < indicator.candles[-1] < bands_1dev.upperband[-1]:
+            is_falling = True
+            rule_used = "close price < open price over upperband 1"
 
         else:
             is_falling = False
