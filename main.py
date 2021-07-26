@@ -116,9 +116,11 @@ def application():
         is_raising: bool
         if (indicator.data_array[-1] > bands_1dev.upperband[-1]) and (macd_15m.macd[-1] > macd_15m.macd[-1]):
             is_raising = True
+            rule_used = "price > uppperband 1, macd increasing"
 
         elif indicator.data_array[-1] > indicator.data_array[-2] > ema_12p.real[-2]:
             is_raising = True
+            rule_used = "pirce > 12 ema"
 
         else:
             is_raising = False
@@ -127,9 +129,11 @@ def application():
         is_top: bool
         if indicator.data_array[-1] > bands_2dev.upperband[-1]:
             is_top = True
+            rule_used = "price > upperband 2"
 
         elif rsi_15m.real[-1] > 70:
             is_top = True
+            rule_used = "rsi > 70"
 
         else:
             is_top = False
@@ -138,9 +142,11 @@ def application():
         is_falling: bool
         if (bands_1dev.upperband[-2] > indicator.data_array[-2] > bands_2dev.upperband[-2]) and (indicator.data_array[-1] < bands_1dev.upperband[-1]):
             is_falling = True
+            rule_used = "price crossing down upperband 1"
 
         elif (indicator.data_array[-2] > bands_2dev.upperband[-2]) and (indicator.data_array[-1] < bands_2dev.upperband[-1]):
             is_falling = True
+            rule_used = "price crossing down upperband 2"
 
         else:
             is_falling = False
@@ -174,7 +180,7 @@ def application():
                         if new_order.set_details():
                             position.set_position()
                             print("order sent: ", new_order.details)
-                            print("with")
+                            print("with", rule_used)
 
                         else:
                             print("opening position details: ", new_trade)
@@ -200,7 +206,7 @@ def application():
             if (new_ticker == new_order.get_key("product_id")) and (float(new_request['hist']) < 0.0):
                 ready_to_trade = True
 
-            elif (is_falling or is_top) and (is_bottom is False):
+            elif is_falling and is_bottom is False:
                 ready_to_trade = True
 
             else:
@@ -220,6 +226,7 @@ def application():
 
                     if new_order.set_details():
                         print("order sent " + new_order.get_key('product_id'))
+                        print("with", rule_used)
                         funds.capital = float(new_order.get_key('executed_value'))
                         position.set_position()
 
