@@ -240,7 +240,7 @@ def application():
                 ready_to_trade = False
 
             #Triggers a sell order if a rule is met:
-            if ready_to_trade and (time.time() > (float(new_order.get_key("done_at")) + 900.0)):
+            if ready_to_trade and (time.time() > (get_unix(new_order.get_key("done_at")) + 900.0)):
 
                 new_trade = client.place_market_order(product_id=new_order.get_key("product_id"), side='sell',
                                                       size=get_size(new_order.get_key("product_id"), new_order.get_key('filled_size')))
