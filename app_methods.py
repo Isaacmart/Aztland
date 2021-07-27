@@ -4,6 +4,7 @@ from datetime import datetime
 import time
 import math
 from dict import new_dict
+from dateutil import parser
 
 
 #multiple methods used throughout the program
@@ -84,6 +85,13 @@ def get_size(ticker, size):
         new_size = size
 
     return new_size
+
+
+def get_unix(a_date):
+
+    parsed_t = parser.parse(a_date)
+
+    return parsed_t.timestamp()
 
 
 

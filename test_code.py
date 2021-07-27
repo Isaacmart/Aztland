@@ -1,10 +1,26 @@
-is_falling = False
-is_top = False
+from dateutil import parser
+from cbpro import AuthenticatedClient
+import Data
+from app_methods import *
+import time
+t = "1984-06-02T19:05:00.000Z"
+new_id = "fb2c32da-3c0d-47aa-923a-7b04a757b1a6"
 
-if (is_top and is_falling) is False:
+key = Data.API_Public_Key
+b64secret = Data.API_Secret_Key
+passphrase = Data.Passphrase
+
+
+client = AuthenticatedClient(key, b64secret, passphrase)
+
+
+new_trade = client.get_order(new_id)
+
+unix_time = get_unix(new_trade['done_at'])
+
+
+if time.time() > (get_unix(new_trade['done_at']) + 900):
     print(True)
-
 else:
-    print(False)
-
-
+    print(unix_time + 900)
+    print(time.time())
