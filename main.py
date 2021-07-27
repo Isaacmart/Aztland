@@ -119,9 +119,13 @@ def application():
             is_raising = True
             raising_rule = "price > uppperband 1, macd increasing"
 
-        elif bands_1dev.upperband[-1] > indicator.data_array[-1] > indicator.data_array[-2] > ema_12p.real[-2]:
+        elif bands_1dev.upperband[-1] > indicator.data_array[-1] > indicator.data_array[-2] > float(indicator.candles[1][3]) > ema_12p.real[-2]:
             is_raising = True
             raising_rule = "price > 12 ema"
+
+        elif indicator.data_array[-1] < bands_1dev.lowerband[-1] and 0 > macd_15m.hist[-1] > macd_15m[-2]:
+            is_raising = True
+            raising_rule = "macd raising less than 0"
 
         else:
             is_raising = False
@@ -158,6 +162,14 @@ def application():
         elif bands_1dev.upperband[-1] < indicator.data_array[-1] < bands_2dev.upperband[-1] < float(indicator.candles[0][3]):
             is_falling = True
             falling_rule = "close price < open price over upperband 1"
+
+        elif bands_1dev.upperband[-1] > indicator.data_array[-1] > ema_12p.real[-1] and indicator.data_array[-2] > bands_1dev.upperband[-2]:
+            is_falling = True
+            falling_rule = "failed to cross upperband1"
+
+        elif ema_12p.real[-1] < ema_12p.real[-2] < ema_12p.real[-3] and 0 > macd_15m.macd[-3] > macd_15m.macd[-2] > macd_15m.macd[-2] and 0 > macd_15m.hist[-1] > macd_15m.hist[-2] >  macd_15m.hist[-3]:
+            is_falling = True
+            falling_rule = "constantly falling"
 
         else:
             is_falling = False
@@ -221,7 +233,7 @@ def application():
             #if (new_ticker == new_order.get_key("product_id")) and (float(new_request['hist']) < 0.0):
                 #ready_to_trade = True
 
-            if is_falling and is_bottom is False:
+            if (is_falling or is_top) and ((is_bottom and is_raising) is False):
                 ready_to_trade = True
 
             else:
