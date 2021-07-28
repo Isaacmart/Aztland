@@ -123,7 +123,7 @@ def application():
             is_raising = True
             raising_rule = "price > 12 ema"
 
-        elif indicator.data_array[-1] < bands_1dev.lowerband[-1] and 0 > macd_15m.hist[-1] > macd_15m.hist[-2]:
+        elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (0 > macd_15m.hist[-1] > macd_15m.hist[-2]):
             is_raising = True
             raising_rule = "macd raising less than 0"
 
@@ -163,11 +163,11 @@ def application():
             is_falling = True
             falling_rule = "close price < open price over upperband 1"
 
-        elif bands_1dev.upperband[-1] > indicator.data_array[-1] > ema_12p.real[-1] and indicator.data_array[-2] > bands_1dev.upperband[-2]:
+        elif (bands_1dev.upperband[-1] > indicator.data_array[-1] > ema_12p.real[-1]) and (indicator.data_array[-2] > bands_1dev.upperband[-2]):
             is_falling = True
             falling_rule = "failed to cross upperband1"
 
-        elif ema_12p.real[-1] < ema_12p.real[-2] < ema_12p.real[-3] and 0 > macd_15m.macd[-3] > macd_15m.macd[-2] > macd_15m.macd[-2] and 0 > macd_15m.hist[-1] > macd_15m.hist[-2] >  macd_15m.hist[-3]:
+        elif (ema_12p.real[-1] < ema_12p.real[-2] < ema_12p.real[-3]) and (0 > macd_15m.macd[-3] > macd_15m.macd[-2] > macd_15m.macd[-2]) and (0 > macd_15m.hist[-1] > macd_15m.hist[-2] > macd_15m.hist[-3]):
             is_falling = True
             falling_rule = "constantly falling"
 
