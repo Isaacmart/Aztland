@@ -2,7 +2,13 @@ import backtrader
 
 cerebro = backtrader.Cerebro()
 
-cerebro.broker.set_cash(10000)
-print("starting portofolio value: %.2f" % cerebro.broker.get_value())
+data = backtrader.feeds.GenericCSVData(
+    dataname="data/CB_stocks_NKNUSD.csv",
+    nullvalue=0.0,
+    dtformat=2,
+    openinterest=-1
+)
 
-cerebro.run()
+cerebro.adddata(data)
+
+

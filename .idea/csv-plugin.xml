@@ -73,6 +73,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/data/CB_stocks_NKNUSD.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/dict.py">
           <value>
             <Attribute>

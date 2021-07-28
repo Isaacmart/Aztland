@@ -123,7 +123,7 @@ def application():
             is_raising = True
             raising_rule = "price > 12 ema"
 
-        elif indicator.data_array[-1] < bands_1dev.lowerband[-1] and 0 > macd_15m.hist[-1] > macd_15m[-2]:
+        elif indicator.data_array[-1] < bands_1dev.lowerband[-1] and 0 > macd_15m.hist[-1] > macd_15m.hist[-2]:
             is_raising = True
             raising_rule = "macd raising less than 0"
 
