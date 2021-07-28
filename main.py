@@ -183,7 +183,7 @@ def application():
                 ready_to_trade: bool
 
                 # Rules to make ready_to_trade True
-                if (is_bottom or is_raising) and ((is_top and is_falling) is False):
+                if is_bottom and ((is_top and is_falling) is False):
 
                     ready_to_trade = True
 
