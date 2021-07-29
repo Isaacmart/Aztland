@@ -2,7 +2,8 @@ from flask import Flask, request, abort, render_template
 from open_position import OpenPosition
 from order import Order
 from capital import Capital
-from cbpro.authenticated_client import AuthenticatedClient
+from cbpro import AuthenticatedClient
+from cbpro import PublicClient
 from dict import new_dict
 from indicators import *
 from app_methods import *
@@ -52,8 +53,6 @@ def application():
         bands_1dev = BB(client=pclient, ndbevup=1, nbdevdn=1)
         rsi_5m = RSI(client=pclient)
         ema_12p = EMA(client=pclient)
-
-        print(data)
 
         try:
             indicator.get_data_set()
