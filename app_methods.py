@@ -46,7 +46,7 @@ def get_capital(account_id, client):
 
     capital = float(data['available'])
 
-    return int(capital)
+    return "%.2f" % capital
 
 
 def get_callback(weight=True, period=0, granularity=0):

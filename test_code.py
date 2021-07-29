@@ -1,6 +1,3 @@
+from app_methods import *
 
-
-if 7 > 6 > 5:
-    print(True)
-else:
-    print(False)
+capital = get_capital()

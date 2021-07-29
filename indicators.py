@@ -20,7 +20,7 @@ class Indicator:
 
     def set_candles(self, product, callback, begin, granularity):
         self.candles = self.new_client.get_product_historic_rates(product_id=product,
-                                                                 start=callback, end=begin, granularity=granularity)
+                                                                  start=callback, end=begin, granularity=granularity)
 
         return self.candles
 
@@ -140,10 +140,6 @@ m15_macd.reverse_data()
 m15_macd.get_MACD()
 print(m15_macd.hist[-1])
 '''
-
-
-
-
 
 
 

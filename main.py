@@ -46,20 +46,22 @@ def application():
         else:
             indicator.set_candles(product=new_order.get_key("product_id"), callback=get_time(27976), begin=get_time(0), granularity=300)
 
-        macd_15m = MACD(client=pclient)
+        macd_5m = MACD(client=pclient)
         volume_15m = VolSMA(client=pclient, timeperiod=20)
         bands_2dev = BB(client=pclient)
         bands_1dev = BB(client=pclient, ndbevup=1, nbdevdn=1)
-        rsi_15m = RSI(client=pclient)
+        rsi_5m = RSI(client=pclient)
         ema_12p = EMA(client=pclient)
+
+        print(indicator.data_array[-1])
 
         try:
             indicator.get_data_set()
             indicator.reverse_data()
             indicator.get_np_array()
 
-            macd_15m.np_array = indicator.np_array
-            macd_15m.get_MACD()
+            macd_5m.np_array = indicator.np_array
+            macd_5m.get_MACD()
 
             bands_2dev.np_array = indicator.np_array
             bands_2dev.get_BB()
@@ -67,8 +69,8 @@ def application():
             bands_1dev.np_array = indicator.np_array
             bands_1dev.get_BB()
 
-            rsi_15m.np_array = indicator.np_array
-            rsi_15m.get_RSI()
+            rsi_5m.np_array = indicator.np_array
+            rsi_5m.get_RSI()
 
             ema_12p.np_array = indicator.np_array
             ema_12p.get_EMA()
@@ -87,23 +89,23 @@ def application():
         is_bottom: bool
         bottom_rule_used: str
 
-        if (indicator.data_array[-1] < bands_2dev.lowerband[-1]) and (0 > macd_15m.hist[-1] > macd_15m.hist[-2]):
+        if (indicator.data_array[-1] < bands_2dev.lowerband[-1]) and (0 > macd_5m.hist[-1] > macd_5m.hist[-2]):
             is_bottom = False
             bottom_rule_used = "price < lowerband 2, hist increasing"
 
-        elif (bands_2dev.lowerband[-1] < indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (0 > macd_15m.macd[-1] > macd_15m.macd[-2]):
+        elif (bands_2dev.lowerband[-1] < indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (0 > macd_5m.macd[-1] > macd_5m.macd[-2]):
             is_bottom = True
             bottom_rule_used = "lowerband 2 < price < lowerband 1, macd increasing"
 
-        elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (0 < macd_15m.hist[-2] < macd_15m.hist[-1]):
+        elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (0 < macd_5m.hist[-2] < macd_5m.hist[-1]):
             is_bottom = True
             bottom_rule_used = "price < lowerband 1, macd hist increasing"
 
-        elif (rsi_15m.real[-1] < 50) and (macd_15m.macd[-1] > macd_15m.macd[-2]) and (indicator.data_array[-1] < ema_12p.real[-1]):
+        elif (rsi_5m.real[-1] < 50) and (macd_5m.macd[-1] > macd_5m.macd[-2]) and (indicator.data_array[-1] < ema_12p.real[-1]):
             is_bottom = True
             bottom_rule_used = "rsi < 50, mcad increasing"
 
-        elif rsi_15m.real[-1] < 30:
+        elif rsi_5m.real[-1] < 30:
             is_bottom = True
             bottom_rule_used = "rsi incresing but less than 30"
 
@@ -115,11 +117,11 @@ def application():
         is_raising: bool
         raising_rule: str
 
-        if (indicator.data_array[-1] > bands_1dev.upperband[-1]) and (macd_15m.macd[-1] > macd_15m.macd[-2] > 0) and (volume_15m.real[-1] > volume_15m.real[-2]):
+        if (indicator.data_array[-1] > bands_1dev.upperband[-1]) and (macd_5m.macd[-1] > macd_5m.macd[-2] > 0) and (volume_15m.real[-1] > volume_15m.real[-2]):
             is_raising = True
             raising_rule = "price > uppperband 1, macd increasing"
 
-        elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (macd_15m.hist[-1] > macd_15m.hist[-2]) and (rsi_15m.real[-1] > rsi_15m.real[-2]):
+        elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (macd_5m.hist[-1] > macd_5m.hist[-2]) and (rsi_5m.real[-1] > rsi_5m.real[-2]):
             is_raising = True
             raising_rule = "macd raising less than 0"
 
@@ -130,7 +132,7 @@ def application():
         #Assert if a stock is at the top
         is_top: bool
         top_rule: str
-        if (indicator.data_array[-1] > bands_2dev.upperband[-1]) and (rsi_15m.data_array[-1] > 70):
+        if (indicator.data_array[-1] > bands_2dev.upperband[-1]) and (rsi_5m.data_array[-1] > 70):
             is_top = True
             top_rule = "price > upperband 2"
 
@@ -158,7 +160,7 @@ def application():
             is_falling = True
             falling_rule = "failed to cross upperband1"
 
-        elif (ema_12p.real[-1] < ema_12p.real[-2] < ema_12p.real[-3]) and (0 > macd_15m.macd[-3] > macd_15m.macd[-2] > macd_15m.macd[-2]) and (0 > macd_15m.hist[-1] > macd_15m.hist[-2] > macd_15m.hist[-3]):
+        elif (ema_12p.real[-1] < ema_12p.real[-2] < ema_12p.real[-3]) and (0 > macd_5m.macd[-3] > macd_5m.macd[-2] > macd_5m.macd[-2]) and (0 > macd_5m.hist[-1] > macd_5m.hist[-2] > macd_5m.hist[-3]):
             is_falling = True
             falling_rule = "constantly falling"
 
