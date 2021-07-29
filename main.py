@@ -41,10 +41,10 @@ def application():
 
         if position.get_position() is False:
 
-            indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
+            data = indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
 
         else:
-            indicator.set_candles(product=new_order.get_key("product_id"), callback=get_time(27976), begin=get_time(0), granularity=300)
+            data = indicator.set_candles(product=new_order.get_key("product_id"), callback=get_time(27976), begin=get_time(0), granularity=300)
 
         macd_5m = MACD(client=pclient)
         volume_15m = VolSMA(client=pclient, timeperiod=20)
@@ -53,7 +53,7 @@ def application():
         rsi_5m = RSI(client=pclient)
         ema_12p = EMA(client=pclient)
 
-        print(indicator.data_array[-1])
+        print(data)
 
         try:
             indicator.get_data_set()
