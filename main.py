@@ -59,34 +59,30 @@ def application():
         rsi_5m = RSI()
         ema_12p = EMA()
 
-        try:
+        macd_5m.np_array = indicator.np_array
+        macd_5m.get_MACD()
 
-            macd_5m.np_array = indicator.np_array
-            macd_5m.get_MACD()
+        bands_2dev.np_array = indicator.np_array
+        bands_2dev.get_BB()
 
-            bands_2dev.np_array = indicator.np_array
-            bands_2dev.get_BB()
+        bands_1dev.np_array = indicator.np_array
+        bands_1dev.get_BB()
 
-            bands_1dev.np_array = indicator.np_array
-            bands_1dev.get_BB()
+        rsi_5m.np_array = indicator.np_array
+        rsi_5m.get_RSI()
 
-            rsi_5m.np_array = indicator.np_array
-            rsi_5m.get_RSI()
+        ema_12p.np_array = indicator.np_array
+        ema_12p.get_EMA()
 
-            ema_12p.np_array = indicator.np_array
-            ema_12p.get_EMA()
+        volume_15m.candles = indicator.candles
+        volume_15m.get_data_set()
+        volume_15m.reverse_data()
+        volume_15m.get_np_array()
+        volume_15m.get_volume()
 
-            volume_15m.candles = indicator.candles
-            volume_15m.get_data_set()
-            volume_15m.reverse_data()
-            volume_15m.get_np_array()
-            volume_15m.get_volume()
-
-        except Exception as e:
-            print(e)
-            print(new_ticker)
-            print(new_order.get_key("product_id"))
-            print(indicator.np_array)
+        print(new_ticker)
+        print(new_order.get_key("product_id"))
+        print(indicator.np_array)
 
         #Asserts stock is at a bottom
         is_bottom: bool
