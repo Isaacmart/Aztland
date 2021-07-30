@@ -84,6 +84,7 @@ def application():
 
         except Exception as e:
             print(e)
+            print(indicator.data_array[-1])
 
         #Asserts stock is at a bottom
         is_bottom: bool
