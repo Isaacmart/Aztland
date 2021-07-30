@@ -1,10 +1,8 @@
-from cbpro import PublicClient
-from indicators import *
-from app_methods import *
+f = True
+b = False
 
-client = PublicClient()
+if b is False and f is False:
+    print(True)
 
-indicator = Indicator()
-indicator.initiate_client(client)
-data = indicator.set_candles(product='ETH-USD', callback=get_time(27976), begin=get_time(0), granularity=300)
-print(data)
+else:
+    print(False)

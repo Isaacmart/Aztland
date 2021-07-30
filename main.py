@@ -101,9 +101,9 @@ def application():
             is_bottom = True
             bottom_rule_used = "price < lowerband 1, macd hist increasing"
 
-        elif (rsi_5m.real[-1] < 50) and (macd_5m.macd[-1] > macd_5m.macd[-2]) and (indicator.data_array[-1] < ema_12p.real[-1]):
+        elif (rsi_5m.real[-1] < 40) and (macd_5m.macd[-1] > macd_5m.macd[-2]) and (indicator.data_array[-1] < ema_12p.real[-1]):
             is_bottom = True
-            bottom_rule_used = "rsi < 50, mcad increasing"
+            bottom_rule_used = "rsi < 40, mcad increasing"
 
         elif rsi_5m.real[-1] < 30:
             is_bottom = True
@@ -117,7 +117,7 @@ def application():
         is_raising: bool
         raising_rule: str
 
-        if (indicator.data_array[-1] > bands_1dev.upperband[-1]) and (macd_5m.macd[-1] > macd_5m.macd[-2] > 0) and (volume_15m.real[-1] > volume_15m.real[-2]):
+        if (indicator.data_array[-1] > bands_1dev.upperband[-1]) and (macd_5m.macd[-1] > macd_5m.macd[-2] > 0) and (volume_15m.data_array[-1] > volume_15m.real[-1]):
             is_raising = True
             raising_rule = "price > uppperband 1, macd increasing"
 
@@ -176,7 +176,7 @@ def application():
                 ready_to_trade: bool
 
                 # Rules to make ready_to_trade True
-                if is_bottom and ((is_top and is_falling) is False):
+                if (is_bottom or is_raising) and ((is_top is False) and (is_falling is False)):
 
                     ready_to_trade = True
 
@@ -226,7 +226,7 @@ def application():
             #if (new_ticker == new_order.get_key("product_id")) and (float(new_request['hist']) < 0.0):
                 #ready_to_trade = True
 
-            if (is_falling or is_top) and ((is_bottom and is_raising) is False):
+            if (is_falling or is_top) and ((is_bottom is False) and (is_raising is False)):
                 ready_to_trade = True
 
             else:
