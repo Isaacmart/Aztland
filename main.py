@@ -84,7 +84,9 @@ def application():
 
         except Exception as e:
             print(e)
-            print(indicator.data_array[-1])
+            print(new_ticker)
+            print(new_order.get_key("product_id"))
+            print(indicator.np_array)
 
         #Asserts stock is at a bottom
         is_bottom: bool
