@@ -10,17 +10,19 @@ class Indicator:
     Index 4 will create a list with close price values
     Gets a initialized PublicClient as parameter
     '''
-    def __init__(self, client=PublicClient, index=4, weight=True):
-        self.new_client = client
+    def __init__(self, index=4, weight=True):
+        self.new_client = PublicClient
         self.candles = []
         self.data_array = []
         self.np_array = []
         self.index = index
         self.weight = weight
 
+    def initiate_client(self, client=PublicClient):
+        self.new_client = client
+
     def set_candles(self, product, callback, begin, granularity):
-        self.candles = self.new_client.get_product_historic_rates(product_id=product,
-                                                                  start=callback, end=begin, granularity=granularity)
+        self.candles = self.new_client.get_product_historic_rates(product_id=product, start=callback, end=begin, granularity=granularity)
 
         return self.candles
 
@@ -45,8 +47,8 @@ class Indicator:
 
 class MACD(Indicator):
 
-    def __init__(self, client=PublicClient, fastperiod=12, slowperiod=26, signalperiod=9):
-        super(MACD, self).__init__(client=client)
+    def __init__(self, fastperiod=12, slowperiod=26, signalperiod=9):
+        super(MACD, self).__init__()
         self.macd = []
         self.hist = []
         self.signal = []
@@ -56,14 +58,13 @@ class MACD(Indicator):
 
     def get_MACD(self):
 
-        self.macd, self.signal, self.hist = talib.MACD(real=self.np_array, fastperiod=self.fast_period,
-                                                          slowperiod=self.slow_period, signalperiod=self.signal_period)
+        self.macd, self.signal, self.hist = talib.MACD(real=self.np_array, fastperiod=self.fast_period, slowperiod=self.slow_period, signalperiod=self.signal_period)
 
 
 class BB(Indicator):
 
-    def __init__(self, client=PublicClient, timeperiod=5, ndbevup=2, nbdevdn=2, matype=0, index=4, weight=False):
-        super(BB, self).__init__(client=client, index=index, weight=weight)
+    def __init__(self, timeperiod=5, ndbevup=2, nbdevdn=2, matype=0, index=4, weight=False):
+        super(BB, self).__init__(index=index, weight=weight)
         self.upperband = []
         self.middleband = []
         self.lowerband = []
@@ -74,16 +75,14 @@ class BB(Indicator):
 
     def get_BB(self):
 
-        self.upperband, self.middleband, self.lowerband = talib.BBANDS(real=self.np_array, timeperiod=self.timeperiod,
-                                                                       nbdevup=self.ndbevup, nbdevdn=self.nbdevdn,
-                                                                       matype=self.matye)
+        self.upperband, self.middleband, self.lowerband = talib.BBANDS(real=self.np_array, timeperiod=self.timeperiod, nbdevup=self.ndbevup, nbdevdn=self.nbdevdn, matype=self.matye)
 
 
 class VolSMA(Indicator):
 
     '''index = 5 will create an array with volume values'''
-    def __init__(self, client=PublicClient, timeperiod=30, index=5, weight=False):
-        super(VolSMA, self).__init__(client=client, index=index, weight=weight)
+    def __init__(self, timeperiod=30, index=5, weight=False):
+        super(VolSMA, self).__init__(index=index, weight=weight)
         self.timeperiod = timeperiod
         self.real = []
 
@@ -95,8 +94,8 @@ class VolSMA(Indicator):
 
 class RSI(Indicator):
 
-    def __init__(self, client=PublicClient, timeperiod=14, index=4, weight=False):
-        super(RSI, self).__init__(client=client, index=index, weight=weight)
+    def __init__(self, timeperiod=14, index=4, weight=False):
+        super(RSI, self).__init__(index=index, weight=weight)
         self.timperiod = timeperiod
         self.real = []
 
@@ -107,8 +106,8 @@ class RSI(Indicator):
 
 class EMA(Indicator):
 
-    def __init__(self, client=PublicClient, time_period=12, index=4):
-        super(EMA, self).__init__(client=client, index=index)
+    def __init__(self, time_period=12, index=4):
+        super(EMA, self).__init__(index=index)
         self.timeperiod = time_period
         self.real = []
 

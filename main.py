@@ -22,8 +22,10 @@ def application():
 
         new_request = request.get_json(force=True)
 
+        # ticker converted into a Coinbase product id
+        new_ticker = get_key('ticker', new_request)
+
         client = AuthenticatedClient(key, b64secret, passphrase)
-        pclient = PublicClient()
 
         new_order = Order(client)
         new_order.get_id()
@@ -35,29 +37,29 @@ def application():
         funds = Capital(client)
         funds.set_capital()
 
-        #ticker converted into a Coinbase product id
-        new_ticker = get_key('ticker', new_request)
+        p_client = PublicClient()
+        indicator = Indicator()
+        indicator.initiate_client(p_client)
 
-        indicator = Indicator(client=pclient)
+        if position.get_position():
 
-        if position.get_position() is False:
-
-            data = indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
+            indicator.set_candles(product=new_order.get_key("product_id"), callback=get_time(27976), begin=get_time(0), granularity=300)
 
         else:
-            data = indicator.set_candles(product=new_order.get_key("product_id"), callback=get_time(27976), begin=get_time(0), granularity=300)
+            indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
 
-        macd_5m = MACD(client=pclient)
-        volume_15m = VolSMA(client=pclient, timeperiod=20)
-        bands_2dev = BB(client=pclient)
-        bands_1dev = BB(client=pclient, ndbevup=1, nbdevdn=1)
-        rsi_5m = RSI(client=pclient)
-        ema_12p = EMA(client=pclient)
+        indicator.get_data_set()
+        indicator.reverse_data()
+        indicator.get_np_array()
+
+        macd_5m = MACD()
+        volume_15m = VolSMA(timeperiod=20)
+        bands_2dev = BB()
+        bands_1dev = BB(ndbevup=1, nbdevdn=1)
+        rsi_5m = RSI()
+        ema_12p = EMA()
 
         try:
-            indicator.get_data_set()
-            indicator.reverse_data()
-            indicator.get_np_array()
 
             macd_5m.np_array = indicator.np_array
             macd_5m.get_MACD()
@@ -82,7 +84,6 @@ def application():
 
         except Exception as e:
             print(e)
-            pass
 
         #Asserts stock is at a bottom
         is_bottom: bool
@@ -131,7 +132,7 @@ def application():
         #Assert if a stock is at the top
         is_top: bool
         top_rule: str
-        if (indicator.data_array[-1] > bands_2dev.upperband[-1]) and (rsi_5m.data_array[-1] > 70):
+        if (indicator.data_array[-1] > bands_2dev.upperband[-1]) and (rsi_5m.real[-1] > 70):
             is_top = True
             top_rule = "price > upperband 2"
 
@@ -183,7 +184,7 @@ def application():
                     ready_to_trade = False
 
                 #Will trigger a buy order if a rule is True
-                if ready_to_trade is True:
+                if ready_to_trade:
 
                     new_trade = client.place_market_order(product_id=new_ticker, side="buy", funds=funds.get_capital())
 
