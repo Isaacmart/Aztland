@@ -1,4 +1,4 @@
-from cbpro import PublicClient
+from cbpro.public_client import PublicClient
 from indicators import *
 
 p_client = PublicClient()
