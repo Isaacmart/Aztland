@@ -53,7 +53,7 @@ def application():
         indicator.get_np_array()
 
         macd_5m = MACD()
-        volume_15m = VolSMA(timeperiod=20)
+        volume_5m = VolSMA(timeperiod=20)
         bands_2dev = BB()
         bands_1dev = BB(ndbevup=1, nbdevdn=1)
         rsi_5m = RSI()
@@ -74,11 +74,11 @@ def application():
         ema_12p.np_array = indicator.np_array
         ema_12p.get_EMA()
 
-        volume_15m.candles = indicator.candles
-        volume_15m.get_data_set()
-        volume_15m.reverse_data()
-        volume_15m.get_np_array()
-        volume_15m.get_volume()
+        volume_5m.candles = indicator.candles
+        volume_5m.get_data_set()
+        volume_5m.reverse_data()
+        volume_5m.get_np_array()
+        volume_5m.get_volume()
 
         print(new_ticker)
         print(new_order.get_key("product_id"))
@@ -116,7 +116,7 @@ def application():
         is_raising: bool
         raising_rule: str
 
-        if (indicator.data_array[-1] > bands_1dev.upperband[-1]) and (macd_5m.macd[-1] > macd_5m.macd[-2] > 0) and (volume_15m.data_array[-1] > volume_15m.real[-1]):
+        if (indicator.data_array[-1] > bands_1dev.upperband[-1]) and (macd_5m.macd[-1] > macd_5m.macd[-2] > 0) and (volume_5m.data_array[-1] > volume_5m.real[-1]):
             is_raising = True
             raising_rule = "price > uppperband 1, macd increasing"
 
@@ -209,6 +209,10 @@ def application():
                         pass
 
                 else:
+                    print(top_rule)
+                    print(bottom_rule_used)
+                    print(raising_rule)
+                    print(falling_rule)
                     # Does nothing if both statements are False
                     pass
 
