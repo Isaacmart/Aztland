@@ -23,6 +23,7 @@ def application():
 
             # ticker converted into a Coinbase product id
             new_ticker = get_ticker('ticker', new_request)
+            print(new_ticker)
 
         opening = 0
         close = 0
