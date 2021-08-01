@@ -259,7 +259,7 @@ def application():
 
                             print("order sent: ", new_order.details)
                             print("with: ")
-                            print(top_rule + ", " + bottom_rule_used + ", " + raising_rule + ", " + falling_rule)
+                            print(str(top_rule) + ", " + str(bottom_rule_used) + ", " + str(raising_rule) + ", " + str(falling_rule))
 
                         else:
                             print("opening position details: ", new_trade)
@@ -268,7 +268,7 @@ def application():
                         pass
 
                 else:
-                    print(top_rule + ", " + bottom_rule_used + ", " + raising_rule + ", " + falling_rule)
+                    print(str(top_rule) + ", " + str(bottom_rule_used) + ", " + str(raising_rule) + ", " + str(falling_rule))
                     # Does nothing if both statements are False
                     pass
 
@@ -319,7 +319,7 @@ def application():
 
             #Not rules were true
             else:
-                print(top_rule + ", " + bottom_rule_used + ", " + raising_rule + ", " + falling_rule)
+                print(str(top_rule) + ", " + str(bottom_rule_used) + ", " + str(raising_rule) + ", " + str(falling_rule))
                 pass
 
         # If there is a long position but the ticker is not the same as the order's
