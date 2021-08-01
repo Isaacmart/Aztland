@@ -34,7 +34,7 @@ ips used by TradingView
   
   "exchange": "{{exchange}}", 
   "ticker": "{{ticker}}", 
-  "opening_price:" "{{open}}", 
+  "opening_price": "{{open}}",
   "closing_price": "{{close}}", 
   "volume": "{{volume}}", 
   "hist": "{{plot_0}}",

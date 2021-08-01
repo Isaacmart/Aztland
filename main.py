@@ -20,12 +20,10 @@ def application():
 
         new_ticker = None
 
-        print(new_request)
         if "ticker" in new_request:
 
             # ticker converted into a Coinbase product id
             new_ticker = get_ticker('ticker', new_request)
-            print(new_ticker)
 
         opening = 0
         close = 0
