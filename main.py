@@ -259,10 +259,7 @@ def application():
 
                             print("order sent: ", new_order.details)
                             print("with: ")
-                            print(top_rule)
-                            print(bottom_rule_used)
-                            print(raising_rule)
-                            print(falling_rule)
+                            print(top_rule + ", " + bottom_rule_used + ", " + raising_rule + ", " + falling_rule)
 
                         else:
                             print("opening position details: ", new_trade)
@@ -271,10 +268,7 @@ def application():
                         pass
 
                 else:
-                    print(top_rule)
-                    print(bottom_rule_used)
-                    print(raising_rule)
-                    print(falling_rule)
+                    print(top_rule + ", " + bottom_rule_used + ", " + raising_rule + ", " + falling_rule)
                     # Does nothing if both statements are False
                     pass
 
@@ -312,10 +306,7 @@ def application():
                     if new_order.set_details():
                         print("order sent " + new_order.get_key('product_id'))
                         print("with: ")
-                        print(top_rule)
-                        print(bottom_rule_used)
-                        print(raising_rule)
-                        print(falling_rule)
+                        print(top_rule + ", " + bottom_rule_used + ", " + raising_rule + ", " + falling_rule)
 
                         funds.capital = float(new_order.get_key('executed_value'))
                         position.set_position()
@@ -328,6 +319,7 @@ def application():
 
             #Not rules were true
             else:
+                print(top_rule + ", " + bottom_rule_used + ", " + raising_rule + ", " + falling_rule)
                 pass
 
         # If there is a long position but the ticker is not the same as the order's
