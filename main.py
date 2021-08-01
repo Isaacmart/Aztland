@@ -19,6 +19,8 @@ def application():
         new_request = request.get_json(force=True)
 
         new_ticker = None
+
+        print(get_ticker('ticker', new_request))
         if "ticker" in new_request:
 
             # ticker converted into a Coinbase product id
