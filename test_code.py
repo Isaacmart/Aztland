@@ -1,4 +1,7 @@
-import time
-from app_methods import *
 
-print(last_instance())
+
+if 0.333333 >= 0.333332:
+    print(True)
+
+else:
+    print(False)

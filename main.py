@@ -57,8 +57,8 @@ def application():
             try:
                 indicator.set_candles(product=new_order.get_key("product_id"), callback=get_time(27976), begin=get_time(0), granularity=300)
 
-            except Exception as e:
-                print(e)
+            except ValueError:
+                print(indicator.candles)
                 #wait to make another request
                 pass
 
@@ -66,13 +66,13 @@ def application():
             writer.write(str(time.time()))
             writer.close()
 
-        elif close > opening:
+        elif (close > 0 and opening > 0) and (close >= opening):
 
             try:
                 indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
 
-            except Exception as e:
-                print(e)
+            except ValueError:
+                print(indicator.candles)
                 #wait to make another request
                 pass
 
@@ -89,30 +89,35 @@ def application():
 
         if len(indicator.candles) > 0:
 
-            indicator.get_data_set()
-            indicator.reverse_data()
-            indicator.get_np_array()
+            try:
+                indicator.get_data_set()
+                indicator.reverse_data()
+                indicator.get_np_array()
 
-            macd_5m.np_array = indicator.np_array
-            macd_5m.get_MACD()
+                macd_5m.np_array = indicator.np_array
+                macd_5m.get_MACD()
 
-            bands_2dev.np_array = indicator.np_array
-            bands_2dev.get_BB()
+                bands_2dev.np_array = indicator.np_array
+                bands_2dev.get_BB()
 
-            bands_1dev.np_array = indicator.np_array
-            bands_1dev.get_BB()
+                bands_1dev.np_array = indicator.np_array
+                bands_1dev.get_BB()
 
-            rsi_5m.np_array = indicator.np_array
-            rsi_5m.get_RSI()
+                rsi_5m.np_array = indicator.np_array
+                rsi_5m.get_RSI()
 
-            ema_12p.np_array = indicator.np_array
-            ema_12p.get_EMA()
+                ema_12p.np_array = indicator.np_array
+                ema_12p.get_EMA()
 
-            volume_5m.candles = indicator.candles
-            volume_5m.get_data_set()
-            volume_5m.reverse_data()
-            volume_5m.get_np_array()
-            volume_5m.get_volume()
+                volume_5m.candles = indicator.candles
+                volume_5m.get_data_set()
+                volume_5m.reverse_data()
+                volume_5m.get_np_array()
+                volume_5m.get_volume()
+
+            except Exception as e:
+                print(e)
+                pass
 
         else:
             #try setting candles again
@@ -145,18 +150,15 @@ def application():
                     is_bottom = False
                     bottom_rule_used = "price < lowerband 2, hist increasing"
 
-                elif (bands_2dev.lowerband[-1] < indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (
-                        0 > macd_5m.macd[-1] > macd_5m.macd[-2]):
+                elif (bands_2dev.lowerband[-1] < indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (0 > macd_5m.macd[-1] > macd_5m.macd[-2]):
                     is_bottom = True
                     bottom_rule_used = "lowerband 2 < price < lowerband 1, macd increasing"
 
-                elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (
-                        0 < macd_5m.hist[-2] < macd_5m.hist[-1]):
+                elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (0 < macd_5m.hist[-2] < macd_5m.hist[-1]):
                     is_bottom = True
                     bottom_rule_used = "price < lowerband 1, macd hist increasing"
 
-                elif (rsi_5m.real[-1] < 40) and (macd_5m.macd[-1] > macd_5m.macd[-2]) and (
-                        indicator.data_array[-1] < ema_12p.real[-1]):
+                elif (rsi_5m.real[-1] < 40) and (macd_5m.macd[-1] > macd_5m.macd[-2]) and (indicator.data_array[-1] < ema_12p.real[-1]):
                     is_bottom = True
                     bottom_rule_used = "rsi < 40, mcad increasing"
 
@@ -169,15 +171,11 @@ def application():
                     bottom_rule_used = "no at bottom"
 
                 # Assert is a stock is raising
-                if (indicator.data_array[-1] > bands_1dev.upperband[-1]) and (
-                        macd_5m.macd[-1] > macd_5m.macd[-2] > 0) and (
-                        volume_5m.data_array[-1] > volume_5m.real[-1]):
+                if (indicator.data_array[-1] > bands_1dev.upperband[-1]) and (macd_5m.macd[-1] > macd_5m.macd[-2] > 0) and (volume_5m.data_array[-1] > volume_5m.real[-1]):
                     is_raising = True
                     raising_rule = "price > uppperband 1, macd increasing"
 
-                elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (
-                        macd_5m.hist[-1] > macd_5m.hist[-2]) and (
-                        rsi_5m.real[-1] > rsi_5m.real[-2]):
+                elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (macd_5m.hist[-1] > macd_5m.hist[-2]) and (rsi_5m.real[-1] > rsi_5m.real[-2]):
                     is_raising = True
                     raising_rule = "macd raising less than 0"
 
@@ -195,29 +193,23 @@ def application():
                     top_rule = "Not at top"
 
                 # Assert is stock is falling from top
-                if (bands_2dev.upperband[-2] > indicator.data_array[-2] > bands_1dev.upperband[-2]) and (
-                        indicator.data_array[-1] < bands_1dev.upperband[-1]):
+                if (bands_2dev.upperband[-2] > indicator.data_array[-2] > bands_1dev.upperband[-2]) and (indicator.data_array[-1] < bands_1dev.upperband[-1]):
                     is_falling = True
                     falling_rule = "price crossing down upperband 1"
 
-                elif (indicator.data_array[-2] > bands_2dev.upperband[-2]) and (
-                        indicator.data_array[-1] < bands_2dev.upperband[-1]):
+                elif (indicator.data_array[-2] > bands_2dev.upperband[-2]) and (indicator.data_array[-1] < bands_2dev.upperband[-1]):
                     is_falling = True
                     falling_rule = "price crossing down upperband 2"
 
-                elif bands_1dev.upperband[-1] < indicator.data_array[-1] < bands_2dev.upperband[-1] < float(
-                        indicator.candles[0][3]):
+                elif bands_1dev.upperband[-1] < indicator.data_array[-1] < bands_2dev.upperband[-1] < float(indicator.candles[0][3]):
                     is_falling = True
                     falling_rule = "close price < open price over upperband 1"
 
-                elif (bands_1dev.upperband[-1] > indicator.data_array[-1] > ema_12p.real[-1]) and (
-                        indicator.data_array[-2] > bands_1dev.upperband[-2]):
+                elif (bands_1dev.upperband[-1] > indicator.data_array[-1] > ema_12p.real[-1]) and (indicator.data_array[-2] > bands_1dev.upperband[-2]):
                     is_falling = True
                     falling_rule = "failed to cross upperband1"
 
-                elif (ema_12p.real[-1] < ema_12p.real[-2] < ema_12p.real[-3]) and (
-                        0 > macd_5m.macd[-3] > macd_5m.macd[-2] > macd_5m.macd[-2]) and (
-                        0 > macd_5m.hist[-1] > macd_5m.hist[-2] > macd_5m.hist[-3]):
+                elif (ema_12p.real[-1] < ema_12p.real[-2] < ema_12p.real[-3]) and (0 > macd_5m.macd[-3] > macd_5m.macd[-2] > macd_5m.macd[-2]) and (0 > macd_5m.hist[-1] > macd_5m.hist[-2] > macd_5m.hist[-3]):
                     is_falling = True
                     falling_rule = "constantly falling"
 
@@ -252,7 +244,13 @@ def application():
                 #Will trigger a buy order if a rule is True
                 if ready_to_trade:
 
-                    new_trade = client.place_market_order(product_id=new_ticker, side="buy", funds=funds.get_capital())
+                    new_trade = None
+
+                    try:
+                        new_trade = client.place_market_order(product_id=new_ticker, side="buy", funds=funds.get_capital())
+
+                    except Exception as e:
+                        print(e)
 
                     if "id" in new_trade:
 
@@ -308,8 +306,13 @@ def application():
             #Triggers a sell order if a rule is met:
             if ready_to_trade and (time.time() > (get_unix(new_order.get_key("done_at")) + 900.0)):
 
-                new_trade = client.place_market_order(product_id=new_order.get_key("product_id"), side='sell',
-                                                      size=get_size(new_order.get_key("product_id"), new_order.get_key('filled_size')))
+                new_trade = None
+
+                try:
+                    new_trade = client.place_market_order(product_id=new_order.get_key("product_id"), side='sell', size=get_size(new_order.get_key("product_id"), new_order.get_key('filled_size')))
+
+                except Exception as e:
+                    print(e)
 
                 if "id" in new_trade:
                     writer = open(Data.Path, "w")
@@ -349,4 +352,3 @@ def application():
 
     else:
         abort(400)
-
