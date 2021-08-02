@@ -25,6 +25,8 @@ def application():
             # ticker converted into a Coinbase product id
             new_ticker = get_ticker('ticker', new_request)
 
+        print(new_ticker)
+
         opening = 0
         close = 0
 
@@ -269,6 +271,7 @@ def application():
 
                 else:
                     print(str(top_rule) + ", " + str(bottom_rule_used) + ", " + str(raising_rule) + ", " + str(falling_rule))
+                    print(indicator.data_array[-1])
                     # Does nothing if both statements are False
                     pass
 
