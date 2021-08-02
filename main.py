@@ -136,95 +136,102 @@ def application():
 
         successful_analysis = False
 
-        try:
+        if len(volume_5m.real) > 0:
 
-            # Asserts stock is at a bottom
-            if (indicator.data_array[-1] < bands_2dev.lowerband[-1]) and (0 > macd_5m.hist[-1] > macd_5m.hist[-2]):
-                is_bottom = False
-                bottom_rule_used = "price < lowerband 2, hist increasing"
+            try:
 
-            elif (bands_2dev.lowerband[-1] < indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (
-                    0 > macd_5m.macd[-1] > macd_5m.macd[-2]):
-                is_bottom = True
-                bottom_rule_used = "lowerband 2 < price < lowerband 1, macd increasing"
+                # Asserts stock is at a bottom
+                if (indicator.data_array[-1] < bands_2dev.lowerband[-1]) and (0 > macd_5m.hist[-1] > macd_5m.hist[-2]):
+                    is_bottom = False
+                    bottom_rule_used = "price < lowerband 2, hist increasing"
 
-            elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (0 < macd_5m.hist[-2] < macd_5m.hist[-1]):
-                is_bottom = True
-                bottom_rule_used = "price < lowerband 1, macd hist increasing"
+                elif (bands_2dev.lowerband[-1] < indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (
+                        0 > macd_5m.macd[-1] > macd_5m.macd[-2]):
+                    is_bottom = True
+                    bottom_rule_used = "lowerband 2 < price < lowerband 1, macd increasing"
 
-            elif (rsi_5m.real[-1] < 40) and (macd_5m.macd[-1] > macd_5m.macd[-2]) and (
-                    indicator.data_array[-1] < ema_12p.real[-1]):
-                is_bottom = True
-                bottom_rule_used = "rsi < 40, mcad increasing"
+                elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (
+                        0 < macd_5m.hist[-2] < macd_5m.hist[-1]):
+                    is_bottom = True
+                    bottom_rule_used = "price < lowerband 1, macd hist increasing"
 
-            elif rsi_5m.real[-1] < 30:
-                is_bottom = True
-                bottom_rule_used = "rsi incresing but less than 30"
+                elif (rsi_5m.real[-1] < 40) and (macd_5m.macd[-1] > macd_5m.macd[-2]) and (
+                        indicator.data_array[-1] < ema_12p.real[-1]):
+                    is_bottom = True
+                    bottom_rule_used = "rsi < 40, mcad increasing"
 
-            else:
-                is_bottom = False
-                bottom_rule_used = "no at bottom"
+                elif rsi_5m.real[-1] < 30:
+                    is_bottom = True
+                    bottom_rule_used = "rsi incresing but less than 30"
 
-            # Assert is a stock is raising
-            if (indicator.data_array[-1] > bands_1dev.upperband[-1]) and (macd_5m.macd[-1] > macd_5m.macd[-2] > 0) and (
-                    volume_5m.data_array[-1] > volume_5m.real[-1]):
-                is_raising = True
-                raising_rule = "price > uppperband 1, macd increasing"
+                else:
+                    is_bottom = False
+                    bottom_rule_used = "no at bottom"
 
-            elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (macd_5m.hist[-1] > macd_5m.hist[-2]) and (
-                    rsi_5m.real[-1] > rsi_5m.real[-2]):
-                is_raising = True
-                raising_rule = "macd raising less than 0"
+                # Assert is a stock is raising
+                if (indicator.data_array[-1] > bands_1dev.upperband[-1]) and (
+                        macd_5m.macd[-1] > macd_5m.macd[-2] > 0) and (
+                        volume_5m.data_array[-1] > volume_5m.real[-1]):
+                    is_raising = True
+                    raising_rule = "price > uppperband 1, macd increasing"
 
-            else:
-                is_raising = False
-                raising_rule = "no raising"
+                elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (
+                        macd_5m.hist[-1] > macd_5m.hist[-2]) and (
+                        rsi_5m.real[-1] > rsi_5m.real[-2]):
+                    is_raising = True
+                    raising_rule = "macd raising less than 0"
 
-            # Assert if a stock is at the top
-            if (indicator.data_array[-1] > bands_2dev.upperband[-1]) and (rsi_5m.real[-1] > 70):
-                is_top = True
-                top_rule = "price > upperband 2"
+                else:
+                    is_raising = False
+                    raising_rule = "no raising"
 
-            else:
-                is_top = False
-                top_rule = "Not at top"
+                # Assert if a stock is at the top
+                if (indicator.data_array[-1] > bands_2dev.upperband[-1]) and (rsi_5m.real[-1] > 70):
+                    is_top = True
+                    top_rule = "price > upperband 2"
 
-            # Assert is stock is falling from top
-            if (bands_2dev.upperband[-2] > indicator.data_array[-2] > bands_1dev.upperband[-2]) and (
-                    indicator.data_array[-1] < bands_1dev.upperband[-1]):
-                is_falling = True
-                falling_rule = "price crossing down upperband 1"
+                else:
+                    is_top = False
+                    top_rule = "Not at top"
 
-            elif (indicator.data_array[-2] > bands_2dev.upperband[-2]) and (
-                    indicator.data_array[-1] < bands_2dev.upperband[-1]):
-                is_falling = True
-                falling_rule = "price crossing down upperband 2"
+                # Assert is stock is falling from top
+                if (bands_2dev.upperband[-2] > indicator.data_array[-2] > bands_1dev.upperband[-2]) and (
+                        indicator.data_array[-1] < bands_1dev.upperband[-1]):
+                    is_falling = True
+                    falling_rule = "price crossing down upperband 1"
 
-            elif bands_1dev.upperband[-1] < indicator.data_array[-1] < bands_2dev.upperband[-1] < float(
-                    indicator.candles[0][3]):
-                is_falling = True
-                falling_rule = "close price < open price over upperband 1"
+                elif (indicator.data_array[-2] > bands_2dev.upperband[-2]) and (
+                        indicator.data_array[-1] < bands_2dev.upperband[-1]):
+                    is_falling = True
+                    falling_rule = "price crossing down upperband 2"
 
-            elif (bands_1dev.upperband[-1] > indicator.data_array[-1] > ema_12p.real[-1]) and (
-                    indicator.data_array[-2] > bands_1dev.upperband[-2]):
-                is_falling = True
-                falling_rule = "failed to cross upperband1"
+                elif bands_1dev.upperband[-1] < indicator.data_array[-1] < bands_2dev.upperband[-1] < float(
+                        indicator.candles[0][3]):
+                    is_falling = True
+                    falling_rule = "close price < open price over upperband 1"
 
-            elif (ema_12p.real[-1] < ema_12p.real[-2] < ema_12p.real[-3]) and (
-                    0 > macd_5m.macd[-3] > macd_5m.macd[-2] > macd_5m.macd[-2]) and (
-                    0 > macd_5m.hist[-1] > macd_5m.hist[-2] > macd_5m.hist[-3]):
-                is_falling = True
-                falling_rule = "constantly falling"
+                elif (bands_1dev.upperband[-1] > indicator.data_array[-1] > ema_12p.real[-1]) and (
+                        indicator.data_array[-2] > bands_1dev.upperband[-2]):
+                    is_falling = True
+                    falling_rule = "failed to cross upperband1"
 
-            else:
-                is_falling = False
-                falling_rule = "no falling"
+                elif (ema_12p.real[-1] < ema_12p.real[-2] < ema_12p.real[-3]) and (
+                        0 > macd_5m.macd[-3] > macd_5m.macd[-2] > macd_5m.macd[-2]) and (
+                        0 > macd_5m.hist[-1] > macd_5m.hist[-2] > macd_5m.hist[-3]):
+                    is_falling = True
+                    falling_rule = "constantly falling"
 
-            successful_analysis = True
+                else:
+                    is_falling = False
+                    falling_rule = "no falling"
 
-        except Exception as e:
-            print(e)
-            #Means that the indicators could not be measured
+                successful_analysis = True
+
+            except Exception as e:
+                print(e)
+                # Means that the indicators could not be measured
+                pass
+        else:
             pass
 
         # If there is no a position opened it will trigger a buy order
