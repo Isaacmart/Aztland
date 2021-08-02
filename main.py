@@ -25,8 +25,6 @@ def application():
             # ticker converted into a Coinbase product id
             new_ticker = get_ticker('ticker', new_request)
 
-        print(new_ticker)
-
         opening = 0
         close = 0
 
@@ -60,6 +58,7 @@ def application():
                 indicator.set_candles(product=new_order.get_key("product_id"), callback=get_time(27976), begin=get_time(0), granularity=300)
 
             except Exception as e:
+                print(e)
                 #wait to make another request
                 pass
 
@@ -73,6 +72,7 @@ def application():
                 indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
 
             except Exception as e:
+                print(e)
                 #wait to make another request
                 pass
 
@@ -134,7 +134,9 @@ def application():
         is_falling = False
         falling_rule = None
 
-        if len(volume_5m.real) > 0:
+        successful_analysis = False
+
+        try:
 
             # Asserts stock is at a bottom
             if (indicator.data_array[-1] < bands_2dev.lowerband[-1]) and (0 > macd_5m.hist[-1] > macd_5m.hist[-2]):
@@ -218,16 +220,17 @@ def application():
                 is_falling = False
                 falling_rule = "no falling"
 
-        else:
+            successful_analysis = True
+
+        except Exception as e:
+            print(e)
             #Means that the indicators could not be measured
             pass
 
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
 
-            if float(new_request['hist']) > 0:
-
-                print(new_ticker)
+            if successful_analysis:
 
                 ready_to_trade: bool
 
@@ -270,6 +273,7 @@ def application():
                         pass
 
                 else:
+                    print(new_ticker)
                     print(str(top_rule) + ", " + str(bottom_rule_used) + ", " + str(raising_rule) + ", " + str(falling_rule))
                     print(indicator.data_array[-1])
                     # Does nothing if both statements are False
@@ -322,6 +326,7 @@ def application():
 
             #Not rules were true
             else:
+                print(new_ticker)
                 print(str(top_rule) + ", " + str(bottom_rule_used) + ", " + str(raising_rule) + ", " + str(falling_rule))
                 pass
 

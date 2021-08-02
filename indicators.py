@@ -29,7 +29,7 @@ class Indicator:
     def get_data_set(self):
 
         for candle in self.candles:
-            self.data_array.append(candle[self.index])
+            self.data_array.append(float(candle[self.index]))
 
         return self.data_array
 
@@ -85,13 +85,6 @@ class VolSMA(Indicator):
         super(VolSMA, self).__init__(index=index, weight=weight)
         self.timeperiod = timeperiod
         self.real = []
-
-    def get_data_set(self):
-
-        for candle in self.candles:
-            self.data_array.append(float(candle[self.index]))
-
-        return self.data_array
 
     def get_volume(self):
 
