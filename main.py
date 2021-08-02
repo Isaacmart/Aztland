@@ -278,9 +278,7 @@ def application():
                         pass
 
                 else:
-                    print(new_ticker)
-                    print(str(top_rule) + ", " + str(bottom_rule_used) + ", " + str(raising_rule) + ", " + str(falling_rule))
-                    print(indicator.data_array[-1])
+                    print(new_ticker + ": " + str(top_rule) + ", " + str(bottom_rule_used) + ", " + str(raising_rule) + ", " + str(falling_rule))
                     # Does nothing if both statements are False
                     pass
 
@@ -336,8 +334,7 @@ def application():
 
             #Not rules were true
             else:
-                print(new_ticker)
-                print(str(top_rule) + ", " + str(bottom_rule_used) + ", " + str(raising_rule) + ", " + str(falling_rule))
+                print(new_ticker + ": " + str(top_rule) + ", " + str(bottom_rule_used) + ", " + str(raising_rule) + ", " + str(falling_rule))
                 pass
 
         # If there is a long position but the ticker is not the same as the order's
