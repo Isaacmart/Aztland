@@ -58,6 +58,7 @@ def application():
                 indicator.set_candles(product=new_order.get_key("product_id"), callback=get_time(27976), begin=get_time(0), granularity=300)
 
             except ValueError:
+                print(new_ticker)
                 print(indicator.candles)
                 #wait to make another request
                 pass
@@ -72,6 +73,7 @@ def application():
                 indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
 
             except ValueError:
+                print(new_ticker)
                 print(indicator.candles)
                 #wait to make another request
                 pass
@@ -115,7 +117,8 @@ def application():
                 volume_5m.get_np_array()
                 volume_5m.get_volume()
 
-            except Exception as e:
+            except Exception:
+                print("indicators failed for: " + new_ticker)
                 print(indicator.candles)
                 pass
 
