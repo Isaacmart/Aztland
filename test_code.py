@@ -1,7 +1,16 @@
+from cbpro import PublicClient
+from Data import *
 
+client = PublicClient()
 
-if 0.333333 >= 0.333332:
-    print(True)
+writer = open("products.py", "w")
 
-else:
-    print(False)
+data = client.get_products()
+
+writer.write("links = {\n")
+
+for line in data:
+    if line['quote_currency'] == "USD":
+        writer.write("    \"" + str(line['base_currency']) + str(line['quote_currency']) + "\": \"" + str(line["id"]) + ".csv\",\n")
+
+writer.write("}")

@@ -1,3 +1,4 @@
+
 from cbpro import PublicClient
 
 client = PublicClient()
@@ -12,7 +13,6 @@ writer.write("new_dict = {\n")
 for line in data:
     if line['quote_currency'] == "USD":
         writer.write("    \"" + line['id'] + "\": \"" + str(len(line['base_increment']) - 2) + "\",\n")
-        print(line)
 
 writer.write("}")
 
