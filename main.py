@@ -116,7 +116,7 @@ def application():
                 volume_5m.get_volume()
 
             except Exception as e:
-                print(e)
+                print(indicator.candles)
                 pass
 
         else:
@@ -170,6 +170,11 @@ def application():
                     is_bottom = False
                     bottom_rule_used = "no at bottom"
 
+            except Exception:
+                print(bottom_rule_used)
+
+            try:
+
                 # Assert is a stock is raising
                 if (indicator.data_array[-1] > bands_1dev.upperband[-1]) and (macd_5m.macd[-1] > macd_5m.macd[-2] > 0) and (volume_5m.data_array[-1] > volume_5m.real[-1]):
                     is_raising = True
@@ -183,6 +188,11 @@ def application():
                     is_raising = False
                     raising_rule = "no raising"
 
+            except Exception:
+                print(raising_rule)
+
+            try:
+
                 # Assert if a stock is at the top
                 if (indicator.data_array[-1] > bands_2dev.upperband[-1]) and (rsi_5m.real[-1] > 70):
                     is_top = True
@@ -191,6 +201,11 @@ def application():
                 else:
                     is_top = False
                     top_rule = "Not at top"
+
+            except Exception:
+                print(top_rule)
+
+            try:
 
                 # Assert is stock is falling from top
                 if (bands_2dev.upperband[-2] > indicator.data_array[-2] > bands_1dev.upperband[-2]) and (indicator.data_array[-1] < bands_1dev.upperband[-1]):
@@ -217,13 +232,13 @@ def application():
                     is_falling = False
                     falling_rule = "no falling"
 
-                successful_analysis = True
+            except Exception:
+                print(falling_rule)
 
-            except Exception as e:
-                print(e)
-                # Means that the indicators could not be measured
-                pass
+            successful_analysis = True
+
         else:
+            # Means that the indicators could not be measured
             pass
 
         # If there is no a position opened it will trigger a buy order
