@@ -143,6 +143,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/requests.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/send_order.py">
           <value>
             <Attribute>

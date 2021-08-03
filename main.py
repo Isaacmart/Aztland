@@ -244,6 +244,10 @@ def application():
             # Means that the indicators could not be measured
             pass
 
+        writer = open("/var/www/jdsdkf.xyz/html/CryptoTrader/requests.txt", "a")
+        writer.write(new_ticker + ", " + str(time.time()) + "\n")
+        writer.close()
+
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
 
