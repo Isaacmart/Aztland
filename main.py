@@ -175,7 +175,8 @@ def application():
 
                 else:
                     is_bottom = False
-                    bottom_rule_used = str(indicator.data_array[-1]) + " " + str(macd_5m.hist[-1]) + " " + str(macd_5m.macd[-1]) + " " + str(bands_2dev.lowerband[-1]) + " " + str(bands_1dev.lowerband[-1]) + " " + str(rsi_5m.real[-1])
+                    bottom_rule_used = "not at bottom "
+                    #bottom_rule_used = str(indicator.data_array[-1]) + " " + str(macd_5m.hist[-1]) + " " + str(macd_5m.macd[-1]) + " " + str(bands_2dev.lowerband[-1]) + " " + str(bands_1dev.lowerband[-1]) + " " + str(rsi_5m.real[-1])
 
             except Exception:
                 print(bottom_rule_used)
@@ -256,7 +257,7 @@ def application():
                 ready_to_trade: bool
 
                 # Rules to make ready_to_trade True
-                if (is_bottom or is_raising) and (is_top is False) and (is_falling is False):
+                if (is_bottom or is_raising) and (is_top is False):
 
                     ready_to_trade = True
 
@@ -324,7 +325,7 @@ def application():
                 ready_to_trade = False
 
             #Triggers a sell order if a rule is met:
-            if ready_to_trade and (time.time() > (get_unix(new_order.get_key("done_at")) + 900.0)):
+            if ready_to_trade and (time.time() > (get_unix(new_order.get_key("done_at")) + 3600.0)):
 
                 new_trade = None
 
