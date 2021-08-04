@@ -1,1 +1,3 @@
-print(5 > 4)
+
+if True and (False and True):
+    print(True)

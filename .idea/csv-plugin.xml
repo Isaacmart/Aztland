@@ -157,6 +157,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/test_code.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/trading_rules.py">
           <value>
             <Attribute>
