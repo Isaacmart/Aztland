@@ -149,13 +149,13 @@ def application():
             try:
 
                 # Asserts stock is at a bottom
-                if (indicator.data_array[-1] < bands_2dev.lowerband[-1]) and (0 > macd_5m.hist[-1] > macd_5m.hist[-2]):
+                if (indicator.data_array[-1] < bands_2dev.lowerband[-1]) or (indicator.data_array[-2] < bands_2dev.lowerband[-2]) and (0 > macd_5m.hist[-1] > macd_5m.hist[-2]):
                     is_bottom = False
                     bottom_rule_used = "price < lowerband 2, hist increasing"
 
-                elif (bands_2dev.lowerband[-1] < indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (0 > macd_5m.macd[-1] > macd_5m.macd[-2]):
+                elif (bands_2dev.lowerband[-1] < indicator.data_array[-1] < bands_1dev.lowerband[-1]) and ((macd_5m.hist[-1] > macd_5m.hist[-2]) or (indicator.data_array[-1] > indicator.data_array[-2])):
                     is_bottom = True
-                    bottom_rule_used = "lowerband 2 < price < lowerband 1, macd increasing"
+                    bottom_rule_used = "lowerband 2 < price < lowerband 1, hist increasing"
 
                 elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (0 < macd_5m.hist[-2] < macd_5m.hist[-1]):
                     is_bottom = True
@@ -179,7 +179,7 @@ def application():
             try:
 
                 # Assert is a stock is raising
-                if (indicator.data_array[-1] > bands_1dev.upperband[-1]) and (macd_5m.macd[-1] > macd_5m.macd[-2] > 0) and (volume_5m.data_array[-1] > volume_5m.real[-1]):
+                if (bands_2dev.upperband[-1] > indicator.data_array[-1] > bands_1dev.upperband[-1]) and (macd_5m.hist[-1] > macd_5m.hist[-2]):
                     is_raising = True
                     raising_rule = "price > uppperband 1, macd increasing"
 
@@ -211,7 +211,7 @@ def application():
             try:
 
                 # Assert is stock is falling from top
-                if (bands_2dev.upperband[-2] > indicator.data_array[-2] > bands_1dev.upperband[-2]) and (indicator.data_array[-1] < bands_1dev.upperband[-1]):
+                if (bands_2dev.upperband[-1] > indicator.data_array[-1] > bands_1dev.upperband[-2]) and (indicator.data_array[-1] < bands_1dev.upperband[-1]):
                     is_falling = True
                     falling_rule = "price crossing down upperband 1"
 
