@@ -150,12 +150,12 @@ def application():
 
                 # Asserts stock is at a bottom
                 if (indicator.data_array[-1] < bands_2dev.lowerband[-1]) or (indicator.data_array[-2] < bands_2dev.lowerband[-2]) and (0 > macd_5m.hist[-1] > macd_5m.hist[-2]):
-                    is_bottom = False
+                    is_bottom = True
                     bottom_rule_used = str(indicator.data_array[-1]) + " < " + str(bands_2dev.lowerband[-1]) + " or " + str(indicator.data_array[-2]) + " < " + str(bands_2dev.lowerband[-2]) + " and 0 > " + str(macd_5m.hist[-1]) + " > " + str(macd_5m.hist[-2])
 
                 elif (bands_2dev.lowerband[-1] < indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (macd_5m.hist[-1] > macd_5m.hist[-2]) or (indicator.data_array[-1] > indicator.data_array[-2]):
                     is_bottom = True
-                    bottom_rule_used = str(bands_2dev.lowerband[-1]) + " < " + str(indicator.data_array[-1]) + " < " + str(bands_1dev.lowerband[-1]) + " and " +  str(macd_5m.hist[-1]) + " > " + str(macd_5m.hist[-2]) + " or " + str(indicator.data_array[-1]) + " > " + str(indicator.data_array[-2])
+                    bottom_rule_used = str(bands_2dev.lowerband[-1]) + " < " + str(indicator.data_array[-1]) + " < " + str(bands_1dev.lowerband[-1]) + " and " + str(macd_5m.hist[-1]) + " > " + str(macd_5m.hist[-2]) + " or " + str(indicator.data_array[-1]) + " > " + str(indicator.data_array[-2])
 
                 elif (indicator.data_array[-1] < bands_1dev.lowerband[-1]) and (0 < macd_5m.hist[-2] < macd_5m.hist[-1]):
                     is_bottom = True
@@ -254,18 +254,8 @@ def application():
 
             if successful_analysis:
 
-                ready_to_trade: bool
-
                 # Rules to make ready_to_trade True
-                if (is_bottom or is_raising) and (is_top is False):
-
-                    ready_to_trade = True
-
-                else:
-                    ready_to_trade = False
-
-                #Will trigger a buy order if a rule is True
-                if ready_to_trade:
+                if is_bottom or is_raising and not is_top and not is_falling:
 
                     new_trade = None
 
@@ -311,14 +301,14 @@ def application():
         # If the Post request ticker is the same as the order's it will trigger a sell order
         elif position.get_position():
 
-            ready_to_trade: bool
-
             #rules for when the request ticker is other than the position's:
             #rules for when the request ticker is the same as the position's
             #if (new_ticker == new_order.get_key("product_id")) and (float(new_request['hist']) < 0.0):
                 #ready_to_trade = True
 
-            if (is_falling or is_top) and ((is_bottom is False) and (is_raising is False)):
+            ready_to_trade: bool
+
+            if is_falling or is_top and not is_bottom and not is_raising:
                 ready_to_trade = True
 
             else:
