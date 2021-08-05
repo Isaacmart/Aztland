@@ -182,8 +182,9 @@ def application():
 
                             else:
                                 is_falling = True
+
                         else:
-                            is_falling = True
+                            is_raising = True
                     else:
 
                         if macd_5m.hist[-1] > macd_5m.hist[-2]:
@@ -192,11 +193,13 @@ def application():
                         else:
                             is_falling = True
 
-                if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                    is_raising = True
-
                 else:
-                    is_falling = True         
+
+                    if macd_5m.hist[-1] > macd_5m.hist[-2]:
+                        is_raising = True
+
+                    else:
+                        is_falling = True
             else:
 
                 if indicator.data_array[-1] > bands_1dev.lowerband[-1]:
@@ -207,8 +210,10 @@ def application():
                     else:
                         is_falling = True
                 else:
+
                     if indicator.data_array[-1] > bands_2dev.lowerband[-1]:
                         is_raising = True
+                        
                     else:
                         is_bottom = True
 
