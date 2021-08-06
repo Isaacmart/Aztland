@@ -20,6 +20,10 @@ import Data
 
 app = Flask(__name__)
 
+#This is the debug mode of the actual application that will execute trades automatically, hence why it is printing
+#to stdio. It does it so that way the print statements can be accessed in the error log
+#The actual application will store all the logs errors
+
 
 @app.route("/", methods=['GET', 'POST'])
 def application():
@@ -151,19 +155,15 @@ def application():
 
         #Asserts stock is at a bottom
         is_bottom = False
-        bottom_rule_used = None
 
         # Assert is a stock is raising
         is_raising = False
-        raising_rule = None
 
         #Assert if a stock is at the top
         is_top = False
-        top_rule = None
 
         #Assert is stock is falling from top
         is_falling = False
-        falling_rule = None
 
         successful_analysis = False
 
@@ -212,8 +212,18 @@ def application():
                 else:
 
                     if indicator.data_array[-1] > bands_2dev.lowerband[-1]:
-                        is_raising = True
-                        
+
+                        if macd_5m.hist[-1] > macd_5m.hist[-2]:
+
+                            if rsi_5m.real[-1] < 50:
+                                is_bottom = True
+
+                            else:
+                                is_raising = True
+
+                        else:
+                            is_bottom = True
+
                     else:
                         is_bottom = True
 
@@ -263,7 +273,7 @@ def application():
                         pass
 
                 else:
-                    print(new_ticker + ": " + str(top_rule) + ", " + str(bottom_rule_used) + ", " + str(raising_rule) + ", " + str(falling_rule))
+                    print(new_ticker + ": " + str(is_bottom) + ", " + str(is_raising) + ", " + str(is_top) + ", " + str(is_falling))
                     # Does nothing if both statements are False
                     pass
 
@@ -316,7 +326,7 @@ def application():
 
             #Not rules were true
             else:
-                print(new_ticker + ": " + str(top_rule) + ", " + str(bottom_rule_used) + ", " + str(raising_rule) + ", " + str(falling_rule))
+                print(new_ticker + ": " + str(is_bottom) + ", " + str(is_raising) + ", " + str(is_top) + ", " + str(is_falling))
                 pass
 
         # If there is a long position but the ticker is not the same as the order's
