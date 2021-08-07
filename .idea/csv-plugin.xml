@@ -136,6 +136,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/new_test.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/order.py">
           <value>
             <Attribute>

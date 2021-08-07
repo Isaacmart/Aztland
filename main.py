@@ -27,6 +27,21 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
 def application():
+
+    # Asserts stock is at a bottom
+    is_bottom = False
+
+    # Assert is a stock is raising
+    is_raising = False
+
+    # Assert if a stock is at the top
+    is_falling = False
+
+    # Assert is stock is falling from top
+    is_top = False
+
+    successful_analysis = False
+
     if request.method == 'POST':
 
         new_request = request.get_json(force=True)
@@ -57,6 +72,13 @@ def application():
         indicator = Indicator()
         indicator.initiate_client(p_client)
 
+        macd_5m = MACD()
+        volume_5m = VolSMA(timeperiod=20)
+        bands_2dev = BB()
+        bands_1dev = BB(ndbevup=1, nbdevdn=1)
+        rsi_5m = RSI()
+        ema_12p = EMA()
+
         if position.get_position() and last_instance():
 
             try:
@@ -86,13 +108,6 @@ def application():
         else:
             #get candles for previous tickers
             pass
-
-        macd_5m = MACD()
-        volume_5m = VolSMA(timeperiod=20)
-        bands_2dev = BB()
-        bands_1dev = BB(ndbevup=1, nbdevdn=1)
-        rsi_5m = RSI()
-        ema_12p = EMA()
 
         if len(indicator.candles) > 0:
 
@@ -152,20 +167,6 @@ def application():
         else:
             #try setting candles again
             pass
-
-        #Asserts stock is at a bottom
-        is_bottom = False
-
-        # Assert is a stock is raising
-        is_raising = False
-
-        #Assert if a stock is at the top
-        is_top = False
-
-        #Assert is stock is falling from top
-        is_falling = False
-
-        successful_analysis = False
 
         if len(volume_5m.real) > 0:
 
@@ -241,7 +242,7 @@ def application():
                 # Rules to make ready_to_trade True
                 if is_bottom or is_raising and not is_top and not is_falling:
 
-                    new_trade = None
+                    new_trade: dict
 
                     try:
                         new_trade = client.place_market_order(product_id=new_ticker, side="buy", funds=funds.get_capital())
