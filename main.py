@@ -94,7 +94,7 @@ def application():
             writer.write(str(time.time()))
             writer.close()
 
-        elif ("hist" in new_request) and (float(new_request['hist']) > 0):
+        elif "hist" in new_request:
 
             try:
                 indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
