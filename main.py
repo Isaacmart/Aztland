@@ -180,9 +180,11 @@ def application():
 
                             if macd_5m.hist[-1] > macd_5m.hist[-2]:
                                 is_raising = True
+                                print("1")
 
                             else:
                                 is_falling = True
+                                print("2")
 
                         else:
                             is_raising = True
@@ -193,6 +195,7 @@ def application():
 
                         else:
                             is_falling = True
+                            print("3")
 
                 else:
 
@@ -201,6 +204,7 @@ def application():
 
                     else:
                         is_falling = True
+                        print("3")
             else:
 
                 if indicator.data_array[-1] > bands_1dev.lowerband[-1]:
@@ -210,6 +214,7 @@ def application():
 
                     else:
                         is_falling = True
+                        print("5")
                 else:
 
                     if indicator.data_array[-1] > bands_2dev.lowerband[-1]:
@@ -300,7 +305,7 @@ def application():
             #Triggers a sell order if a rule is met:
             if ready_to_trade and (time.time() > (get_unix(new_order.get_key("done_at")) + 3600.0)):
 
-                new_trade = None
+                new_trade: dict
 
                 try:
                     new_trade = client.place_market_order(product_id=new_order.get_key("product_id"), side='sell', size=get_size(new_order.get_key("product_id"), new_order.get_key('filled_size')))
@@ -327,7 +332,7 @@ def application():
 
             #Not rules were true
             else:
-                print(new_ticker + ": " + str(is_bottom) + ", " + str(is_raising) + ", " + str(is_top) + ", " + str(is_falling))
+                print(new_ticker + ": " + str(is_bottom) + ", " + str(is_raising) + ", " + str(is_falling) + ", " + str(is_top))
                 pass
 
         # If there is a long position but the ticker is not the same as the order's

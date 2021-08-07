@@ -245,5 +245,5 @@ def app(ticker="", a_time=0):
 
 
 
-new_app = app("UNI-USD", 1628299246)
+new_app = app("ADA-USD", 1628309177)
 
