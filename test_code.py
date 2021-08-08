@@ -44,18 +44,6 @@ def app(ticker="", a_time=0):
     indicator = Indicator()
     indicator.initiate_client(p_client)
 
-    # Asserts stock is at a bottom
-    is_bottom = False
-
-    # Assert is a stock is raising
-    is_raising = False
-
-    # Assert if a stock is at the top
-    is_top = False
-
-    # Assert is stock is falling from top
-    is_falling = False
-
     successful_analysis = False
 
     if position.get_position() and last_instance():
@@ -162,37 +150,46 @@ def app(ticker="", a_time=0):
                     if rsi_5m.real[-1] > 70:
 
                         if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                            is_raising = True
+                            new_order.is_raising = True
+                            print("1")
 
                         else:
-                            is_falling = True
+                            new_order.is_falling = True
+                            print("2")
 
                     else:
-                        is_raising = True
+                        new_order.is_raising = True
+                        print("3")
                 else:
 
                     if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                        is_raising = True
+                        new_order.is_raising = True
+                        print("4")
 
                     else:
-                        is_falling = True
+                        new_order.is_falling = True
+                        print("5")
 
             else:
 
                 if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                    is_raising = True
+                    new_order.is_raising = True
+                    print("6")
 
                 else:
-                    is_falling = True
+                    new_order.is_falling = True
+                    print("7")
         else:
 
             if indicator.data_array[-1] > bands_1dev.lowerband[-1]:
 
                 if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                    is_raising = True
+                    new_order.is_raising = True
+                    print("8")
 
                 else:
-                    is_falling = True
+                    new_order.is_falling = True
+                    print("9")
             else:
 
                 if indicator.data_array[-1] > bands_2dev.lowerband[-1]:
@@ -200,16 +197,20 @@ def app(ticker="", a_time=0):
                     if macd_5m.hist[-1] > macd_5m.hist[-2]:
 
                         if rsi_5m.real[-1] < 50:
-                            is_bottom = True
+                            new_order.is_bottom = True
+                            print("10")
 
                         else:
-                            is_raising = True
+                            new_order.is_raising = True
+                            print("11")
 
                     else:
-                        is_bottom = True
+                        new_order.is_bottom = True
+                        print("12")
 
                 else:
-                    is_bottom = True
+                    new_order.is_bottom = True
+                    print("13")
 
         successful_analysis = True
 
@@ -223,15 +224,17 @@ def app(ticker="", a_time=0):
         if successful_analysis:
 
             # Rules to make ready_to_trade True
-            if is_bottom or is_raising and not is_top and not is_falling:
-                print(new_ticker + ": " + str(is_bottom) + ", " + str(is_raising) + ", " + str(is_top) + ", " + str(is_falling))
+            if new_order.get_bottom() or new_order.get_rise() and not new_order.get_top() and not new_order.get_fall():
+                print(new_ticker + ": " + str(new_order.is_bottom) + ", " + str(new_order.is_raising) + ", " + str(new_order.is_top) + ", " + str(new_order.is_falling))
                 ready_to_trade = True
+                print("ready to trade:", ready_to_trade)
             else:
                 ready_to_trade = False
-                print(new_ticker + ": " + str(is_bottom) + ", " + str(is_raising) + ", " + str(is_top) + ", " + str(is_falling))
 
-            if is_falling or is_top and not is_bottom and not is_raising:
+            if new_order.is_falling or new_order.is_top and not new_order.is_bottom and not new_order.is_raising:
                 ready_to_sell = True
+                print(new_ticker + ": " + str(new_order.is_bottom) + ", " + str(new_order.is_raising) + ", " + str(new_order.is_top) + ", " + str(new_order.is_falling))
+                print("ready to sell:", ready_to_sell)
             else:
                 ready_to_sell = False
 
@@ -244,6 +247,4 @@ def app(ticker="", a_time=0):
         pass
 
 
-
-new_app = app("ADA-USD", 1628309177)
-
+new_app = app("ACH-USD", 1628383190)

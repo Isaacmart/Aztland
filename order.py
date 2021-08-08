@@ -33,6 +33,10 @@ class Order:
     def __init__(self, client=AuthenticatedClient):
         self.client = client
         self.new_id = None
+        self.is_bottom = False
+        self.is_raising = False
+        self.is_top = False
+        self.is_falling = False
         self.details = {
             "id": "",
             "size": "",
@@ -70,6 +74,18 @@ class Order:
         self.new_id = writer.read()
         writer.close()
         return self.new_id
+
+    def get_bottom(self):
+        return self.is_bottom
+
+    def get_rise(self):
+        return self.new_id
+
+    def get_top(self):
+        return self.is_top
+
+    def get_fall(self):
+        return self.is_falling
 
 
 

@@ -28,20 +28,6 @@ app = Flask(__name__)
 @app.route("/", methods=['GET', 'POST'])
 def application():
 
-    # Asserts stock is at a bottom
-    is_bottom = False
-
-    # Assert is a stock is raising
-    is_raising = False
-
-    # Assert if a stock is at the top
-    is_falling = False
-
-    # Assert is stock is falling from top
-    is_top = False
-
-    successful_analysis = False
-
     if request.method == 'POST':
 
         new_request = request.get_json(force=True)
@@ -179,42 +165,46 @@ def application():
                         if rsi_5m.real[-1] > 70:
 
                             if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                                is_raising = True
+                                new_order.is_raising = True
                                 print("1")
 
                             else:
-                                is_falling = True
+                                new_order.is_falling = True
                                 print("2")
 
                         else:
-                            is_raising = True
+                            new_order.is_raising = True
+                            print("3")
                     else:
 
                         if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                            is_raising = True
+                            new_order.is_raising = True
+                            print("4")
 
                         else:
-                            is_falling = True
-                            print("3")
+                            new_order.is_falling = True
+                            print("5")
 
                 else:
 
                     if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                        is_raising = True
+                        new_order.is_raising = True
+                        print("6")
 
                     else:
-                        is_falling = True
-                        print("4")
+                        new_order.is_falling = True
+                        print("7")
             else:
 
                 if indicator.data_array[-1] > bands_1dev.lowerband[-1]:
 
                     if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                        is_raising = True
+                        new_order.is_raising = True
+                        print("8")
 
                     else:
-                        is_falling = True
-                        print("5")
+                        new_order.is_falling = True
+                        print("9")
                 else:
 
                     if indicator.data_array[-1] > bands_2dev.lowerband[-1]:
@@ -222,16 +212,20 @@ def application():
                         if macd_5m.hist[-1] > macd_5m.hist[-2]:
 
                             if rsi_5m.real[-1] < 50:
-                                is_bottom = True
+                                new_order.is_bottom = True
+                                print("10")
 
                             else:
-                                is_raising = True
+                                new_order.is_raising = True
+                                print("11")
 
                         else:
-                            is_bottom = True
+                            new_order.is_bottom = True
+                            print("12")
 
                     else:
-                        is_bottom = True
+                        new_order.is_bottom = True
+                        print("13")
 
             successful_analysis = True
 
@@ -242,48 +236,43 @@ def application():
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
 
-            if successful_analysis:
+            # Rules to make ready_to_trade True
+            if new_order.get_bottom() or new_order.get_rise() and not new_order.get_top() and not new_order.get_fall():
 
-                # Rules to make ready_to_trade True
-                if is_bottom or is_raising and not is_top and not is_falling:
+                new_trade: dict
 
-                    new_trade: dict
+                try:
+                    new_trade = client.place_market_order(product_id=new_ticker, side="buy", funds=funds.get_capital())
 
-                    try:
-                        new_trade = client.place_market_order(product_id=new_ticker, side="buy", funds=funds.get_capital())
+                except Exception as e:
+                    print(e)
 
-                    except Exception as e:
-                        print(e)
+                if "id" in new_trade:
 
-                    if "id" in new_trade:
+                    writer = open(Data.Path, "w")
+                    writer.write(new_trade['id'])
+                    writer.close()
+                    new_order.get_id()
 
-                        writer = open(Data.Path, "w")
-                        writer.write(new_trade['id'])
+                    if new_order.set_details():
+
+                        position.set_position()
+
+                        writer = open(Data.Time, "w")
+                        writer.write(str(time.time()))
                         writer.close()
-                        new_order.get_id()
 
-                        if new_order.set_details():
-
-                            position.set_position()
-
-                            writer = open(Data.Time, "w")
-                            writer.write(str(time.time()))
-                            writer.close()
-
-                            print("order sent: ", new_order.details)
-
-                        else:
-                            print("opening position details: ", new_trade)
+                        print("order sent: ", new_order.details)
 
                     else:
-                        pass
+                        print("opening position details: ", new_trade)
 
                 else:
-                    print(new_ticker + ": " + str(is_bottom) + ", " + str(is_raising) + ", " + str(is_falling) + ", " + str(is_top))
-                    # Does nothing if both statements are False
                     pass
 
             else:
+                print(new_ticker + ": " + str(new_order.is_bottom) + ", " + str(new_order.is_raising) + ", " + str(new_order.is_top) + ", " + str(new_order.is_falling))
+                # Does nothing if both statements are False
                 pass
 
         # If the Post request ticker is the same as the order's it will trigger a sell order
@@ -296,7 +285,7 @@ def application():
 
             ready_to_trade: bool
 
-            if is_falling or is_top and not is_bottom and not is_raising:
+            if new_order.get_fall() or new_order.get_top() and not new_order.get_bottom() and not new_order.get_rise():
                 ready_to_trade = True
 
             else:
@@ -332,7 +321,7 @@ def application():
 
             #Not rules were true
             else:
-                print(new_ticker + ": " + str(is_bottom) + ", " + str(is_raising) + ", " + str(is_falling) + ", " + str(is_top))
+                print(new_ticker + ": " + str(new_order.is_bottom) + ", " + str(new_order.is_raising) + ", " + str(new_order.is_top) + ", " + str(new_order.is_falling))
                 pass
 
         # If there is a long position but the ticker is not the same as the order's
