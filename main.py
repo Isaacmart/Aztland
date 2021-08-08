@@ -166,45 +166,45 @@ def application():
 
                             if macd_5m.hist[-1] > macd_5m.hist[-2]:
                                 new_order.is_raising = True
-                                print("1")
+                                print(new_ticker, "1")
 
                             else:
                                 new_order.is_falling = True
-                                print("2")
+                                print(new_ticker, "2")
 
                         else:
                             new_order.is_raising = True
-                            print("3")
+                            print(new_ticker, "3")
                     else:
 
                         if macd_5m.hist[-1] > macd_5m.hist[-2]:
                             new_order.is_raising = True
-                            print("4")
+                            print(new_ticker, "4")
 
                         else:
                             new_order.is_falling = True
-                            print("5")
+                            print(new_ticker, "5")
 
                 else:
 
                     if macd_5m.hist[-1] > macd_5m.hist[-2]:
                         new_order.is_raising = True
-                        print("6")
+                        print(new_ticker, "6")
 
                     else:
                         new_order.is_falling = True
-                        print("7")
+                        print(new_ticker, "7")
             else:
 
                 if indicator.data_array[-1] > bands_1dev.lowerband[-1]:
 
                     if macd_5m.hist[-1] > macd_5m.hist[-2]:
                         new_order.is_raising = True
-                        print("8")
+                        print(new_ticker, "8")
 
                     else:
                         new_order.is_falling = True
-                        print("9")
+                        print(new_ticker, "9")
                 else:
 
                     if indicator.data_array[-1] > bands_2dev.lowerband[-1]:
@@ -213,7 +213,7 @@ def application():
 
                             if rsi_5m.real[-1] < 50:
                                 new_order.is_bottom = True
-                                print("10")
+                                print(new_ticker, "10")
 
                             else:
                                 new_order.is_raising = True
@@ -221,11 +221,11 @@ def application():
 
                         else:
                             new_order.is_bottom = True
-                            print("12")
+                            print(new_ticker, "12")
 
                     else:
                         new_order.is_bottom = True
-                        print("13")
+                        print(new_ticker, "13")
 
             successful_analysis = True
 
@@ -239,13 +239,7 @@ def application():
             # Rules to make ready_to_trade True
             if new_order.get_bottom() or new_order.get_rise() and not new_order.get_top() and not new_order.get_fall():
 
-                new_trade: dict
-
-                try:
-                    new_trade = client.place_market_order(product_id=new_ticker, side="buy", funds=funds.get_capital())
-
-                except Exception as e:
-                    print(e)
+                new_trade = client.place_market_order(product_id=new_ticker, side="buy", funds=funds.get_capital())
 
                 if "id" in new_trade:
 
@@ -268,6 +262,7 @@ def application():
                         print("opening position details: ", new_trade)
 
                 else:
+                    print(new_ticker + " " + str(new_trade))
                     pass
 
             else:
