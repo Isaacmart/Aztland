@@ -204,7 +204,7 @@ def application():
 
                     else:
                         is_falling = True
-                        print("3")
+                        print("4")
             else:
 
                 if indicator.data_array[-1] > bands_1dev.lowerband[-1]:
