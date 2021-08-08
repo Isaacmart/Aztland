@@ -279,7 +279,7 @@ def application():
                         pass
 
                 else:
-                    print(new_ticker + ": " + str(is_bottom) + ", " + str(is_raising) + ", " + str(is_top) + ", " + str(is_falling))
+                    print(new_ticker + ": " + str(is_bottom) + ", " + str(is_raising) + ", " + str(is_falling) + ", " + str(is_top))
                     # Does nothing if both statements are False
                     pass
 
