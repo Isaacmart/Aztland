@@ -104,7 +104,7 @@ def last_instance():
     reader = open(Time, "r")
     greater: bool
     if file_size > 0:
-        if time.time() > (float(reader.read()) + 300):
+        if time.time() > (float(reader.read()) + 30):
             greater = True
         else:
             greater = False
