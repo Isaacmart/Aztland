@@ -38,6 +38,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/capital.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/data/CB_stocks_1INCHUSD.csv">
           <value>
             <Attribute>

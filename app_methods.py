@@ -46,15 +46,6 @@ def get_ticker(key, new_request):
         return ticker_product
 
 
-#Gets the available balance of a currency held
-def get_capital(account_id, client):
-
-    data = client.get_account(account_id)
-    capital = float(data['available'])
-
-    return "%.2f" % capital
-
-
 def get_callback(weight=True, period=0, granularity=0):
 
     if weight:

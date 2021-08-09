@@ -1,6 +1,4 @@
 from cbpro import AuthenticatedClient
-from app_methods import get_capital
-import Data
 
 
 class Capital:
@@ -10,10 +8,12 @@ class Capital:
         self.capital = 0.0
 
     def set_capital(self):
-        self.capital = get_capital('42d739b5-f5cd-48c0-baf6-b905836a1ca4', self.client)
+        data = self.client.get_account('42d739b5-f5cd-48c0-baf6-b905836a1ca4')
+        self.capital = float(data['available'])
 
     def get_capital(self):
-        return float(self.capital) - 1.0
+        return "%.2f" % str(self.capital)
+
 
 
 
