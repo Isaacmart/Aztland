@@ -1,7 +1,6 @@
 import numpy
 import talib
 from cbpro import PublicClient
-from app_methods import *
 
 
 class Indicator:
@@ -41,14 +40,13 @@ class Indicator:
     def get_np_array(self):
 
         self.np_array = numpy.array(self.data_array)
-
         return self.np_array
 
 
 class MACD(Indicator):
 
-    def __init__(self, fastperiod=12, slowperiod=26, signalperiod=9):
-        super(MACD, self).__init__()
+    def __init__(self, fastperiod=12, slowperiod=26, signalperiod=9, index=4, weight=True):
+        super(MACD, self).__init__(index=index, weight=True)
         self.macd = []
         self.hist = []
         self.signal = []
@@ -59,6 +57,7 @@ class MACD(Indicator):
     def get_MACD(self):
 
         self.macd, self.signal, self.hist = talib.MACD(real=self.np_array, fastperiod=self.fast_period, slowperiod=self.slow_period, signalperiod=self.signal_period)
+        return self.macd
 
 
 class BB(Indicator):
@@ -76,6 +75,7 @@ class BB(Indicator):
     def get_BB(self):
 
         self.upperband, self.middleband, self.lowerband = talib.BBANDS(real=self.np_array, timeperiod=self.timeperiod, nbdevup=self.ndbevup, nbdevdn=self.nbdevdn, matype=self.matye)
+        return self.upperband
 
 
 class VolSMA(Indicator):
@@ -102,18 +102,20 @@ class RSI(Indicator):
     def get_RSI(self):
 
         self.real = talib.RSI(real=self.np_array, timeperiod=self.timperiod)
+        return self.real
 
 
 class EMA(Indicator):
 
-    def __init__(self, time_period=12, index=4):
-        super(EMA, self).__init__(index=index)
+    def __init__(self, time_period=12, index=4, weight=True):
+        super(EMA, self).__init__(index=index, weight=weight)
         self.timeperiod = time_period
         self.real = []
 
     def get_EMA(self):
 
         self.real = talib.EMA(real=self.np_array, timeperiod=self.timeperiod)
+        return self.real
 
 
 '''

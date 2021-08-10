@@ -151,45 +151,45 @@ def app(ticker="", a_time=0):
 
                         if macd_5m.hist[-1] > macd_5m.hist[-2]:
                             new_order.is_raising = True
-                            print("1")
+                            print(new_ticker, "1")
 
                         else:
                             new_order.is_falling = True
-                            print("2")
+                            print(new_ticker, "2")
 
                     else:
                         new_order.is_raising = True
-                        print("3")
+                        print(new_ticker, "3")
                 else:
 
                     if macd_5m.hist[-1] > macd_5m.hist[-2]:
                         new_order.is_raising = True
-                        print("4")
+                        print(new_ticker, "4")
 
                     else:
                         new_order.is_falling = True
-                        print("5")
+                        print(new_ticker, "5")
 
             else:
 
                 if macd_5m.hist[-1] > macd_5m.hist[-2]:
                     new_order.is_raising = True
-                    print("6")
+                    print(new_ticker, "6")
 
                 else:
                     new_order.is_falling = True
-                    print("7")
+                    print(new_ticker, "7")
         else:
 
             if indicator.data_array[-1] > bands_1dev.lowerband[-1]:
 
                 if macd_5m.hist[-1] > macd_5m.hist[-2]:
                     new_order.is_raising = True
-                    print("8")
+                    print(new_ticker, "8")
 
                 else:
                     new_order.is_falling = True
-                    print("9")
+                    print(new_ticker, "9")
             else:
 
                 if indicator.data_array[-1] > bands_2dev.lowerband[-1]:
@@ -198,7 +198,7 @@ def app(ticker="", a_time=0):
 
                         if rsi_5m.real[-1] < 50:
                             new_order.is_bottom = True
-                            print("10")
+                            print(new_ticker, "10")
 
                         else:
                             new_order.is_raising = True
@@ -206,11 +206,11 @@ def app(ticker="", a_time=0):
 
                     else:
                         new_order.is_bottom = True
-                        print("12")
+                        print(new_ticker, "12")
 
                 else:
                     new_order.is_bottom = True
-                    print("13")
+                    print(new_ticker, "13")
 
         successful_analysis = True
 
