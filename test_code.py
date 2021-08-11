@@ -14,12 +14,13 @@ from app_methods import get_unix
 from open_position import OpenPosition
 from order import Order
 from capital import Capital
+from strategies import Strategy
 import time
 import pytz
 import Data
 
 
-def app(ticker="", a_time=0):
+def app(ticker="", a_time=0, index=int):
 
     new_ticker = ticker
 
@@ -65,7 +66,7 @@ def app(ticker="", a_time=0):
     else:
 
         try:
-            indicator.set_candles(product=new_ticker, callback=start, begin=finish, granularity=300)
+            indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
 
         except ValueError:
             print(new_ticker)
@@ -134,6 +135,7 @@ def app(ticker="", a_time=0):
         except Exception:
             print("volume_ema failed for: " + new_ticker)
             print(indicator.candles)
+            print(ema_12p.real)
 
     else:
         # try setting candles again
@@ -141,76 +143,9 @@ def app(ticker="", a_time=0):
 
     if len(volume_5m.real) > 0:
 
-        if indicator.data_array[-1] > ema_12p.real[-1]:
+        strategy_5m = Strategy(indicator, macd_5m, bands_1dev, bands_2dev, volume_5m, rsi_5m, ema_12p, new_order)
+        strategy_5m.strategy(index)
 
-            if indicator.data_array[-1] > bands_1dev.upperband[-1]:
-
-                if indicator.data_array[-1] > bands_2dev.upperband[-1]:
-
-                    if rsi_5m.real[-1] > 70:
-
-                        if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                            new_order.is_raising = True
-                            print(new_ticker, "1")
-
-                        else:
-                            new_order.is_falling = True
-                            print(new_ticker, "2")
-
-                    else:
-                        new_order.is_raising = True
-                        print(new_ticker, "3")
-                else:
-
-                    if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                        new_order.is_raising = True
-                        print(new_ticker, "4")
-
-                    else:
-                        new_order.is_falling = True
-                        print(new_ticker, "5")
-
-            else:
-
-                if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                    new_order.is_raising = True
-                    print(new_ticker, "6")
-
-                else:
-                    new_order.is_falling = True
-                    print(new_ticker, "7")
-        else:
-
-            if indicator.data_array[-1] > bands_1dev.lowerband[-1]:
-
-                if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                    new_order.is_raising = True
-                    print(new_ticker, "8")
-
-                else:
-                    new_order.is_falling = True
-                    print(new_ticker, "9")
-            else:
-
-                if indicator.data_array[-1] > bands_2dev.lowerband[-1]:
-
-                    if macd_5m.hist[-1] > macd_5m.hist[-2]:
-
-                        if rsi_5m.real[-1] < 50:
-                            new_order.is_bottom = True
-                            print(new_ticker, "10")
-
-                        else:
-                            new_order.is_raising = True
-                            print("11")
-
-                    else:
-                        new_order.is_bottom = True
-                        print(new_ticker, "12")
-
-                else:
-                    new_order.is_bottom = True
-                    print(new_ticker, "13")
 
         successful_analysis = True
 
@@ -224,18 +159,20 @@ def app(ticker="", a_time=0):
         if successful_analysis:
 
             # Rules to make ready_to_trade True
-            if new_order.get_bottom() or new_order.get_rise() and not new_order.get_top() and not new_order.get_fall():
-                print(new_ticker + ": " + str(new_order.is_bottom) + ", " + str(new_order.is_raising) + ", " + str(new_order.is_top) + ", " + str(new_order.is_falling))
+            if strategy_5m.order.get_bottom() or strategy_5m.order.get_rise() and not strategy_5m.order.get_top() and not strategy_5m.order.get_fall():
+                print(new_ticker + ": " + str(strategy_5m.order.is_bottom) + ", " + str(strategy_5m.order.is_raising) + ", " + str(strategy_5m.order.is_top) + ", " + str(strategy_5m.order.is_falling))
                 ready_to_trade = True
                 print("ready to trade:", ready_to_trade)
             else:
+                print(new_ticker + ": " + str(strategy_5m.order.is_bottom) + ", " + str(strategy_5m.order.is_raising) + ", " + str(strategy_5m.order.is_top) + ", " + str(strategy_5m.order.is_falling))
                 ready_to_trade = False
 
-            if new_order.is_falling or new_order.is_top and not new_order.is_bottom and not new_order.is_raising:
+            if strategy_5m.order.is_falling or strategy_5m.order.is_top and not strategy_5m.order.is_bottom and not strategy_5m.order.is_raising:
                 ready_to_sell = True
-                print(new_ticker + ": " + str(new_order.is_bottom) + ", " + str(new_order.is_raising) + ", " + str(new_order.is_top) + ", " + str(new_order.is_falling))
+                print(new_ticker + ": " + str(strategy_5m.order.is_bottom) + ", " + str(strategy_5m.order.is_raising) + ", " + str(strategy_5m.order.is_top) + ", " + str(strategy_5m.order.is_falling))
                 print("ready to sell:", ready_to_sell)
             else:
+                print(new_ticker + ": " + str(strategy_5m.order.is_bottom) + ", " + str(strategy_5m.order.is_raising) + ", " + str(strategy_5m.order.is_top) + ", " + str(strategy_5m.order.is_falling))
                 ready_to_sell = False
 
         else:
@@ -246,5 +183,7 @@ def app(ticker="", a_time=0):
     else:
         pass
 
-
-new_app = app("ACH-USD", 1628383190)
+i= -1
+while i != -10:
+    new_app = app("ACH-USD", 1628383190, i)
+    i = i-1

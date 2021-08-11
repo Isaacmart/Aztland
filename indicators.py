@@ -10,7 +10,7 @@ class Indicator:
     Gets a initialized PublicClient as parameter
     '''
     def __init__(self, index=4, weight=True):
-        self.new_client = PublicClient
+        self.new_client = PublicClient()
         self.candles = []
         self.data_array = []
         self.np_array = []

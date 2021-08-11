@@ -14,7 +14,7 @@ from app_methods import get_time
 from app_methods import get_ticker
 from app_methods import last_instance
 from app_methods import get_size
-from app_methods import get_unix
+from strategies import Strategy
 import time
 import Data
 
@@ -156,78 +156,8 @@ def application():
 
         if len(volume_5m.real) > 0:
 
-            if indicator.data_array[-1] > ema_12p.real[-1]:
-
-                if indicator.data_array[-1] > bands_1dev.upperband[-1]:
-
-                    if indicator.data_array[-1] > bands_2dev.upperband[-1]:
-
-                        if rsi_5m.real[-1] > 70:
-
-                            if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                                new_order.is_raising = True
-                                print(new_ticker, "1")
-
-                            else:
-                                new_order.is_falling = True
-                                print(new_ticker, "2")
-
-                        else:
-                            new_order.is_raising = True
-                            print(new_ticker, "3")
-                    else:
-
-                        if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                            new_order.is_raising = True
-                            print(new_ticker, "4")
-
-                        else:
-                            new_order.is_falling = True
-                            print(new_ticker, "5")
-
-                else:
-
-                    if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                        new_order.is_raising = True
-                        print(new_ticker, "6")
-
-                    else:
-                        new_order.is_falling = True
-                        print(new_ticker, "7")
-            else:
-
-                if indicator.data_array[-1] > bands_1dev.lowerband[-1]:
-
-                    if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                        new_order.is_raising = True
-                        print(new_ticker, "8")
-
-                    else:
-                        new_order.is_falling = True
-                        print(new_ticker, "9")
-                else:
-
-                    if indicator.data_array[-1] > bands_2dev.lowerband[-1]:
-
-                        if macd_5m.hist[-1] > macd_5m.hist[-2]:
-
-                            if rsi_5m.real[-1] < 50:
-                                new_order.is_bottom = True
-                                print(new_ticker, "10")
-
-                            else:
-                                new_order.is_raising = True
-                                print("11")
-
-                        else:
-                            new_order.is_bottom = True
-                            print(new_ticker, "12")
-
-                    else:
-                        new_order.is_bottom = True
-                        print(new_ticker, "13")
-
-            successful_analysis = True
+            strategy_5m = Strategy(indicator, macd_5m, bands_1dev, bands_2dev, volume_5m, rsi_5m, ema_12p, new_order)
+            strategy_5m.strategy(-1)
 
         else:
             # Means that the indicators could not be measured
@@ -266,7 +196,7 @@ def application():
                     pass
 
             else:
-                print(new_ticker + ": " + str(new_order.is_bottom) + ", " + str(new_order.is_raising) + ", " + str(new_order.is_top) + ", " + str(new_order.is_falling))
+                print(new_ticker + ": " + str(strategy_5m.order.is_bottom) + ", " + str(strategy_5m.order.is_raising) + ", " + str(strategy_5m.order.is_top) + ", " + str(strategy_5m.order.is_falling))
                 # Does nothing if both statements are False
                 pass
 
@@ -280,14 +210,14 @@ def application():
 
             ready_to_trade: bool
 
-            if new_order.get_fall() or new_order.get_top() and not new_order.get_bottom() and not new_order.get_rise():
+            if new_order.get_top() and not new_order.get_bottom() and not new_order.get_rise():
                 ready_to_trade = True
 
             else:
                 ready_to_trade = False
 
             #Triggers a sell order if a rule is met:
-            if ready_to_trade and (time.time() > (get_unix(new_order.get_key("done_at")) + 1200.0)):
+            if ready_to_trade:
 
                 new_trade = client.place_market_order(product_id=new_order.get_key("product_id"), side='sell', size=get_size(new_order.get_key("product_id"), new_order.get_key('filled_size')))
 
@@ -310,7 +240,7 @@ def application():
 
             #Not rules were true
             else:
-                print(new_ticker + ": " + str(new_order.is_bottom) + ", " + str(new_order.is_raising) + ", " + str(new_order.is_top) + ", " + str(new_order.is_falling))
+                print(new_ticker + ": " + str(strategy_5m.order.is_bottom) + ", " + str(strategy_5m.order.is_raising) + ", " + str(strategy_5m.order.is_top) + ", " + str(strategy_5m.order.is_falling))
                 pass
 
         # If there is a long position but the ticker is not the same as the order's
