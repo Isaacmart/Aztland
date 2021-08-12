@@ -33,7 +33,7 @@ class Strategy:
                             self.order.is_raising = True
 
                         else:
-                            self.order.is_falling = True
+                            self.order.is_top = True
 
                     else:
                         self.order.is_raising = True
@@ -44,7 +44,7 @@ class Strategy:
                         self.order.is_raising = True
 
                     else:
-                        self.order.is_falling = True
+                        self.order.is_top = True
 
             else:
 
