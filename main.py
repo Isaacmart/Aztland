@@ -251,7 +251,7 @@ def application():
         return 'success', 200
 
     elif request.method == 'GET':
-        return render_template('index.html')
+        return redirect('http://3.218.228.129/login')
 
     else:
         abort(400)
@@ -264,5 +264,5 @@ def login():
         if request.form['username'] != 'admin' or request.form['password'] != 'admin':
             error = 'Invalid Credentials. Please try again.'
         else:
-            return redirect(url_for('home'))
+            return render_template('index.html')
     return render_template('login.html', error=error)
