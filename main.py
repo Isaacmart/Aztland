@@ -80,7 +80,7 @@ def application():
             writer.write(str(time.time()))
             writer.close()
 
-        elif "hist" in new_request:
+        elif position.get_position() is False and "hist" in new_request:
 
             try:
                 indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
@@ -167,7 +167,7 @@ def application():
         if position.get_position() is False:
 
             # Rules to make ready_to_trade True
-            if new_order.get_bottom() and not new_order.get_top() and not new_order.get_fall():
+            if new_order.get_bottom():
 
                 new_trade = client.place_market_order(product_id=new_ticker, side="buy", funds=funds.get_capital())
 
@@ -210,7 +210,7 @@ def application():
 
             ready_to_trade: bool
 
-            if new_order.get_top() and not new_order.get_bottom() and not new_order.get_rise():
+            if new_order.get_top():
                 ready_to_trade = True
 
             else:
@@ -240,7 +240,7 @@ def application():
 
             #Not rules were true
             else:
-                print(new_ticker + ": " + str(strategy_5m.order.is_bottom) + ", " + str(strategy_5m.order.is_raising) + ", " + str(strategy_5m.order.is_top) + ", " + str(strategy_5m.order.is_falling))
+                print("No ready to sell yet", new_order.get_key("product_id"))
                 pass
 
         # If there is a long position but the ticker is not the same as the order's
