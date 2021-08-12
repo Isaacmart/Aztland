@@ -1,4 +1,4 @@
-from flask import Flask, request, abort, render_template
+from flask import Flask, request, abort, render_template, redirect, url_for
 from open_position import OpenPosition
 from order import Order
 from capital import Capital
@@ -255,3 +255,15 @@ def application():
 
     else:
         abort(400)
+
+
+@app.route("/login", methods=['GET'])
+def request():
+    def login():
+        error = None
+        if request.method == 'POST':
+            if request.form['username'] != 'admin' or request.form['password'] != 'admin':
+                error = 'Invalid Credentials. Please try again.'
+            else:
+                return redirect(url_for('home'))
+        return render_template('login.html', error=error)
