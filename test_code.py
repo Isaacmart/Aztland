@@ -185,5 +185,5 @@ def app(ticker="", a_time=0, index=int):
 
 i= -1
 while i != -10:
-    new_app = app("ACH-USD", 1628383190, i)
+    new_app = app("TRB-USD", 1628821118, i)
     i = i-1

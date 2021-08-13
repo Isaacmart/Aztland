@@ -6,9 +6,9 @@ p_client = PublicClient()
 indicator = Indicator()
 indicator.initiate_client(p_client)
 
-new_ticker = "UNI-USD"
+new_ticker = "TRB-USD"
 
-_time = 1628299246
+_time = 1628821118
 
 tz = pytz.timezone('US/Eastern')
 finish = datetime.fromtimestamp(_time, tz).isoformat()
@@ -154,16 +154,20 @@ if len(volume_5m.real) > 0:
                 if macd_5m.hist[-1] > macd_5m.hist[-2]:
 
                     if rsi_5m.real[-1] < 50:
+                        print("1")
                         is_bottom = True
 
                     else:
                         is_raising = True
 
                 else:
+                    print("2")
                     is_bottom = True
 
             else:
+                print("3")
                 is_bottom = True
+
 
     successful_analysis = True
 
