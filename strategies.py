@@ -30,7 +30,12 @@ class Strategy:
                     if self.rsi.real[index] > 70:
 
                         if self.macd.hist[index] > self.macd.hist[index-1]:
-                            self.order.is_raising = True
+
+                            if self.indicator.data_array[-1] > self.indicator.candles[1][3]:
+                                self.order.is_raising = True
+
+                            else:
+                                self.order.is_top = True
 
                         else:
                             self.order.is_top = True
@@ -44,7 +49,11 @@ class Strategy:
                         self.order.is_raising = True
 
                     else:
-                        self.order.is_top = True
+                        if self.indicator.data_array[index] >= self.indicator.candles[0][2]:
+                            self.order.is_raising = True
+
+                        else:
+                            self.order.is_top = True
 
             else:
 
@@ -66,9 +75,9 @@ class Strategy:
 
                 if self.indicator.data_array[index] > self.bands_2dev.lowerband[index]:
 
-                    if self.macd.hist[-1] > self.macd.hist[-2]:
+                    if self.macd.hist[index] > self.macd.hist[index-1]:
 
-                        if self.rsi.real[index] < 50:
+                        if self.rsi.real[index] < 40:
                             self.order.is_bottom = True
 
                         else:
