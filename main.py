@@ -196,7 +196,7 @@ def application():
                     pass
 
             else:
-                print(new_ticker + ": " + str(strategy_5m.order.is_bottom) + ", " + str(strategy_5m.order.is_raising) + ", " + str(strategy_5m.order.is_top) + ", " + str(strategy_5m.order.is_falling))
+                #print(new_ticker + ": " + str(strategy_5m.order.is_bottom) + ", " + str(strategy_5m.order.is_raising) + ", " + str(strategy_5m.order.is_top) + ", " + str(strategy_5m.order.is_falling))
                 # Does nothing if both statements are False
                 pass
 
@@ -240,7 +240,7 @@ def application():
 
             #Not rules were true
             else:
-                print("No ready to sell yet", new_order.get_key("product_id"))
+                #print("No ready to sell yet", new_order.get_key("product_id"))
                 pass
 
         # If there is a long position but the ticker is not the same as the order's
