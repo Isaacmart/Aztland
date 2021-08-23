@@ -1,14 +1,15 @@
 from indicators import *
 from datetime import datetime
 import pytz
+from app_methods import get_time
 
 p_client = PublicClient()
 indicator = Indicator()
 indicator.initiate_client(p_client)
 
-new_ticker = "TRB-USD"
+new_ticker = "AXS-USD"
 
-_time = 1628821118
+_time = 1629145801
 
 tz = pytz.timezone('US/Eastern')
 finish = datetime.fromtimestamp(_time, tz).isoformat()
@@ -31,6 +32,8 @@ bands_2dev = BB()
 bands_1dev = BB(ndbevup=1, nbdevdn=1)
 rsi_5m = RSI()
 ema_12p = EMA()
+momentum = Momentum()
+
 
 if len(indicator.candles) > 0:
 
@@ -87,10 +90,21 @@ if len(indicator.candles) > 0:
         print("volume_ema failed for: " + new_ticker)
         print(indicator.candles)
 
+    try:
+        momentum.np_array = indicator.np_array
+        momentum.get_Momentum()
+
+    except Exception as e:
+        print("momentum failed for: ", new_ticker)
+        print(e)
+
 else:
     # try setting candles again
     pass
 
+
+print(momentum.real)
+'''
 # Asserts stock is at a bottom
 is_bottom = False
 
@@ -193,4 +207,4 @@ print("raising:", is_raising)
 print("top:", is_top)
 print("falling", is_falling)
 print("ready to buy:", ready_to_trade)
-print("ready to sell:", ready_to_sell)
+print("ready to sell:", ready_to_sell)'''

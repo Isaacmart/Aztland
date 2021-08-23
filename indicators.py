@@ -118,6 +118,20 @@ class EMA(Indicator):
         return self.real
 
 
+class Momentum(Indicator):
+
+    def __init__(self, time_period=2, index=4, weight=True):
+        super(Momentum, self).__init__(index=index, weight=weight)
+        self.timeperiod = time_period
+        self.real = []
+
+    def get_Momentum(self):
+
+        self.real = talib.MOM(real=self.np_array, timeperiod=self.timeperiod)
+        return self.real
+
+#class
+
 '''
 new_client = PublicClient()
 volume = VOLSMA(client=new_client, timeperiod=20)

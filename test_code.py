@@ -66,7 +66,7 @@ def app(ticker="", a_time=0, index=int):
     else:
 
         try:
-            indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
+            indicator.set_candles(product=new_ticker, callback=start, begin=finish, granularity=300)
 
         except ValueError:
             print(new_ticker)
@@ -159,7 +159,7 @@ def app(ticker="", a_time=0, index=int):
         if successful_analysis:
 
             # Rules to make ready_to_trade True
-            if strategy_5m.order.get_bottom() or strategy_5m.order.get_rise() and not strategy_5m.order.get_top() and not strategy_5m.order.get_fall():
+            if strategy_5m.order.get_bottom() and not strategy_5m.order.get_top () and not strategy_5m.order.get_fall():
                 print(new_ticker + ": " + str(strategy_5m.order.is_bottom) + ", " + str(strategy_5m.order.is_raising) + ", " + str(strategy_5m.order.is_top) + ", " + str(strategy_5m.order.is_falling))
                 ready_to_trade = True
                 print("ready to trade:", ready_to_trade)
@@ -167,7 +167,7 @@ def app(ticker="", a_time=0, index=int):
                 print(new_ticker + ": " + str(strategy_5m.order.is_bottom) + ", " + str(strategy_5m.order.is_raising) + ", " + str(strategy_5m.order.is_top) + ", " + str(strategy_5m.order.is_falling))
                 ready_to_trade = False
 
-            if strategy_5m.order.is_falling or strategy_5m.order.is_top and not strategy_5m.order.is_bottom and not strategy_5m.order.is_raising:
+            if strategy_5m.order.is_falling and not strategy_5m.order.is_bottom and not strategy_5m.order.is_raising:
                 ready_to_sell = True
                 print(new_ticker + ": " + str(strategy_5m.order.is_bottom) + ", " + str(strategy_5m.order.is_raising) + ", " + str(strategy_5m.order.is_top) + ", " + str(strategy_5m.order.is_falling))
                 print("ready to sell:", ready_to_sell)
@@ -183,7 +183,6 @@ def app(ticker="", a_time=0, index=int):
     else:
         pass
 
-i= -1
-while i != -10:
-    new_app = app("TRB-USD", 1628821118, i)
-    i = i-1
+
+new_app = app("BOND-USD", 1629053842, -1)
+

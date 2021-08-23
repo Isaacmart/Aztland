@@ -166,7 +166,7 @@ def application():
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
 
-            # Rules to make ready_to_trade True
+            # Rules to make. ready_to_trade True
             if new_order.get_bottom():
 
                 new_trade = client.place_market_order(product_id=new_ticker, side="buy", funds=funds.get_capital())

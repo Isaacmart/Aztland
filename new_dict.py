@@ -1,4 +1,3 @@
-
 from cbpro import PublicClient
 
 client = PublicClient()
