@@ -154,10 +154,13 @@ def application():
             #try setting candles again
             pass
 
+        reason = None
+
         if len(volume_5m.real) > 0:
 
             strategy_5m = Strategy(indicator, macd_5m, bands_1dev, bands_2dev, volume_5m, rsi_5m, ema_12p, new_order)
             strategy_5m.strategy(-1)
+            reason = strategy_5m.index
 
         else:
             # Means that the indicators could not be measured
@@ -229,6 +232,7 @@ def application():
 
                     if new_order.set_details():
                         print("order sent " + new_order.get_key('product_id'))
+                        print(reason)
                         funds.capital = float(new_order.get_key('executed_value'))
                         position.set_position()
 

@@ -18,6 +18,15 @@ class Strategy:
         self.volsma = vol_sma
         self.rsi = rsi
         self.ema_12p = ema
+        self.index = 0
+        self.error = None
+
+    def set_index(self, new_index):
+        if self.index == 0:
+            self.index = new_index
+
+        else:
+            raise Exception("Exception at", new_index)
 
     def strategy(self, index=int):
 
@@ -31,57 +40,61 @@ class Strategy:
 
                         if self.macd.hist[index] > self.macd.hist[index-1]:
 
-                            if self.indicator.data_array[-1] > self.indicator.candles[1][3]:
-                                self.order.is_raising = True
-                                print("1")
+                            if self.macd.macd > 0:
 
-                            else:
-                                self.order.is_top = True
-                                print("2")
+                                if self.indicator.data_array[-1] > self.indicator.candles[1][3]:
+                                    self.order.is_raising = True
+                                    self.set_index(1)
+
+                                else:
+                                    self.order.is_top = True
+                                    self.set_index(2)
 
                         else:
-                            self.order.is_top = True
-                            print("3")
+                            if self.macd.macd > 0:
+                                self.order.is_top = True
+                                self.set_index(3)
 
                     else:
                         self.order.is_raising = True
-                        print("4")
+                        self.set_index(4)
 
                 else:
 
                     if self.macd.hist[index] > self.macd.hist[index-1]:
                         self.order.is_raising = True
-                        print("5")
+                        self.set_index(5)
 
                     else:
                         if self.indicator.data_array[index] >= self.indicator.candles[0][2]:
                             self.order.is_raising = True
-                            print("6")
+                            self.set_index(6)
 
                         else:
-                            self.order.is_top = True
-                            print("7")
+                            if self.macd.macd > 0:
+                                self.order.is_top = True
+                                self.set_index(7)
 
             else:
 
                 if self.macd.hist[index] > self.macd.hist[index-1]:
                     self.order.is_raising = True
-                    print("8")
+                    self.set_index(8)
 
                 else:
                     self.order.is_falling = True
-                    print("9")
+                    self.set_index(9)
         else:
 
             if self.indicator.data_array[index] > self.bands_1dev.lowerband[index]:
 
                 if self.macd.hist[index] > self.macd.hist[index-1]:
                     self.order.is_raising = True
-                    print("10")
+                    self.set_index(9)
 
                 else:
                     self.order.is_falling = True
-                    print("11")
+                    self.set_index(10)
             else:
 
                 if self.indicator.data_array[index] > self.bands_2dev.lowerband[index]:
@@ -90,31 +103,30 @@ class Strategy:
 
                         if self.rsi.real[index] < 40:
                             self.order.is_bottom = True
-                            print("12")
+                            self.set_index(11)
 
                         else:
                             self.order.is_raising = True
-                            print("13")
+                            self.set_index(12)
 
                     else:
 
                         if 0.0 > self.macd.macd[-1]:
                             self.order.is_bottom = True
-                            print("14")
-
+                            self.set_index(13)
                         else:
                             self.order.is_falling = True
-                            print("15")
+                            self.set_index(14)
 
                 else:
 
                     if self.indicator.data_array[index] > self.indicator.candles[0][3]:
                         self.order.is_bottom = True
-                        print("16")
+                        self.set_index(15)
 
                     else:
                         self.order.is_falling = True
-                        print("17")
+                        self.set_index(16)
 
 
 
