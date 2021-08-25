@@ -40,7 +40,7 @@ class Strategy:
 
                         if self.macd.hist[index] > self.macd.hist[index-1]:
 
-                            if self.macd.macd > 0:
+                            if self.macd.macd[index] > 0:
 
                                 if self.indicator.data_array[-1] > self.indicator.candles[1][3]:
                                     self.order.is_raising = True
@@ -51,7 +51,7 @@ class Strategy:
                                     self.set_index(2)
 
                         else:
-                            if self.macd.macd > 0:
+                            if self.macd.macd[index] > 0:
                                 self.order.is_top = True
                                 self.set_index(3)
 
@@ -71,7 +71,7 @@ class Strategy:
                             self.set_index(6)
 
                         else:
-                            if self.macd.macd > 0:
+                            if self.macd.macd[index] > 0:
                                 self.order.is_top = True
                                 self.set_index(7)
 
@@ -111,7 +111,7 @@ class Strategy:
 
                     else:
 
-                        if 0.0 > self.macd.macd[-1]:
+                        if 0.0 > self.macd.macd[index]:
                             self.order.is_bottom = True
                             self.set_index(13)
                         else:
