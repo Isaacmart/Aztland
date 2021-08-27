@@ -206,11 +206,6 @@ def application():
         # If the Post request ticker is the same as the order's it will trigger a sell order
         elif position.get_position():
 
-            #rules for when the request ticker is other than the position's:
-            #rules for when the request ticker is the same as the position's
-            #if (new_ticker == new_order.get_key("product_id")) and (float(new_request['hist']) < 0.0):
-                #ready_to_trade = True
-
             ready_to_trade: bool
 
             if new_order.get_top():

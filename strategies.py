@@ -26,7 +26,7 @@ class Strategy:
             self.index = new_index
 
         else:
-            raise Exception("Exception at", new_index)
+            raise Exception('Exception at', new_index)
 
     def strategy(self, index=int):
 
@@ -40,25 +40,21 @@ class Strategy:
 
                         if self.macd.hist[index] > self.macd.hist[index-1]:
 
-                            if self.macd.macd[index] > 0:
+                            if self.indicator.data_array[-1] > self.indicator.candles[1][3]:
+                                self.order.is_raising = True
+                                self.set_index(1)
 
-                                if self.indicator.data_array[-1] > self.indicator.candles[1][3]:
-                                    self.order.is_raising = True
-                                    self.set_index(1)
-
-                                else:
-                                    self.order.is_top = True
-                                    self.set_index(2)
+                            else:
+                                self.order.is_top = True
+                                self.set_index(2)
 
                         else:
-                            if self.macd.macd[index] > 0:
-                                self.order.is_top = True
-                                self.set_index(3)
+                            self.order.is_top = True
+                            self.set_index(3)
 
                     else:
                         self.order.is_raising = True
                         self.set_index(4)
-
                 else:
 
                     if self.macd.hist[index] > self.macd.hist[index-1]:
@@ -71,9 +67,8 @@ class Strategy:
                             self.set_index(6)
 
                         else:
-                            if self.macd.macd[index] > 0:
-                                self.order.is_top = True
-                                self.set_index(7)
+                            self.order.is_top = True
+                            self.set_index(7)
 
             else:
 
@@ -90,11 +85,11 @@ class Strategy:
 
                 if self.macd.hist[index] > self.macd.hist[index-1]:
                     self.order.is_raising = True
-                    self.set_index(9)
+                    self.set_index(10)
 
                 else:
                     self.order.is_falling = True
-                    self.set_index(10)
+                    self.set_index(11)
             else:
 
                 if self.indicator.data_array[index] > self.bands_2dev.lowerband[index]:
@@ -103,30 +98,33 @@ class Strategy:
 
                         if self.rsi.real[index] < 40:
                             self.order.is_bottom = True
-                            self.set_index(11)
+                            self.set_index(12)
 
                         else:
                             self.order.is_raising = True
-                            self.set_index(12)
+                            self.set_index(13)
 
                     else:
 
-                        if 0.0 > self.macd.macd[index]:
+                        if 0.0 > self.macd.macd[-1]:
                             self.order.is_bottom = True
-                            self.set_index(13)
+                            self.set_index(14)
+
                         else:
                             self.order.is_falling = True
-                            self.set_index(14)
+                            self.set_index(15)
 
                 else:
 
                     if self.indicator.data_array[index] > self.indicator.candles[0][3]:
                         self.order.is_bottom = True
-                        self.set_index(15)
+                        self.set_index(16)
 
                     else:
                         self.order.is_falling = True
-                        self.set_index(16)
+                        self.set_index(17)
+
+
 
 
 

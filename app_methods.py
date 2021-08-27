@@ -30,9 +30,7 @@ def get_time(amount):
     return _time
 
 
-'''Gets a flask.request ticker key and returns a matching product in coinbase'''
-
-
+#Gets a flask.request ticker key and returns a matching product in coinbase'''
 def get_ticker(key, new_request):
 
     ticker_product: str
