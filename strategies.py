@@ -30,17 +30,17 @@ class Strategy:
 
     def strategy(self, index=int):
 
-        if self.indicator.data_array[index] > self.ema_12p.real[index]:
+        if self.indicator.close_array[index] > self.ema_12p.real[index]:
 
-            if self.indicator.data_array[index] > self.bands_1dev.upperband[index]:
+            if self.indicator.close_array[index] > self.bands_1dev.upperband[index]:
 
-                if self.indicator.data_array[index] > self.bands_2dev.upperband[index]:
+                if self.indicator.close_array[index] > self.bands_2dev.upperband[index]:
 
                     if self.rsi.real[index] > 70:
 
                         if self.macd.hist[index] > self.macd.hist[index-1]:
 
-                            if self.indicator.data_array[-1] > self.indicator.candles[1][3]:
+                            if self.indicator.close_array[-1] > self.indicator.candles[1][3]:
                                 self.order.is_raising = True
                                 self.set_index(1)
 
@@ -62,7 +62,7 @@ class Strategy:
                         self.set_index(5)
 
                     else:
-                        if self.indicator.data_array[index] >= self.indicator.candles[0][2]:
+                        if self.indicator.close_array[index] >= self.indicator.candles[0][2]:
                             self.order.is_raising = True
                             self.set_index(6)
 
@@ -81,7 +81,7 @@ class Strategy:
                     self.set_index(9)
         else:
 
-            if self.indicator.data_array[index] > self.bands_1dev.lowerband[index]:
+            if self.indicator.close_array[index] > self.bands_1dev.lowerband[index]:
 
                 if self.macd.hist[index] > self.macd.hist[index-1]:
                     self.order.is_raising = True
@@ -92,7 +92,7 @@ class Strategy:
                     self.set_index(11)
             else:
 
-                if self.indicator.data_array[index] > self.bands_2dev.lowerband[index]:
+                if self.indicator.close_array[index] > self.bands_2dev.lowerband[index]:
 
                     if self.macd.hist[index] > self.macd.hist[index-1]:
 
@@ -116,7 +116,7 @@ class Strategy:
 
                 else:
 
-                    if self.indicator.data_array[index] > self.indicator.candles[0][3]:
+                    if self.indicator.close_array[index] > self.indicator.candles[0][3]:
                         self.order.is_bottom = True
                         self.set_index(16)
 

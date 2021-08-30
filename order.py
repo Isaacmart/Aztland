@@ -79,7 +79,7 @@ class Order:
         return self.is_bottom
 
     def get_rise(self):
-        return self.new_id
+        return self.is_raising
 
     def get_top(self):
         return self.is_top

@@ -21,5 +21,3 @@ class OpenPosition:
         if self.order.set_details():
             if self.order.get_key('side') == 'buy':
                 self.long_position = True
-
-

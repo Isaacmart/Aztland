@@ -6,13 +6,15 @@ from cbpro import PublicClient
 class Indicator:
 
     '''
+    Base class for any indicator.
     Index 4 will create a list with close price values
     Gets a initialized PublicClient as parameter
     '''
     def __init__(self, index=4, weight=True):
         self.new_client = PublicClient()
         self.candles = []
-        self.data_array = []
+        self.close_array = []
+        self.date_array = []
         self.np_array = []
         self.index = index
         self.weight = weight
@@ -28,18 +30,29 @@ class Indicator:
     def get_data_set(self):
 
         for candle in self.candles:
-            self.data_array.append(float(candle[self.index]))
+            self.close_array.append(float(candle[self.index]))
 
-        return self.data_array
+        return self.close_array
 
     def reverse_data(self):
 
-        self.data_array.reverse()
-        return self.data_array
+        self.close_array.reverse()
+        return self.close_array
+
+    def get_dates(self):
+
+        p = 0
+        while p < len(self.candles):
+            self.date_array.append(self.candles[p][0])
+            p = p + 1
+
+        self.date_array.reverse()
+
+        return self.date_array
 
     def get_np_array(self):
 
-        self.np_array = numpy.array(self.data_array)
+        self.np_array = numpy.array(self.close_array)
         return self.np_array
 
 
@@ -129,48 +142,3 @@ class Momentum(Indicator):
 
         self.real = talib.MOM(real=self.np_array, timeperiod=self.timeperiod)
         return self.real
-
-#class
-
-'''
-new_client = PublicClient()
-volume = VOLSMA(client=new_client, timeperiod=20)
-volume.set_candles(product='ETH-USD', callback=get_time(27976), begin=get_time(0), granularity=300)
-volume.get_data_set()
-volume.reverse_data()
-volume.get_volume()
-print(volume.real)
-
-bands = BB(client=new_client)
-bands.set_candles(product='ETH-USD', callback=get_time(27976), begin=get_time(0), granularity=300)
-bands.get_data_set()
-bands.reverse_data()
-bands.get_BB()
-print(bands.upperband)
-
-m15_macd = MACD(client=new_client)
-m15_macd.set_candles(product='ETH-USD', callback=get_time(27976), begin=get_time(0), granularity=300)
-m15_macd.get_data_set()
-m15_macd.reverse_data()
-m15_macd.get_MACD()
-print(m15_macd.hist[-1])
-'''
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

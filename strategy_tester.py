@@ -15,6 +15,8 @@ from trade import Trade
 import time
 import Data
 
+#token = "SOL-USD"
+
 for token in new_dict:
 
     capital = 100
@@ -43,7 +45,8 @@ for token in new_dict:
     requests = 0
     print(token)
 
-    while index < 1:
+#Requests data from coinbase
+    while index < 961:
 
         indicator.set_candles(product=token, callback=get_time(callback), begin=get_time(begin), granularity=300)
         requests = requests + 1
@@ -71,6 +74,7 @@ for token in new_dict:
     try:
         indicator.get_data_set()
         indicator.reverse_data()
+        indicator.get_dates()
         indicator.get_np_array()
         successful_exec = True
     except Exception:
@@ -135,21 +139,46 @@ for token in new_dict:
         print("volume_ema failed for: " + token)
         print(indicator.candles)
 
+    # verifies that the data was extracted successfully
+    h = 0
+    y = -1
+
+    while h < len(indicator.candles):
+        if indicator.date_array[h] == indicator.candles[y][0]:
+            pass
+        else:
+            print("error, dates do not match")
+
+        h = h + 1
+        y = y - 1
+
+    l = 0
+    q = -1
+
+    while l < len(indicator.candles):
+
+        if indicator.close_array[l] == indicator.candles[q][4]:
+            pass
+        else:
+            print("error, close prices do not match")
+
+        l = l + 1
+        q = q - 1
+
     if successful_exec is True:
 
         strategy_5m = Strategy(indicator, macd_5m, bands_1dev, bands_2dev, volume_5m, rsi_5m, ema_12p, new_order)
 
-        i = 0
+        i = 1
+        k = -2
 
         new_trade = Trade()
 
         params: dict
 
-        while i < 1:
+        while i < len(indicator.close_array):
 
             strategy_5m.strategy(i)
-
-            print(position.get_position())
 
             if position.get_position() is False:
 
@@ -157,47 +186,83 @@ for token in new_dict:
 
                     params = {
                         "id": i,
-                        "size": capital / indicator.candles[i][4],
+                        "size": capital / indicator.candles[k][4],
                         "product_id": token,
                         "side": "buy",
                         "funds": capital,
                         "status": "done",
-                        "executed_value": indicator.candles[i][4]
+                        "done_at": indicator.date_array[i],
+                        "executed_value": indicator.close_array[i]
                     }
 
-                    new_trade.b_size = capital / indicator.candles[i][4]
-                    new_trade.buy_price = indicator.candles[i][4]
-
+                    writer = open("data.txt", "w")
                     new_order.details = params
-                    print(new_order.details)
-                    new_order.set_details()
+                    for line in new_order.details:
+                        writer.write(str(new_order.details[line]) + "\n")
+                    writer.close()
+
+                    print("buy order details: ", new_order.details)
+
+                    if "side" in new_order.details:
+                        if new_order.get_key("side") == "buy":
+                            position.long_position = True
+
+                    #print("position: ", position.get_position())
+
+                else:
+                    new_order.is_bottom = False
+                    new_order.is_raising = False
+                    new_order.is_raising = False
+                    new_order.is_top = False
 
             elif position.get_position():
 
                 if new_order.get_top():
 
+                    reader = open("data.txt", "r")
+                    reader.read()
+
                     params = {
                         "id": i,
+                        "size": new_order.get_key("size"),
                         "product_id": token,
-                        "size": new_order.details["size"],
                         "side": "sell",
-                        "funds": indicator.candles[i][4],
+                        "funds": indicator.close_array[i] * new_order.get_key("size"),
                         "status": "done",
-                        "executed_value": indicator.candles[i][4]
+                        "done_at": indicator.date_array[i],
+                        "executed_value": indicator.close_array[i]
                     }
 
-                    new_trade.s_size = new_order.details["size"]
-                    new_trade.sell_price = indicator.candles[i][4]
-
                     new_order.details = params
-                    new_order.set_details()
 
-                    capital = (new_trade.s_size * new_trade.sell_price)
-                    print(new_trade.buy_price + " " + new_trade.sell_price + " \n")
+                    if "side" in new_order.details:
+                        if new_order.get_key("side") == "sell":
+                            position.long_position = False
+
+                    print("sell order details: ", new_order.details)
+                    #print("position: ", position.get_position())
+
+                    capital = indicator.close_array[i] * new_order.get_key("size")
+
+                else:
+                    new_order.is_bottom = False
+                    new_order.is_raising = False
+                    new_order.is_raising = False
+                    new_order.is_top = False
 
             i = i + 1
+            k = k - 1
 
             strategy_5m.index = 0
+
+        lapse = indicator.date_array[-1] - indicator.date_array[0]
+
+        if lapse >= 86400:
+
+            lapse = lapse / 86400
+
+        awriter = open("capital_1.txt", "a")
+        awriter.write(token + " capital: " + str(capital) + " in " + str(lapse) + "days" + "\n")
 
     print(capital)
 
