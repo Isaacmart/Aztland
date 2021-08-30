@@ -195,7 +195,7 @@ for token in new_dict:
                         "executed_value": indicator.close_array[i]
                     }
 
-                    writer = open("data.txt", "w")
+                    writer = open("txt_files/data.txt", "w")
                     new_order.details = params
                     for line in new_order.details:
                         writer.write(str(new_order.details[line]) + "\n")
@@ -219,7 +219,7 @@ for token in new_dict:
 
                 if new_order.get_top():
 
-                    reader = open("data.txt", "r")
+                    reader = open("txt_files/data.txt", "r")
                     reader.read()
 
                     params = {
@@ -261,7 +261,7 @@ for token in new_dict:
 
             lapse = lapse / 86400
 
-        awriter = open("capital_1.txt", "a")
+        awriter = open("txt_files/capital_1.txt", "a")
         awriter.write(token + " capital: " + str(capital) + " in " + str(lapse) + "days" + "\n")
 
     print(capital)
