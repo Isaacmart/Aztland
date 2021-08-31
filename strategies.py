@@ -28,72 +28,101 @@ class Strategy:
         else:
             raise Exception('Exception at', new_index)
 
-    def strategy(self, index=int):
+    def strategy(self, index=int, beg=0):
 
+        #Check whether price is over the 12 period EMA line
         if self.indicator.close_array[index] > self.ema_12p.real[index]:
 
+            #Checks whether price is over the 1 deviation Bollinger upper band
             if self.indicator.close_array[index] > self.bands_1dev.upperband[index]:
 
+                #Checks whether price is over the 2 deviation Bollinger upper band
                 if self.indicator.close_array[index] > self.bands_2dev.upperband[index]:
 
+                    #Checks whether the RSI is over 70
                     if self.rsi.real[index] > 70:
 
+                        #Checks whether the MACD histogram is over the previous value
                         if self.macd.hist[index] > self.macd.hist[index-1]:
 
-                            if self.indicator.close_array[-1] > self.indicator.candles[1][3]:
+                            #Checks whether the current price is over the opening price for that candlestick
+                            #If is_raising is True, the token price is raising
+                            if self.indicator.close_array[index] > self.indicator.candles[beg][3]:
                                 self.order.is_raising = True
                                 self.set_index(1)
 
+                            #If the last if statement is False, the token is at a top price
                             else:
                                 self.order.is_top = True
                                 self.set_index(2)
 
+                        #If this if statement is False, the token is at a top price
                         else:
                             self.order.is_top = True
                             self.set_index(3)
 
+                    #If this if-statement is False, the token is raising
                     else:
                         self.order.is_raising = True
                         self.set_index(4)
+
+                #If the price is not over the 2 deviation Bollinger upper band, more analysis has to been done
                 else:
 
+                    #If the last MACD histogram value is over the previous value, the token is raising
                     if self.macd.hist[index] > self.macd.hist[index-1]:
                         self.order.is_raising = True
                         self.set_index(5)
 
+                    #In case that is False
                     else:
-                        if self.indicator.close_array[index] >= self.indicator.candles[0][2]:
+
+                        #If the price is over the opening price, the token is raising
+                        if self.indicator.close_array[index] >= self.indicator.candles[beg][2]:
                             self.order.is_raising = True
                             self.set_index(6)
 
+                        #If the last statement is False, the token is at a top
                         else:
                             self.order.is_top = True
                             self.set_index(7)
 
+            #If price is not over the 1 deviation Bollinger upper band, more analysis needs to be done
             else:
 
+                #If the MACD histogram value is over the previous value, the token price is raising
                 if self.macd.hist[index] > self.macd.hist[index-1]:
                     self.order.is_raising = True
                     self.set_index(8)
 
+                #If the last if-stament is False, the token is falling
                 else:
                     self.order.is_falling = True
                     self.set_index(9)
+
+        #If price is not over the 12 period EMA line, more analysis is conducted
         else:
 
+            #If the price is over the 1 deviation Bollinger lower band
             if self.indicator.close_array[index] > self.bands_1dev.lowerband[index]:
 
+                #If the last MACD histogram value is over the previous one, price is raising
                 if self.macd.hist[index] > self.macd.hist[index-1]:
                     self.order.is_raising = True
                     self.set_index(10)
 
+                #If not, price is falling
                 else:
                     self.order.is_falling = True
                     self.set_index(11)
+
+            #If the price is not over 1 deviation Bollinger lower
             else:
 
+                #If price is over the 2 deviation Bollinger lower band
                 if self.indicator.close_array[index] > self.bands_2dev.lowerband[index]:
 
+                    #If the last MACD histogram
                     if self.macd.hist[index] > self.macd.hist[index-1]:
 
                         if self.rsi.real[index] < 40:
@@ -116,7 +145,7 @@ class Strategy:
 
                 else:
 
-                    if self.indicator.close_array[index] > self.indicator.candles[0][3]:
+                    if self.indicator.close_array[index] > self.indicator.candles[beg][3]:
                         self.order.is_bottom = True
                         self.set_index(16)
 

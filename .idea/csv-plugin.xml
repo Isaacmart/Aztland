@@ -213,6 +213,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/txt_files/capital_3.txt">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/websocket_connect.py">
           <value>
             <Attribute>

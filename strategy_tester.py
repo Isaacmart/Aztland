@@ -46,7 +46,7 @@ for token in new_dict:
     print(token)
 
 #Requests data from coinbase
-    while index < 961:
+    while index < 5:
 
         indicator.set_candles(product=token, callback=get_time(callback), begin=get_time(begin), granularity=300)
         requests = requests + 1
@@ -176,9 +176,12 @@ for token in new_dict:
 
         params: dict
 
+        all_trades = 0
+        prof_trades = 0
+
         while i < len(indicator.close_array):
 
-            strategy_5m.strategy(i)
+            strategy_5m.strategy(i, beg=k)
 
             if position.get_position() is False:
 
@@ -192,7 +195,8 @@ for token in new_dict:
                         "funds": capital,
                         "status": "done",
                         "done_at": indicator.date_array[i],
-                        "executed_value": indicator.close_array[i]
+                        "executed_value": capital * 0.995,
+                        "product_price": indicator.close_array[i]
                     }
 
                     writer = open("txt_files/data.txt", "w")
@@ -222,15 +226,27 @@ for token in new_dict:
                     reader = open("txt_files/data.txt", "r")
                     reader.read()
 
+                    new_size = new_order.get_key("size")
+
+                    capital = (indicator.close_array[i] * new_size) * 0.995
+
+                    if capital > new_order.get_key("executed_value"):
+                        all_trades = all_trades + 1
+                        prof_trades = prof_trades + 1
+
+                    else:
+                        all_trades = all_trades + 1
+
                     params = {
                         "id": i,
-                        "size": new_order.get_key("size"),
+                        "size": new_size,
                         "product_id": token,
                         "side": "sell",
-                        "funds": indicator.close_array[i] * new_order.get_key("size"),
+                        "funds": indicator.close_array[i] * new_size,
                         "status": "done",
                         "done_at": indicator.date_array[i],
-                        "executed_value": indicator.close_array[i]
+                        "executed_value": capital,
+                        "product_price": indicator.close_array[i]
                     }
 
                     new_order.details = params
@@ -241,8 +257,6 @@ for token in new_dict:
 
                     print("sell order details: ", new_order.details)
                     #print("position: ", position.get_position())
-
-                    capital = indicator.close_array[i] * new_order.get_key("size")
 
                 else:
                     new_order.is_bottom = False
@@ -261,8 +275,15 @@ for token in new_dict:
 
             lapse = lapse / 86400
 
-        awriter = open("txt_files/capital_1.txt", "a")
-        awriter.write(token + " capital: " + str(capital) + " in " + str(lapse) + "days" + "\n")
+        try:
+            success_rate = (prof_trades * 100) / all_trades
+
+        except ZeroDivisionError:
+            print(new_order.details)
+
+        awriter = open("txt_files/capital_4.txt", "a")
+        awriter.write(token + " capital: " + str(capital) + " in " + str(lapse) + " days, " + "success rate: " + str(success_rate) + "\n")
+        awriter.close()
 
     print(capital)
 
