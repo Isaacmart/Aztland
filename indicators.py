@@ -11,7 +11,7 @@ class Indicator:
     Gets a initialized PublicClient as parameter
     '''
     def __init__(self, index=4, weight=True):
-        self.new_client = PublicClient()
+        self.new_client = PublicClient(timeout=45)
         self.candles = []
         self.close_array = []
         self.date_array = []

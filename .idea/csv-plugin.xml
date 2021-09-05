@@ -3,6 +3,13 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="/CB_data.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/Data.py">
           <value>
             <Attribute>
@@ -52,6 +59,27 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/data/1INCH-USD.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/data/AXS-USD_1m.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/data/AXS-USD_&lt;module 'time' (built-in)&gt;m.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/data/CB_stocks_1INCHUSD.csv">
           <value>
             <Attribute>
@@ -88,6 +116,27 @@
           </value>
         </entry>
         <entry key="/data/CB_stocks_NKNUSD.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/data/ETH-USD.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/data/UMA-USD_1m.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/data/WLUNA-USD_1m.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -207,6 +256,13 @@
           </value>
         </entry>
         <entry key="/trading_rules.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/txt_files/capital_2.txt">
           <value>
             <Attribute>
               <option name="separator" value=":" />

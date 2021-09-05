@@ -3,6 +3,7 @@ from cbpro import PublicClient
 from cbpro import AuthenticatedClient
 from order import Order
 from open_position import OpenPosition
+from app_methods import crossing
 from dict import new_dict
 from indicators import Indicator
 from indicators import MACD
@@ -16,6 +17,11 @@ import time
 import Data
 
 #token = "SOL-USD"
+
+awriter = open("txt_files/capital_8.txt", "w")
+new_str = ["token, capital, lapse, all_trades, prof_trades, success rate"]
+awriter.write(new_str)
+awriter.close()
 
 for token in new_dict:
 
@@ -36,8 +42,10 @@ for token in new_dict:
     rsi_5m = RSI()
     ema_12p = EMA()
 
+    #Amount of requests
     index = 0
-    callback = 90000
+    #callback is granularity times 300
+    callback = 18000
     begin = 0
 
     data = []
@@ -46,9 +54,15 @@ for token in new_dict:
     print(token)
 
 #Requests data from coinbase
-    while index < 5:
+    while index < 3504:
 
-        indicator.set_candles(product=token, callback=get_time(callback), begin=get_time(begin), granularity=300)
+        #print(index)
+
+        try:
+            indicator.set_candles(product=token, callback=get_time(callback), begin=get_time(begin), granularity=60)
+        except Exception as e:
+            print(e)
+
         requests = requests + 1
 
         if len(indicator.candles) > 0:
@@ -59,7 +73,7 @@ for token in new_dict:
             break
 
         begin = callback
-        callback = callback + 90000
+        callback = callback + 18000
 
         index = index + 1
 
@@ -275,14 +289,26 @@ for token in new_dict:
 
             lapse = lapse / 86400
 
+        success_rate = 0
+
         try:
             success_rate = (prof_trades * 100) / all_trades
 
         except ZeroDivisionError:
             print(new_order.details)
 
-        awriter = open("txt_files/capital_4.txt", "a")
-        awriter.write(token + " capital: " + str(capital) + " in " + str(lapse) + " days, " + "success rate: " + str(success_rate) + "\n")
+        final = {
+            "token": token,
+            "capital": "%.2f" % capital,
+            "days": "%.2f" % lapse,
+            "all_trades": all_trades,
+            "succes_trades": prof_trades,
+            "success_trades": "%.2f" % success_rate
+        }
+
+        awriter = open("txt_files/capital_8.txt", "a")
+        new_str = "token, capital, lapse, all_trades, prof_trades, succes rate"
+        awriter.write(token + ", " + str("%.2f" % capital) + ", " + str("%.2f" % lapse) + ", " + str(all_trades) + ", " + str(prof_trades) + ", " + str("%.2f" % success_rate) + "\n")
         awriter.close()
 
     print(capital)

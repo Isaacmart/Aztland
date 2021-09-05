@@ -113,4 +113,34 @@ def last_instance():
     return greater
 
 
+#Checks whether two values are crossing value
+def crossover(self, x, y):
+    cross_over = []
+    i = 1
+
+    while i < len(x):
+        if (x[i] > y[i]) and (x[i - 1] < y[i - 1]):
+            cross_over.insert(i, True)
+
+        else:
+            cross_over.insert(i, False)
+
+    return cross_over
+
+
+def crossunder(self, x, y):
+    cross_under = []
+    i = 1
+
+    while 1 < len(x):
+        if (x[i] < y[i]) and (x[i - 1] > y[i - 1]):
+            cross_under.insert(i, True)
+
+        else:
+            cross_under.insert(i, False)
+
+    return cross_under
+
+
+
 

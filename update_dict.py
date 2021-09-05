@@ -5,10 +5,14 @@ client = PublicClient()
 
 data = client.get_products()
 
-
+print("Add this tokens")
 for line in data:
     if line['quote_currency'] == "USD":
         if line['id'] in new_dict:
             pass
         else:
             print(line['id'])
+
+print("Tokens")
+for line in new_dict:
+    print(line)

@@ -1,0 +1,1 @@
+token, capital, lapse, all_trades, prof_trades, success rate 
