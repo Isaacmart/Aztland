@@ -3,7 +3,6 @@ from cbpro import PublicClient
 from cbpro import AuthenticatedClient
 from order import Order
 from open_position import OpenPosition
-from app_methods import crossing
 from dict import new_dict
 from indicators import Indicator
 from indicators import MACD
@@ -11,18 +10,16 @@ from indicators import VolSMA
 from indicators import BB
 from indicators import RSI
 from indicators import EMA
-from app_methods import get_time
 from trade import Trade
-import time
 import Data
+import csv
 
-#token = "SOL-USD"
-
-awriter = open("txt_files/capital_8.txt", "w")
-new_str = ["token, capital, lapse, all_trades, prof_trades, success rate"]
+awriter = open("../test_cases/test_01.txt", "w")
+new_str = "token, capital, lapse, all_trades, prof_trades, success rate"
 awriter.write(new_str)
 awriter.close()
 
+#token = "ETH-USD"
 for token in new_dict:
 
     capital = 100
@@ -42,46 +39,20 @@ for token in new_dict:
     rsi_5m = RSI()
     ema_12p = EMA()
 
-    #Amount of requests
-    index = 0
-    #callback is granularity times 300
-    callback = 18000
-    begin = 0
-
     data = []
-
-    requests = 0
-    print(token)
-
-#Requests data from coinbase
-    while index < 3504:
-
-        #print(index)
-
+    new_file = open(f"../data_5m/{token}_5m.csv", newline='')
+    reader = csv.reader(new_file, delimiter=',')
+    for row in reader:
         try:
-            indicator.set_candles(product=token, callback=get_time(callback), begin=get_time(begin), granularity=60)
-        except Exception as e:
-            print(e)
+            candle = []
+            for element in row:
+                candle.append(float(element))
+            data.append(candle)
+        except ValueError as ve:
+            print(ve)
+            continue
 
-        requests = requests + 1
-
-        if len(indicator.candles) > 0:
-            for line in indicator.candles:
-                data.append(line)
-
-        else:
-            break
-
-        begin = callback
-        callback = callback + 18000
-
-        index = index + 1
-
-        if requests == 9:
-            time.sleep(1)
-            requests = 0
-
-    indicator.candles = data
+    indicator.candles = data[1:]
 
     successful_exec = False
 
@@ -302,20 +273,13 @@ for token in new_dict:
             "capital": "%.2f" % capital,
             "days": "%.2f" % lapse,
             "all_trades": all_trades,
-            "succes_trades": prof_trades,
-            "success_trades": "%.2f" % success_rate
+            "success_trades": prof_trades,
+            "success_rate": "%.2f" % success_rate
         }
 
-        awriter = open("txt_files/capital_8.txt", "a")
-        new_str = "token, capital, lapse, all_trades, prof_trades, succes rate"
+        awriter = open("../test_cases/test_01.txt", "a")
+        new_str = "token, capital, lapse, all_trades, prof_trades, success rate"
         awriter.write(token + ", " + str("%.2f" % capital) + ", " + str("%.2f" % lapse) + ", " + str(all_trades) + ", " + str(prof_trades) + ", " + str("%.2f" % success_rate) + "\n")
         awriter.close()
 
     print(capital)
-
-
-
-
-
-
-
