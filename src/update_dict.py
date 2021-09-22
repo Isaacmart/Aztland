@@ -13,6 +13,4 @@ for line in data:
         else:
             print(line['id'])
 
-print("Tokens")
-for line in new_dict:
-    print(line)
+
