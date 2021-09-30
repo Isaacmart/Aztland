@@ -96,7 +96,7 @@ class Indicator:
         self.np_array = numpy.array(self.close_array)
         return self.np_array
 
-    def crossover(self, x: [], y: []):
+    def crossover(self, x=[], y=[]):
         """
         Checks whether a value is crossing over another
         :param x: List that is crossing a value
@@ -113,7 +113,7 @@ class Indicator:
                 cross_over.insert(i, False)
         return cross_over
 
-    def crossunder(self, x: [], y: []):
+    def crossunder(self, x=[], y=[]):
         """
         Measures if a value is crossing another one under
         :param x: List crossing y
