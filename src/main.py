@@ -29,13 +29,10 @@ app = Flask(__name__)
 def application():
 
     if request.method == 'POST':
-
         new_request = request.get_json(force=True)
-
         new_ticker: str
 
         if "ticker" in new_request:
-
             # ticker converted into a Coinbase product id
             new_ticker = get_ticker('ticker', new_request)
 
@@ -66,37 +63,30 @@ def application():
         ema_12p = EMA()
 
         if position.get_position() and last_instance():
-
             try:
                 indicator.set_candles(product=new_order.get_key("product_id"), callback=get_time(27976), begin=get_time(0), granularity=300)
-
             except ValueError:
                 print(new_ticker)
                 print(indicator.candles)
                 #wait to make another request
                 pass
-
             writer = open(Data.Time, "w")
             writer.write(str(time.time()))
             writer.close()
 
         elif position.get_position() is False and "hist" in new_request:
-
             try:
                 indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
-
             except ValueError:
                 print(new_ticker)
                 print(indicator.candles)
                 #wait to make another request
                 pass
-
         else:
             #get candles for previous tickers
             pass
 
         if len(indicator.candles) > 0:
-
             try:
                 indicator.get_data_set()
                 indicator.reverse_data()
@@ -104,42 +94,36 @@ def application():
             except Exception:
                 print("indicators failed for: " + new_ticker)
                 print(indicator.candles)
-
             try:
                 macd_5m.np_array = indicator.np_array
                 macd_5m.set_indicator()
             except Exception:
                 print("macd failed for: " + new_ticker)
                 print(indicator.candles)
-
             try:
                 bands_2dev.np_array = indicator.np_array
                 bands_2dev.set_indicator()
             except Exception:
                 print("bands_2dev failed for: " + new_ticker)
                 print(indicator.candles)
-
             try:
                 bands_1dev.np_array = indicator.np_array
                 bands_1dev.set_indicator()
             except Exception:
                 print("bands_1dev failed for: " + new_ticker)
                 print(indicator.candles)
-
             try:
                 rsi_5m.np_array = indicator.np_array
                 rsi_5m.set_indicator()
             except Exception:
                 print("rsi failed for: " + new_ticker)
                 print(indicator.candles)
-
             try:
                 ema_12p.np_array = indicator.np_array
                 ema_12p.set_indicator()
             except Exception:
                 print("ema_12 failed for: " + new_ticker)
                 print(indicator.candles)
-
             try:
                 volume_5m.candles = indicator.candles
                 volume_5m.get_data_set()
@@ -149,60 +133,42 @@ def application():
             except Exception:
                 print("volume_ema failed for: " + new_ticker)
                 print(indicator.candles)
-
         else:
             #try setting candles again
             pass
-
         reason = None
-
         if len(volume_5m.real) > 0:
-
             strategy_5m = Strategy(indicator, macd_5m, bands_1dev, bands_2dev, volume_5m, rsi_5m, ema_12p, new_order)
             strategy_5m.strategy(-1)
             reason = strategy_5m.index
-
         else:
             # Means that the indicators could not be measured
             pass
-
         # If there is no a position opened it will trigger a buy order
         if position.get_position() is False:
-
             # Rules to make. ready_to_trade True
             if new_order.get_bottom():
-
                 new_trade = client.place_market_order(product_id=new_ticker, side="buy", funds=funds.get_capital())
-
                 if "id" in new_trade:
-
                     writer = open(Data.Path, "w")
                     writer.write(new_trade['id'])
                     writer.close()
                     new_order.get_id()
-
                     if new_order.set_details():
-
                         position.set_position()
-
                         writer = open(Data.Time, "w")
                         writer.write(str(time.time()))
                         writer.close()
-
                         print("order sent: ", new_order.details)
-
                     else:
                         print("opening position details: ", new_trade)
-
                 else:
                     print(new_ticker + " " + str(new_trade))
                     pass
-
             else:
                 #print(new_ticker + ": " + str(strategy_5m.order.is_bottom) + ", " + str(strategy_5m.order.is_raising) + ", " + str(strategy_5m.order.is_top) + ", " + str(strategy_5m.order.is_falling))
                 # Does nothing if both statements are False
                 pass
-
         # If the Post request ticker is the same as the order's it will trigger a sell order
         elif position.get_position():
 
@@ -213,45 +179,34 @@ def application():
 
             else:
                 ready_to_trade = False
-
             #Triggers a sell order if a rule is met:
             if ready_to_trade:
-
                 new_trade = client.place_market_order(product_id=new_order.get_key("product_id"), side='sell', size=get_size(new_order.get_key("product_id"), new_order.get_key('filled_size')))
-
                 if "id" in new_trade:
                     writer = open(Data.Path, "w")
                     writer.write(new_trade['id'])
                     writer.close()
                     new_order.get_id()
-
                     if new_order.set_details():
                         print("order sent " + new_order.get_key('product_id'))
                         print(reason)
                         funds.capital = float(new_order.get_key('executed_value'))
                         position.set_position()
-
                     else:
                         pass
-
                 else:
                     print("order details", new_trade)
-
             #Not rules were true
             else:
                 #print("No ready to sell yet", new_order.get_key("product_id"))
                 pass
-
         # If there is a long position but the ticker is not the same as the order's
         # the program will just ignore it
         else:
             pass
-
         return 'success', 200
-
     elif request.method == 'GET':
         return redirect('http://3.218.228.129/login')
-
     else:
         abort(400)
 
