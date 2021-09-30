@@ -49,7 +49,6 @@ class Indicator:
             granularity (int): Number of seconds
         """
         self.candles = self.new_client.get_product_historic_rates(product_id=product, start=callback, end=begin, granularity=granularity)
-
         return self.candles
 
     def get_data_set(self):
@@ -58,10 +57,8 @@ class Indicator:
 
         :return: A list with the closing prices of a product
         """
-
         for candle in self.candles:
             self.close_array.append(float(candle[self.index]))
-
         return self.close_array
 
     def reverse_data(self):
@@ -72,7 +69,6 @@ class Indicator:
 
         :return: List with closing prices reversed
         """
-
         self.close_array.reverse()
         return self.close_array
 
@@ -84,14 +80,11 @@ class Indicator:
 
         :return: Reversed list of dates in Unix form
         """
-
         p = 0
         while p < len(self.candles):
             self.date_array.append(self.candles[p][0])
             p = p + 1
-
         self.date_array.reverse()
-
         return self.date_array
 
     def get_np_array(self):
@@ -100,12 +93,10 @@ class Indicator:
 
         :return: Numpy array of closing prices
         """
-
         self.np_array = numpy.array(self.close_array)
         return self.np_array
 
-    @staticmethod
-    def crossover(x: [], y: []):
+    def crossover(self, x: [], y: []):
         """
         Checks whether a value is crossing over another
         :param x: List that is crossing a value
@@ -113,21 +104,16 @@ class Indicator:
 
         :return:List of boolean values
         """
-
         cross_over = []
         i = 1
-
         while i < len(x):
             if (x[i] > y[i]) and (x[i - 1] < y[i - 1]):
                 cross_over.insert(i, True)
-
             else:
                 cross_over.insert(i, False)
-
         return cross_over
 
-    @staticmethod
-    def crossunder(x: [], y: []):
+    def crossunder(self, x: [], y: []):
         """
         Measures if a value is crossing another one under
         :param x: List crossing y
@@ -137,14 +123,11 @@ class Indicator:
         """
         cross_under = []
         i = 1
-
         while 1 < len(x):
             if (x[i] < y[i]) and (x[i - 1] > y[i - 1]):
                 cross_under.insert(i, True)
-
             else:
                 cross_under.insert(i, False)
-
         return cross_under
 
 
@@ -176,10 +159,12 @@ class MACD(Indicator):
         self.slow_period = slowperiod
         self.signal_period = signalperiod
 
-    def get_MACD(self):
-
+    def set_indicator(self):
         self.macd, self.signal, self.hist = talib.MACD(real=self.np_array, fastperiod=self.fast_period, slowperiod=self.slow_period, signalperiod=self.signal_period)
-        return self.macd
+        return self.macd, self.signal, self.hist
+
+    def get_index(self, index):
+        return self.macd[index], self.signal[index], self.hist[index]
 
 
 class BB(Indicator):
@@ -206,10 +191,13 @@ class BB(Indicator):
         self.nbdevdn = nbdevdn
         self.matye = matype
 
-    def get_BB(self):
-
+    def set_indicator(self):
         self.upperband, self.middleband, self.lowerband = talib.BBANDS(real=self.np_array, timeperiod=self.timeperiod, nbdevup=self.ndbevup, nbdevdn=self.nbdevdn, matype=self.matye)
-        return self.upperband
+        return self.upperband, self.middleband, self.lowerband
+
+    def get_index(self, index):
+        real = self.upperband[index], self.middleband[index], self.lowerband[index]
+        return real
 
 
 class VolSMA(Indicator):
@@ -228,14 +216,15 @@ class VolSMA(Indicator):
         self.timeperiod = timeperiod
         self.real = []
 
-    def get_volume(self):
+    def set_indicator(self):
         """
         Calculates the moving average of the volume
-        :return: A list with values of the
         """
-
         self.real = talib.SMA(real=self.np_array, timeperiod=self.timeperiod)
         return self.real
+
+    def get_index(self, index):
+        return self.real[index]
 
 
 class RSI(Indicator):
@@ -254,10 +243,12 @@ class RSI(Indicator):
         self.timperiod = timeperiod
         self.real = []
 
-    def get_RSI(self):
-
+    def set_indicator(self):
         self.real = talib.RSI(real=self.np_array, timeperiod=self.timperiod)
         return self.real
+
+    def get_index(self, index):
+        return self.real[index]
 
 
 class EMA(Indicator):
@@ -267,10 +258,12 @@ class EMA(Indicator):
         self.timeperiod = time_period
         self.real = []
 
-    def get_EMA(self):
-
+    def set_indicator(self):
         self.real = talib.EMA(real=self.np_array, timeperiod=self.timeperiod)
         return self.real
+
+    def get_index(self, index):
+        return self.real[index]
 
 
 class Momentum(Indicator):
@@ -280,7 +273,9 @@ class Momentum(Indicator):
         self.timeperiod = time_period
         self.real = []
 
-    def get_Momentum(self):
-
+    def set_indicator(self):
         self.real = talib.MOM(real=self.np_array, timeperiod=self.timeperiod)
         return self.real
+
+    def get_index(self, index):
+        return self.real[index]

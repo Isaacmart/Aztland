@@ -69,7 +69,7 @@ for token in new_dict:
 
     try:
         macd_5m.np_array = indicator.np_array
-        macd_5m.get_MACD()
+        macd_5m.set_indicator()
         successful_exec = True
     except Exception:
         successful_exec = False
@@ -78,7 +78,7 @@ for token in new_dict:
 
     try:
         bands_2dev.np_array = indicator.np_array
-        bands_2dev.get_BB()
+        bands_2dev.set_indicator()
         successful_exec = True
     except Exception:
         successful_exec = False
@@ -87,7 +87,7 @@ for token in new_dict:
 
     try:
         bands_1dev.np_array = indicator.np_array
-        bands_1dev.get_BB()
+        bands_1dev.set_indicator()
         successful_exec = True
     except Exception:
         successful_exec = False
@@ -96,7 +96,7 @@ for token in new_dict:
 
     try:
         rsi_5m.np_array = indicator.np_array
-        rsi_5m.get_RSI()
+        rsi_5m.set_indicator()
         successful_exec = True
     except Exception:
         successful_exec = False
@@ -105,7 +105,7 @@ for token in new_dict:
 
     try:
         ema_12p.np_array = indicator.np_array
-        ema_12p.get_EMA()
+        ema_12p.set_indicator()
         successful_exec = True
     except Exception:
         successful_exec = False
@@ -117,7 +117,7 @@ for token in new_dict:
         volume_5m.get_data_set()
         volume_5m.reverse_data()
         volume_5m.get_np_array()
-        volume_5m.get_volume()
+        volume_5m.set_indicator()
         successful_exec = True
     except Exception:
         successful_exec = False

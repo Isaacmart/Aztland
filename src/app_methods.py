@@ -8,8 +8,8 @@ from dict import new_dict
 from dateutil import parser
 from Data import Time
 
-
 #multiple methods used throughout the program
+
 
 #Receives a_string to write to csv file
 def write_to_csv(path, a_string):

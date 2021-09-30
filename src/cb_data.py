@@ -6,12 +6,12 @@ import csv
 import time
 
 #token = "ETH-USD"
-times = [5, 15]
+times = [60, 360, 1440]
 
 for tim in times:
     for token in new_dict:
 
-        file_name = f"../data_{str(tim)}m/{token}_{str(tim)}m.csv"
+        file_name = f"../../data_{str(tim)}m/{token}_{str(tim)}m.csv"
         seconds = 300 * 60 * tim
         indicator = Indicator()
         index = 0
@@ -24,9 +24,15 @@ for tim in times:
         requests = 0
         print(token)
 
-        max_requests = ((60/tim) * 17520)/300
+        max_requests = 0
+        if tim <= 60:
+            max_requests = ((60/tim) * 17520)/300
+            file_name = f"../../data_{str(tim)}m/{token}_{str(tim)}m.csv"
+        else:
+            max_requests = ((1440/tim) * 730)/300
+            new_time = tim/60
+            file_name = f"../../data_{str(new_time)}h/{token}_{str(new_time)}h.csv"
         gra = tim * 60
-        print(max_requests)
 
         # Requests data from coinbase
         while index < int(max_requests):

@@ -1,12 +1,18 @@
-from app_methods import get_time
-from cbpro import PublicClient
+values = [90, 50, 30, 80, 35, 35]
+total = 0
+for value in values:
+    total += value
 
-client = PublicClient()
+secondValues = values
+secondValues.append(40)
 
-data = client.get_product_historic_rates(product_id="ETH-USD", start=get_time(27976), end=get_time(0), granularity=300)
+secondTotal = 0
+for item in secondValues:
+    secondTotal += item
 
-index = 0
-for line in data:
-    index = index + 1
+percentage = (secondTotal * 100) / total
 
-print(index)
+
+print(total)
+print(secondTotal)
+print(percentage)

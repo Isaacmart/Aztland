@@ -107,35 +107,35 @@ def application():
 
             try:
                 macd_5m.np_array = indicator.np_array
-                macd_5m.get_MACD()
+                macd_5m.set_indicator()
             except Exception:
                 print("macd failed for: " + new_ticker)
                 print(indicator.candles)
 
             try:
                 bands_2dev.np_array = indicator.np_array
-                bands_2dev.get_BB()
+                bands_2dev.set_indicator()
             except Exception:
                 print("bands_2dev failed for: " + new_ticker)
                 print(indicator.candles)
 
             try:
                 bands_1dev.np_array = indicator.np_array
-                bands_1dev.get_BB()
+                bands_1dev.set_indicator()
             except Exception:
                 print("bands_1dev failed for: " + new_ticker)
                 print(indicator.candles)
 
             try:
                 rsi_5m.np_array = indicator.np_array
-                rsi_5m.get_RSI()
+                rsi_5m.set_indicator()
             except Exception:
                 print("rsi failed for: " + new_ticker)
                 print(indicator.candles)
 
             try:
                 ema_12p.np_array = indicator.np_array
-                ema_12p.get_EMA()
+                ema_12p.set_indicator()
             except Exception:
                 print("ema_12 failed for: " + new_ticker)
                 print(indicator.candles)
@@ -145,7 +145,7 @@ def application():
                 volume_5m.get_data_set()
                 volume_5m.reverse_data()
                 volume_5m.get_np_array()
-                volume_5m.get_volume()
+                volume_5m.set_indicator()
             except Exception:
                 print("volume_ema failed for: " + new_ticker)
                 print(indicator.candles)
