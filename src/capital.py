@@ -17,7 +17,7 @@ class Capital:
         self.capital = float(data['available'])
 
     def get_capital(self):
-        return "%.2f" % float(self.capital)
+        return str(self.capital)
 
 
 
