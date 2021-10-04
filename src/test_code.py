@@ -19,7 +19,6 @@ for row in reader:
             candle.append(float(element))
         data.append(candle)
     except ValueError as ve:
-        print(ve)
         continue
 
 indicator.candles = data[1:]
@@ -38,10 +37,21 @@ momentum = Momentum()
 
 
 indicatorList = [macd_5m, volume_5m, bands_2dev, bands_1dev, rsi_5m, ema_12p, momentum]
-for a_indicator in indicatorList:
-    a_indicator.candles = indicator.candles
-    a_indicator.get_data_set()
-    a_indicator.reverse_data()
-    a_indicator.get_dates()
-    a_indicator.get_np_array()
-    a_indicator.set_indicator()
+indicator_values = []
+
+try:
+    for a_indicator in indicatorList:
+        a_indicator.candles = indicator.candles
+        a_indicator.get_data_set()
+        a_indicator.reverse_data()
+        a_indicator.get_dates()
+        a_indicator.get_np_array()
+        a_indicator.set_indicator()
+        if a_indicator.get_index(-1).__class__ == list:
+            for value in a_indicator.get_index(-1):
+                indicator_values.append(value)
+        else:
+            indicator_values.append(a_indicator.get_index(-1))
+except Exception as e:
+    print(e.__class__)
+

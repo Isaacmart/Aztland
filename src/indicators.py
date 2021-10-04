@@ -161,10 +161,13 @@ class MACD(Indicator):
 
     def set_indicator(self):
         self.macd, self.signal, self.hist = talib.MACD(real=self.np_array, fastperiod=self.fast_period, slowperiod=self.slow_period, signalperiod=self.signal_period)
+
+    def get_indicator(self):
         return self.macd, self.signal, self.hist
 
     def get_index(self, index):
-        return self.macd[index], self.signal[index], self.hist[index]
+        real = [float(self.macd[index]), float(self.signal[index]), float(self.hist[index])]
+        return real
 
 
 class BB(Indicator):
@@ -192,11 +195,17 @@ class BB(Indicator):
         self.matye = matype
 
     def set_indicator(self):
+        """
+        Calculates the Bollinger Bands upper, middle, and lower bands
+        :return:
+        """
         self.upperband, self.middleband, self.lowerband = talib.BBANDS(real=self.np_array, timeperiod=self.timeperiod, nbdevup=self.ndbevup, nbdevdn=self.nbdevdn, matype=self.matye)
+
+    def get_indicator(self):
         return self.upperband, self.middleband, self.lowerband
 
     def get_index(self, index):
-        real = self.upperband[index], self.middleband[index], self.lowerband[index]
+        real = [float(self.upperband[index]), float(self.middleband[index]), float(self.lowerband[index])]
         return real
 
 
@@ -221,10 +230,12 @@ class VolSMA(Indicator):
         Calculates the moving average of the volume
         """
         self.real = talib.SMA(real=self.np_array, timeperiod=self.timeperiod)
+
+    def get_indicator(self):
         return self.real
 
     def get_index(self, index):
-        return self.real[index]
+        return float(self.real[index])
 
 
 class RSI(Indicator):
@@ -244,11 +255,16 @@ class RSI(Indicator):
         self.real = []
 
     def set_indicator(self):
+        """
+        Calculates the Relative Strength Index from the array passed
+        """
         self.real = talib.RSI(real=self.np_array, timeperiod=self.timperiod)
+
+    def get_indicator(self):
         return self.real
 
     def get_index(self, index):
-        return self.real[index]
+        return float(self.real[index])
 
 
 class EMA(Indicator):
@@ -260,10 +276,12 @@ class EMA(Indicator):
 
     def set_indicator(self):
         self.real = talib.EMA(real=self.np_array, timeperiod=self.timeperiod)
+
+    def get_indicator(self):
         return self.real
 
     def get_index(self, index):
-        return self.real[index]
+        return float(self.real[index])
 
 
 class Momentum(Indicator):
@@ -275,7 +293,9 @@ class Momentum(Indicator):
 
     def set_indicator(self):
         self.real = talib.MOM(real=self.np_array, timeperiod=self.timeperiod)
+
+    def get_indicator(self):
         return self.real
 
     def get_index(self, index):
-        return self.real[index]
+        return float(self.real[index])
