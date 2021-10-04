@@ -98,13 +98,13 @@ def application():
                 passed = True
             else:
                 passed = False
-                exit(0)
+                raise SystemExit("Indicator values contains a non float type")
 
         if passed:
             strategy_5m = Strategy(indicator, macd_5m, bands_1dev, bands_2dev, volume_5m, rsi_5m, ema_12p, new_order)
             strategy_5m.strategy(-1)
         else:
-            exit(0)
+            raise SystemExit(0)
 
         if position.get_position() is False:
             if new_order.is_bottom:
@@ -126,7 +126,7 @@ def application():
                     print(new_ticker + " " + str(new_trade))
                     pass
             else:
-                exit(0)
+                raise SystemExit("Token is not at a bottom")
         elif position.get_position():
             if new_order.is_top:
                 new_trade = private_client.place_market_order(product_id=new_order.get_key("product_id"), side='sell',
@@ -144,7 +144,7 @@ def application():
                 else:
                     print("order details", new_trade)
             else:
-                exit(0)
+                raise SystemExit("Token is not at a top")
 
         return 'success', 200
     elif request.method == 'GET':
