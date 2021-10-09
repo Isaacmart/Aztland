@@ -131,8 +131,8 @@ def application():
 
             ready_to_trade = False
 
-            avg_cost = new_order.get_key("executed_value") / new_order.get_key("filled_size")
-            percentage = ((indicator.close_array[-1] * 100) / avg_cost) - 100
+            avg_cost = float(new_order.get_key("executed_value")) / float(new_order.get_key("filled_size"))
+            percentage = ((float(indicator.close_array[-1] * 100)) / avg_cost) - 100
 
             if new_order.is_top:
                 ready_to_trade = True
