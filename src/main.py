@@ -90,7 +90,7 @@ def application():
                 else:
                     indicator_values.append(a_indicator.get_index(-1))
         except Exception as e:
-            print(e.__class__)
+            print(e)
 
         passed = False
         for value in indicator_values:
@@ -128,7 +128,19 @@ def application():
             else:
                 pass
         elif position.get_position():
+
+            ready_to_trade = False
+
+            percentage = 0
+
             if new_order.is_top:
+                ready_to_trade = True
+            elif percentage >= 10.0 and not new_order.is_raising:
+                ready_to_trade = True
+            else:
+                pass
+
+            if ready_to_trade:
                 new_trade = private_client.place_market_order(product_id=new_order.get_key("product_id"), side='sell',
                                                               size=get_size(new_order.get_key("product_id"),
                                                                             new_order.get_key('filled_size')))
@@ -144,7 +156,7 @@ def application():
                 else:
                     print("order details", new_trade)
             else:
-               pass
+                pass
 
         return 'success', 200
     elif request.method == 'GET':
