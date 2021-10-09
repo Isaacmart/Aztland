@@ -98,7 +98,7 @@ def application():
                 passed = True
             else:
                 passed = False
-                pass
+                break
 
         if passed:
             strategy_5m = Strategy(indicator, macd_5m, bands_1dev, bands_2dev, volume_5m, rsi_5m, ema_12p, new_order)
