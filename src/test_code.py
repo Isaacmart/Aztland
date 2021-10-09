@@ -1,57 +1,9 @@
-from indicators import Indicator
-from indicators import MACD
-from indicators import BB
-from indicators import RSI
-from indicators import VolSMA
-from indicators import EMA
-from indicators import Momentum
 from cbpro import AuthenticatedClient
-import csv
-
-indicator = Indicator()
-data=[]
-file = open("../../data_5m/TRIBE-USD_5m.csv", newline='')
-reader = csv.reader(file, delimiter=',')
-for row in reader:
-    try:
-        candle = []
-        for element in row:
-            candle.append(float(element))
-        data.append(candle)
-    except ValueError as ve:
-        continue
-
-indicator.candles = data[1:]
-indicator.get_data_set()
-indicator.reverse_data()
-indicator.get_dates()
-indicator.get_np_array()
-
-macd_5m = MACD()
-volume_5m = VolSMA(timeperiod=20)
-bands_2dev = BB()
-bands_1dev = BB(ndbevup=1, nbdevdn=1)
-rsi_5m = RSI()
-ema_12p = EMA()
-momentum = Momentum()
+import Data
+from order import Order
 
 
-indicatorList = [macd_5m, volume_5m, bands_2dev, bands_1dev, rsi_5m, ema_12p, momentum]
-indicator_values = []
-
-try:
-    for a_indicator in indicatorList:
-        a_indicator.candles = indicator.candles
-        a_indicator.get_data_set()
-        a_indicator.reverse_data()
-        a_indicator.get_dates()
-        a_indicator.get_np_array()
-        a_indicator.set_indicator()
-        if a_indicator.get_index(-1).__class__ == list:
-            for value in a_indicator.get_index(-1):
-                indicator_values.append(value)
-        else:
-            indicator_values.append(a_indicator.get_index(-1))
-except Exception as e:
-    print(e.__class__)
-
+private_client = AuthenticatedClient(Data.API_Public_Key, Data.API_Secret_Key, Data.Passphrase)
+order_id = "84923794-d2d4-48d0-990f-4ea372a7b871"
+data = private_client.get_order(order_id)
+print(data)
