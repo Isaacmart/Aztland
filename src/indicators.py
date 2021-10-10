@@ -130,7 +130,7 @@ class Indicator:
                 cross_under.insert(i, False)
         return cross_under
 
-    def get_indicator(self):
+    def set_indicator(self):
         pass
 
     def get_index(self, index):
