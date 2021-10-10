@@ -60,7 +60,7 @@ def application():
                                       begin=get_time(0),
                                       granularity=300)
             except ValueError as ve:
-                print(new_ticker, indicator.candles)
+                print(new_ticker, ve)
             writer = open(Data.Time, "w")
             writer.write(str(time.time()))
             writer.close()
@@ -68,13 +68,11 @@ def application():
             try:
                 indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
             except ValueError as ve:
-                print(new_ticker, indicator.candles)
-        indicator.get_data_set()
-        indicator.reverse_data()
-        indicator.get_dates()
-        indicator.get_np_array()
+                print(new_ticker, ve)
+        else:
+            pass
 
-        indicator_list = [macd_5m, volume_5m, bands_2dev, bands_1dev, rsi_5m, ema_12p, momentum]
+        indicator_list = [indicator, macd_5m, volume_5m, bands_2dev, bands_1dev, rsi_5m, ema_12p, momentum]
         indicator_values = []
         try:
             for a_indicator in indicator_list:
@@ -103,65 +101,68 @@ def application():
         if passed:
             strategy_5m = Strategy(indicator, macd_5m, bands_1dev, bands_2dev, volume_5m, rsi_5m, ema_12p, new_order)
             strategy_5m.strategy(-1)
-        else:
-            pass
 
-        if position.get_position() is False:
-            if new_order.is_bottom:
-                new_trade = private_client.place_market_order(product_id=new_ticker, side="buy",
-                                                              funds=funds.get_capital())
-                if "id" in new_trade:
-                    writer = open(Data.Path, "w")
-                    writer.write(new_trade['id'])
-                    writer.close()
-                    new_order.get_id()
-                    if new_order.set_details():
-                        writer = open(Data.Time, "w")
-                        writer.write(str(time.time()))
+            if position.get_position() is False:
+                if new_order.is_bottom:
+                    new_trade = private_client.place_market_order(product_id=new_ticker, side="buy",
+                                                                  funds=funds.get_capital())
+                    if "id" in new_trade:
+                        writer = open(Data.Path, "w")
+                        writer.write(new_trade['id'])
                         writer.close()
-                        print("order sent: ", new_order.details)
+                        new_order.get_id()
+                        if new_order.set_details():
+                            writer = open(Data.Time, "w")
+                            writer.write(str(time.time()))
+                            writer.close()
+                            print("order sent: ", new_order.details)
+                        else:
+                            print("opening position details: ", new_trade)
                     else:
-                        print("opening position details: ", new_trade)
-                else:
-                    print(new_ticker + " " + str(new_trade))
-                    pass
-            else:
-                pass
-        elif position.get_position():
-
-            ready_to_trade = False
-
-            avg_cost = float(new_order.get_key("executed_value")) / float(new_order.get_key("filled_size"))
-            percentage = ((float(indicator.close_array[-1] * 100)) / avg_cost) - 100
-
-            if new_order.is_top:
-                ready_to_trade = True
-            elif percentage >= 10.0 and not new_order.is_raising:
-                ready_to_trade = True
-            else:
-                pass
-
-            if ready_to_trade:
-                new_trade = private_client.place_market_order(product_id=new_order.get_key("product_id"), side='sell',
-                                                              size=get_size(new_order.get_key("product_id"),
-                                                                            new_order.get_key('filled_size')))
-                if "id" in new_trade:
-                    writer = open(Data.Path, "w")
-                    writer.write(new_trade['id'])
-                    writer.close()
-                    new_order.get_id()
-                    if new_order.set_details():
-                        print("order sent " + new_order.get_key('product_id'))
-                    else:
+                        print(new_ticker, new_trade)
                         pass
                 else:
-                    print("order details", new_trade)
-            else:
-                pass
+                    pass
+            elif position.get_position():
 
+                done_reason = 0
+                ready_to_trade = False
+                avg_cost = float(new_order.get_key("executed_value")) / float(new_order.get_key("filled_size"))
+                percentage = ((float(indicator.get_index(-1) * 100)) / avg_cost) - 100
+                if new_order.is_top:
+                    ready_to_trade = True
+                    done_reason = 1
+                elif percentage >= 10.0 and not new_order.is_raising:
+                    ready_to_trade = True
+                    done_reason = 2
+                else:
+                    pass
+
+                if ready_to_trade:
+                    new_trade = private_client.place_market_order(product_id=new_order.get_key("product_id"),
+                                                                  side='sell',
+                                                                  size=get_size(new_order.get_key("product_id"),
+                                                                                new_order.get_key('filled_size')))
+                    if "id" in new_trade:
+                        writer = open(Data.Path, "w")
+                        writer.write(new_trade['id'])
+                        writer.close()
+                        new_order.get_id()
+                        if new_order.set_details():
+                            print("order sent " + new_order.get_key('product_id'))
+                        else:
+                            pass
+                    else:
+                        print("order details", done_reason, new_trade)
+                else:
+                    pass
+        else:
+            pass
         return 'success', 200
+
     elif request.method == 'GET':
         return redirect('http://3.218.228.129/login')
+
     else:
         abort(400)
 

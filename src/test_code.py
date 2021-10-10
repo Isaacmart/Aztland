@@ -4,6 +4,6 @@ from order import Order
 
 
 private_client = AuthenticatedClient(Data.API_Public_Key, Data.API_Secret_Key, Data.Passphrase)
-order_id = "84923794-d2d4-48d0-990f-4ea372a7b871"
+order_id = "d36c5c40-e8ea-4656-bb75-be0e02a22371"
 data = private_client.get_order(order_id)
 print(data)

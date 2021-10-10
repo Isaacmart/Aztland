@@ -130,6 +130,12 @@ class Indicator:
                 cross_under.insert(i, False)
         return cross_under
 
+    def get_indicator(self):
+        pass
+
+    def get_index(self, index):
+        return self.close_array[-1]
+
 
 class MACD(Indicator):
     """
