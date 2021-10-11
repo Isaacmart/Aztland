@@ -74,6 +74,7 @@ def application():
 
         indicator_list = [indicator, macd_5m, volume_5m, bands_2dev, bands_1dev, rsi_5m, ema_12p, momentum]
         indicator_values = []
+        exception = object
         try:
             for a_indicator in indicator_list:
                 a_indicator.candles = indicator.candles
@@ -87,8 +88,9 @@ def application():
                         indicator_values.append(value)
                 else:
                     indicator_values.append(a_indicator.get_index(-1))
+                exception = a_indicator.__class__
         except Exception as e:
-            print(e)
+            print(exception.__class__)
 
         passed = False
         for value in indicator_values:
