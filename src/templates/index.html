@@ -13,6 +13,8 @@
 
     <div id="trades"></div>
 
+    <div id="id name"></div>
+
     <script>
         var stockSocket = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@kline_1m");
 
@@ -32,6 +34,16 @@
             }*/
         });
         
+    </script>
+    <script>
+        var idDiv = document.getElementById("id name")
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            console.log(evt.target.result);
+        };
+        reader.readAsText("/var/www/jdsdkf.xyz/html/CryptoTrader/txt_files/data.txt");
+        idDiv.append(evt.target.readAsText)
+
     </script>
 
     <div id="webhooks"></div>
