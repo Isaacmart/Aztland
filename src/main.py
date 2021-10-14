@@ -72,25 +72,30 @@ def application():
         else:
             pass
 
-        indicator_list = [indicator, macd_5m, volume_5m, bands_2dev, bands_1dev, rsi_5m, ema_12p, momentum]
+        invalid_data = False
+        for value in indicator.candles:
+            if value.__class__ != float:
+                invalid_data = True
+                break
+
         indicator_values = []
-        exception = object
-        try:
-            for a_indicator in indicator_list:
-                a_indicator.candles = indicator.candles
-                a_indicator.get_data_set()
-                a_indicator.reverse_data()
-                a_indicator.get_dates()
-                a_indicator.get_np_array()
-                a_indicator.set_indicator()
-                if a_indicator.get_index(-1).__class__ == list:
-                    for value in a_indicator.get_index(-1):
-                        indicator_values.append(value)
-                else:
-                    indicator_values.append(a_indicator.get_index(-1))
-                exception = a_indicator.__class__
-        except Exception as e:
-            print(exception.__class__)
+        if invalid_data is False:
+            indicator_list = [indicator, macd_5m, volume_5m, bands_2dev, bands_1dev, rsi_5m, ema_12p, momentum]
+            try:
+                for a_indicator in indicator_list:
+                    a_indicator.candles = indicator.candles
+                    a_indicator.get_data_set()
+                    a_indicator.reverse_data()
+                    a_indicator.get_dates()
+                    a_indicator.get_np_array()
+                    a_indicator.set_indicator()
+                    if a_indicator.get_index(-1).__class__ == list:
+                        for value in a_indicator.get_index(-1):
+                            indicator_values.append(value)
+                    else:
+                        indicator_values.append(a_indicator.get_index(-1))
+            except Exception as e:
+                print(e)
 
         passed = False
         for value in indicator_values:
