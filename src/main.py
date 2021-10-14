@@ -37,8 +37,10 @@ def application():
         private_client = AuthenticatedClient(Data.API_Public_Key, Data.API_Secret_Key, Data.Passphrase)
 
         new_order = Order(private_client)
-        new_order.get_id()
-        new_order.set_details()
+        if len(new_order.get_id()) > 0:
+            new_order.set_details()
+        else:
+            print("unable to get Id number")
         position = OpenPosition(new_order)
         position.set_position()
         funds = Capital(private_client)
@@ -71,8 +73,6 @@ def application():
                 print(new_ticker, ve)
         else:
             pass
-
-        print(new_ticker, indicator.candles)
 
         invalid_data = False
         for value in indicator.candles:

@@ -17,7 +17,6 @@ class OpenPosition:
         return self.long_position
 
     def set_position(self):
-
         if self.order.set_details():
             if self.order.get_key('side') == 'buy':
                 self.long_position = True

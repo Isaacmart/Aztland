@@ -18,11 +18,3 @@ class Capital:
 
     def get_capital(self):
         return int(self.capital)
-
-
-
-
-
-
-
-

@@ -12,5 +12,3 @@ for line in data:
             pass
         else:
             print(line['id'])
-
-

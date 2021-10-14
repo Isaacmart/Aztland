@@ -5,6 +5,3 @@ class Trade:
         self.sell_price = 0.0
         self.b_size = 0.0
         self.s_size = 0.0
-
-
-

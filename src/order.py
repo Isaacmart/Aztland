@@ -109,27 +109,3 @@ class Order:
 
     def get_fall(self):
         return self.is_falling
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

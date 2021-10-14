@@ -14,4 +14,3 @@ for line in data:
         writer.write("    \"" + line['id'] + "\": \"" + str(len(line['base_increment']) - 2) + "\",\n")
 
 writer.write("}")
-

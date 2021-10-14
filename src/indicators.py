@@ -134,7 +134,7 @@ class Indicator:
         pass
 
     def get_index(self, index):
-        return self.close_array[index]
+        return float(self.close_array[index])
 
 
 class MACD(Indicator):
