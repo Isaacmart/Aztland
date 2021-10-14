@@ -72,6 +72,8 @@ def application():
         else:
             pass
 
+        print(new_ticker, indicator.candles)
+
         invalid_data = False
         for value in indicator.candles:
             if value.__class__ != float:
