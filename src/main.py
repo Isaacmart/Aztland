@@ -61,6 +61,7 @@ def application():
                 indicator.set_candles(product=new_order.get_key("product_id"), callback=get_time(27976),
                                       begin=get_time(0),
                                       granularity=300)
+                print("candles set", new_order.get_key("product_id"))
             except ValueError as ve:
                 print(new_ticker, ve)
             writer = open(Data.Time, "w")
@@ -76,7 +77,7 @@ def application():
 
         invalid_data = False
         for value in indicator.candles:
-            if value.__class__ != float:
+            if value.__class__ is None:
                 invalid_data = True
                 break
 
