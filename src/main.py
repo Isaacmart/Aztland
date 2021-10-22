@@ -181,8 +181,8 @@ def application():
 def login():
     error = None
     if request.method == 'POST':
-        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
-            error = 'Invalid Credentials. Please try again.'
-        else:
-            return render_template('index.html')
+        new_reader = open(Data.Path, "r")
+        txt = new_reader.read()
+        new_reader.close()
+        return txt
     return render_template('login.html', error=error)
