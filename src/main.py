@@ -187,6 +187,6 @@ def login():
             private_client = AuthenticatedClient(Data.API_Public_Key, Data.API_Secret_Key, Data.Passphrase)
             new_order = Order(private_client)
             new_order.get_id()
-            new_data = new_order.set_details()
+            new_data = new_order.details
             return new_data
     return render_template('login.html', error=error)
