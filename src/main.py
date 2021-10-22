@@ -181,8 +181,12 @@ def application():
 def login():
     error = None
     if request.method == 'POST':
-        new_reader = open(Data.Path, "r")
-        txt = new_reader.read()
-        new_reader.close()
-        return txt
+        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
+            error = 'Invalid Credentials. Please try again.'
+        else:
+            private_client = AuthenticatedClient(Data.API_Public_Key, Data.API_Secret_Key, Data.Passphrase)
+            new_order = Order(private_client)
+            new_order.get_id()
+            new_data = new_order.set_details()
+            return new_data
     return render_template('login.html', error=error)
