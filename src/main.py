@@ -189,5 +189,4 @@ def login():
             new_order.get_id()
             new_order.set_details()
             new_data = new_order.details
-            return redirect("index.html")
     return render_template('login.html', error=error)
