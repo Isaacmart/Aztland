@@ -30,6 +30,7 @@ app = Flask(__name__)
 def application():
 
     if request.method == 'POST':
+        
         new_request = request.get_json(force=True)
         new_ticker = get_ticker('ticker', new_request)
 
@@ -61,24 +62,27 @@ def application():
                 indicator.set_candles(product=new_order.get_key("product_id"), callback=get_time(27976),
                                       begin=get_time(0),
                                       granularity=300)
-                print("candles set", new_order.get_key("product_id"))
             except ValueError as ve:
                 print(new_ticker, ve)
+                
             writer = open(Data.Time, "w")
             writer.write(str(time.time()))
             writer.close()
+            
         elif position.get_position() is False:
             try:
                 indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
             except ValueError as ve:
                 print(new_ticker, ve)
+                
         else:
             pass
 
         invalid_data = False
         for value in indicator.candles:
-            if value.__class__ is None:
+            if value.__class__ is not list:
                 invalid_data = True
+                print("invalid data")
                 break
 
         indicator_values = []
@@ -105,6 +109,7 @@ def application():
             if value.__class__ == float:
                 passed = True
             else:
+                raise TypeError("indcator_values contain a non-float type")
                 passed = False
                 break
 
@@ -139,12 +144,16 @@ def application():
                 ready_to_trade = False
                 avg_cost = float(new_order.get_key("executed_value")) / float(new_order.get_key("filled_size"))
                 percentage = ((float(indicator.get_index(-1) * 100)) / avg_cost) - 100
+                
                 if new_order.is_top:
                     ready_to_trade = True
                     done_reason = 1
-                elif percentage >= 10.0 and not new_order.is_raising:
+                elif percentage >= 10.0 and not new_order.is_raising:                    
                     ready_to_trade = True
                     done_reason = 2
+                elif percentage >= 5.0 and new_order.is_falling:
+                    ready_to_trade = True
+                    done_reason = 3
                 else:
                     pass
 
@@ -158,7 +167,8 @@ def application():
                         writer.write(new_trade['id'])
                         writer.close()
                         new_order.get_id()
-                        if new_order.set_details():
+                        
+                        if new_order.set_details():                            
                             print("order sent " + new_order.get_key('product_id'))
                         else:
                             pass
@@ -189,5 +199,5 @@ def login():
             new_order.get_id()
             new_order.set_details()
             new_data = new_order.details
-            return render_template("index.html")
+            return new_data
     return render_template('login.html', error=error)
