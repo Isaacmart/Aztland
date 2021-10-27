@@ -53,6 +53,7 @@ for tim in times:
                     data.append(line)
 
             else:
+                print(indicator.candles)
                 break
 
             begin = callback
