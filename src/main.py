@@ -38,10 +38,14 @@ def application():
         private_client = AuthenticatedClient(Data.API_Public_Key, Data.API_Secret_Key, Data.Passphrase)
 
         new_order = Order(private_client)
+        new_order.get_id()
+        new_order.set_details()
+        """
         if len(new_order.get_id()) > 0:
-            new_order.set_details()
+          new_order.set_details()
         else:
             print("unable to get Id number")
+            """
         position = OpenPosition(new_order)
         position.set_position()
         funds = Capital(private_client)
@@ -110,8 +114,6 @@ def application():
                 passed = True
             else:
                 raise TypeError("indcator_values contain a non-float type")
-                passed = False
-                break
 
         if passed:
             strategy_5m = Strategy(indicator, macd_5m, bands_1dev, bands_2dev, volume_5m, rsi_5m, ema_12p, new_order)
