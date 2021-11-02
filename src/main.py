@@ -78,13 +78,13 @@ def application():
         else:
             pass
 
-        invalid_data = False
-        for value in indicator.candles:
-            if value.__class__ is not list:
-                invalid_data = True
-                print("invalid data")
-                break
+        invalid_data = True
+        if len(indicator.candles) > 0:
+            invalid_data = False
+        else:
+            pass
 
+        
         indicator_values = []
         if invalid_data is False:
             indicator_list = [indicator, macd_5m, volume_5m, bands_2dev, bands_1dev, rsi_5m, ema_12p, momentum]
@@ -102,7 +102,7 @@ def application():
                     else:
                         indicator_values.append(a_indicator.get_index(-1))
             except Exception as e:
-                print(indicator.candles)
+                print(e)
 
         passed = False
         for value in indicator_values:
@@ -154,14 +154,21 @@ def application():
                 elif percentage >= 5.0 and new_order.is_falling:
                     ready_to_trade = True
                     done_reason = 3
+                elif percentage <= -5.0 and not new_order.is_raising:
+                    ready_to_trade = True
+                    done_reason = 4
+                elif percentage <= -10.0 and not new_order.is_raising:
+                    ready_to_trade = True
+                    done_reason = 5
                 else:
                     pass
 
                 if ready_to_trade:
+
+                    trade_size = get_size(new_order.get_key("product_id"), new_order.get_key("filled_size"))
                     new_trade = private_client.place_market_order(product_id=new_order.get_key("product_id"),
                                                                   side='sell',
-                                                                  size=get_size(new_order.get_key("product_id"),
-                                                                                new_order.get_key('filled_size')))
+                                                                  size=trade_size)
                     if "id" in new_trade:
                         writer = open(Data.Path, "w")
                         writer.write(new_trade['id'])
@@ -173,7 +180,7 @@ def application():
                         else:
                             pass
                     else:
-                        print("order details", done_reason, new_trade)
+                        print("order details", done_reason, new_trade, trade_size)
                 else:
                     pass
         else:
