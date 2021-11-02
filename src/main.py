@@ -88,7 +88,6 @@ def application():
         else:
             pass
 
-        
         indicator_values = []
         if invalid_data is False:
             indicator_list = [indicator, macd_5m, volume_5m, bands_2dev, bands_1dev, rsi_5m, ema_12p, momentum]
