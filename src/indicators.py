@@ -58,10 +58,7 @@ class Indicator:
         :return: A list with the closing prices of a product
         """
         for candle in self.candles:
-            try:
-                self.close_array.append(float(candle[self.index]))
-            except ValueError as ve:
-                continue
+            self.close_array.append(float(candle[self.index]))
         return self.close_array
 
     def reverse_data(self):

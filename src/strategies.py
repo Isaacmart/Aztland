@@ -42,7 +42,7 @@ class Strategy:
 
                         if self.macd.hist[index] > self.macd.hist[index-1]:
 
-                            if self.indicator.close_array[-1] > self.indicator.candles[beg+1][3]:
+                            if self.indicator.close_array[-1] > float(self.indicator.candles[beg+1][3]):
                                 self.order.is_raising = True
                                 self.set_index(1)
 
@@ -65,7 +65,7 @@ class Strategy:
                         self.set_index(5)
 
                     else:
-                        if self.indicator.close_array[index] >= self.indicator.candles[beg][2]:
+                        if self.indicator.close_array[index] >= float(self.indicator.candles[beg][2]):
                             self.order.is_raising = True
                             self.set_index(6)
 
@@ -120,7 +120,7 @@ class Strategy:
 
                 else:
 
-                    if self.indicator.close_array[index] > self.indicator.candles[beg][3]:
+                    if self.indicator.close_array[index] > float(self.indicator.candles[beg][3]):
                         self.order.is_bottom = True
                         self.set_index(16)
 
