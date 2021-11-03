@@ -18,7 +18,6 @@ start = datetime.fromtimestamp(_time - 27976, tz).isoformat()
 if True:
     try:
         indicator.set_candles(product=new_ticker, callback=start, begin=finish, granularity=300)
-
     except ValueError:
         print(new_ticker)
         print(indicator.candles)
@@ -104,107 +103,4 @@ else:
 
 
 print(momentum.real)
-'''
-# Asserts stock is at a bottom
-is_bottom = False
 
-# Assert is a stock is raising
-is_raising = False
-
-# Assert if a stock is at the top
-is_top = False
-
-# Assert is stock is falling from top
-is_falling = False
-
-successful_analysis = False
-
-if len(volume_5m.real) > 0:
-
-    if indicator.data_array[-1] > ema_12p.real[-1]:
-
-        if indicator.data_array[-1] > bands_1dev.upperband[-1]:
-
-            if indicator.data_array[-1] > bands_2dev.upperband[-1]:
-
-                if rsi_5m.real[-1] > 70:
-
-                    if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                        is_raising = True
-
-                    else:
-                        is_falling = True
-
-                else:
-                    is_raising = True
-            else:
-
-                if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                    is_raising = True
-
-                else:
-                    is_falling = True
-
-        else:
-
-            if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                is_raising = True
-
-            else:
-                is_falling = True
-    else:
-
-        if indicator.data_array[-1] > bands_1dev.lowerband[-1]:
-
-            if macd_5m.hist[-1] > macd_5m.hist[-2]:
-                is_raising = True
-
-            else:
-                is_falling = True
-        else:
-
-            if indicator.data_array[-1] > bands_2dev.lowerband[-1]:
-
-                if macd_5m.hist[-1] > macd_5m.hist[-2]:
-
-                    if rsi_5m.real[-1] < 50:
-                        print("1")
-                        is_bottom = True
-
-                    else:
-                        is_raising = True
-
-                else:
-                    print("2")
-                    is_bottom = True
-
-            else:
-                print("3")
-                is_bottom = True
-
-
-    successful_analysis = True
-
-
-ready_to_trade: bool
-ready_to_sell: bool
-
-if successful_analysis:
-    # Rules to make ready_to_trade True
-    if is_bottom or is_raising and not is_top and not is_falling:
-        ready_to_trade = True
-    else:
-        ready_to_trade = False
-
-    if is_falling or is_top and not is_bottom and not is_raising:
-        ready_to_sell = True
-    else:
-        ready_to_sell = False
-
-
-print("bottom:", is_bottom)
-print("raising:", is_raising)
-print("top:", is_top)
-print("falling", is_falling)
-print("ready to buy:", ready_to_trade)
-print("ready to sell:", ready_to_sell)'''

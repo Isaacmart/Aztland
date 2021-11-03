@@ -5,4 +5,4 @@ private_client = AuthenticatedClient(Data.API_Public_Key, Data.API_Secret_Key, D
 for line in private_client.get_accounts():
     if 'currency' in line:
         if line['currency'] == "USD":
-            print(line["balance"]
+            print(line["balance"])
