@@ -112,7 +112,7 @@ def application():
             if value.__class__ == float:
                 passed = True
             else:
-                raise TypeError("indcator_values contain a non-float type")
+                raise TypeError("indicator_values contain a non-float type")
 
         if passed:
             strategy_5m = Strategy(indicator, macd_5m, bands_1dev, bands_2dev, volume_5m, rsi_5m, ema_12p, new_order)
@@ -149,18 +149,6 @@ def application():
                 if new_order.is_top:
                     ready_to_trade = True
                     done_reason = 1
-                elif percentage >= 10.0 and not new_order.is_raising:                    
-                    ready_to_trade = True
-                    done_reason = 2
-                elif percentage >= 5.0 and new_order.is_falling:
-                    ready_to_trade = True
-                    done_reason = 3
-                elif percentage <= -5.0 and not new_order.is_raising:
-                    ready_to_trade = True
-                    done_reason = 4
-                elif percentage <= -10.0 and not new_order.is_raising:
-                    ready_to_trade = True
-                    done_reason = 5
                 else:
                     pass
 
