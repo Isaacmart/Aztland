@@ -45,7 +45,9 @@ for token in new_dict:
     product_data.append([token, candle_number])
 
 product_data.sort(key=lambda x:x[1], reverse=True)
+writer = open("../txt_files/latest_products.txt", "w")
 for line in product_data:
-    writer = open("../txt_files/latest_products.txt", "a")
     writer.write(str(line) + "\n")
+
+writer.close()
 
