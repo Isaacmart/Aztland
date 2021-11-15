@@ -5,11 +5,13 @@ from indicators import VolSMA
 from indicators import RSI
 from indicators import EMA
 from order import Order
-from app_methods import crossunder
-from app_methods import crossover
 
 
 class Strategy:
+
+    index: int
+    error: str
+    order: Order
 
     def __init__(self, indicator=Indicator(), macd=MACD(), bands_1dev=BB(), bands_2dev=BB(), vol_sma=VolSMA(), rsi=RSI(), ema=EMA(), order=Order()):
         self.order = order
@@ -20,7 +22,6 @@ class Strategy:
         self.volsma = vol_sma
         self.rsi = rsi
         self.ema_12p = ema
-        self.index = 0
         self.error = None
 
     def set_index(self, new_index):
@@ -29,6 +30,12 @@ class Strategy:
 
         else:
             raise Exception('Exception at', new_index)
+
+    def reset_order(self):
+        self.order.is_top = False
+        self.order.is_bottom = False
+        self.order.is_raising = False
+        self.order.is_falling = False
 
     def strategy(self, index=-1, beg=0):
 

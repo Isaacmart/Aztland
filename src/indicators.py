@@ -305,3 +305,20 @@ class Momentum(Indicator):
 
     def get_index(self, index):
         return float(self.real[index])
+
+
+class ROC(Indicator):
+
+    def __init__(self, time_period=10, index=4, weight=False):
+        super(ROC, self).__init__(index=index, weight=weight)
+        self.time_period = time_period
+        self.real = []
+
+    def set_indicator(self):
+        self.real = talib.ROC(real=self.np_array, timeperiod=self.time_period)
+
+    def get_indicator(self):
+        return self.real
+
+    def get_index(self, index):
+        return float(self.real[index])
