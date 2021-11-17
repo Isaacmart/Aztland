@@ -6,38 +6,36 @@ import csv
 import time
 
 #token = "ETH-USD"
-times = [60, 360, 1440]
+times = [1, 5, 15, 60, 360, 1440]
 
 for tim in times:
+
     for token in new_dict:
 
-        file_name = f"../../data_{str(tim)}m/{token}_{str(tim)}m.csv"
-        seconds = 300 * 60 * tim
-        indicator = Indicator()
-        index = 0
-        # callback is granularity times 300
-        callback = seconds
-        begin = 0
-
-        data = []
-
-        requests = 0
-        print(token)
-
+        file_name: str
         max_requests = 0
         if tim <= 60:
             max_requests = ((60/tim) * 17520)/300
+            try:
+
             file_name = f"../../data_{str(tim)}m/{token}_{str(tim)}m.csv"
         else:
             max_requests = ((1440/tim) * 730)/300
             new_time = tim/60
             file_name = f"../../data_{str(new_time)}h/{token}_{str(new_time)}h.csv"
-        gra = tim * 60
 
+        indicator = Indicator()
+        seconds = 300 * 60 * tim  # number of seconds in a request for 300 candles
+        callback = seconds  # start requesting data from "seconds" seconds ago
+        begin = 0  # stop requesting data at 0 seconds ago
+        requests = 0  # number of request in the last second
+        gra = tim * 60  # granularity in seconds
+        print(token)
+
+        data = []
+        index = 0
         # Requests data from coinbase
         while index < int(max_requests):
-
-            # print(index)
 
             try:
                 indicator.set_candles(product=token, callback=get_time(callback), begin=get_time(begin), granularity=gra)
@@ -58,9 +56,7 @@ for tim in times:
 
             begin = callback
             callback = callback + seconds
-
-            index = index + 1
-
+            index += 1
             if requests == 9:
                 time.sleep(1)
                 requests = 0

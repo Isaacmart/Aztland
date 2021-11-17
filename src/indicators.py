@@ -5,9 +5,9 @@ from cbpro import PublicClient
 
 class Indicator:
     """
-    Base class for any indicator.
+    Base class for any indicator.\n
     Coinbase returns data in the following way: [1415398768, 0.32, 4.2, 0.35, 4.2, 12.3],
-    indicators work with close prices as default, therefore we append data from index 4
+    indicators work with close prices as default, therefore we append data from index 4.\n
     If the indicator is weighted, certain amount of elements back are needed,
     weight = True will get that many elements automatically
     """
@@ -40,8 +40,7 @@ class Indicator:
 
     def set_candles(self, product, callback, begin, granularity):
         """
-        Makes requests to the Coinbase API for Historic rates
-
+        Makes requests to the Coinbase API for Historic rates\n
         Args:
             product (str): A valid Coinbase product
             callback (int):  Number of seconds to go back from begin
@@ -54,7 +53,6 @@ class Indicator:
     def get_data_set(self):
         """
         Gets a data set in a list
-
         :return: A list with the closing prices of a product
         """
         for candle in self.candles:
@@ -66,7 +64,6 @@ class Indicator:
         Reverses the list containing the closing price.
         Coinbase yields data in queue, that is latest last; however, to get accurate numbers,
         the data passed to the indicators must be latest data last
-
         :return: List with closing prices reversed
         """
         self.close_array.reverse()
@@ -77,7 +74,6 @@ class Indicator:
         Puts of the dates in a list an reverses it the same method. That is because when we
         testing strategies sometimes we wanna see when it happened and we this method we just have to
         reference the same index as the one in the closing prices list
-
         :return: Reversed list of dates in Unix form
         """
         p = 0
@@ -90,7 +86,6 @@ class Indicator:
     def get_np_array(self):
         """
         Ta-Lib takes data in a numpy array, this method coverts a regular list into a numpy array
-
         :return: Numpy array of closing prices
         """
         self.np_array = numpy.array(self.close_array)
@@ -101,7 +96,6 @@ class Indicator:
         Checks whether a value is crossing over another
         :param x: List that is crossing a value
         :param y: List that is being crossed
-
         :return:List of boolean values
         """
         cross_over = []
@@ -139,13 +133,11 @@ class Indicator:
 
 class MACD(Indicator):
     """
-    Child class of Indicator that implements the Moving Average Convergence Divergence indicator
+    Child class of Indicator that implements the Moving Average Convergence Divergence indicator\n
 
-    MACD = fastperiod - slowperiod
-
-    Histogram = Exponential moving average (12-period default)
-
-    Histogram = MACD - Histogram
+    MACD = fastperiod - slowperiod\n
+    Histogram = Exponential moving average (12-period default)\n
+    Histogram = MACD - Histogram\n
     """
 
     def __init__(self, fastperiod=12, slowperiod=26, signalperiod=9, index=4, weight=True):

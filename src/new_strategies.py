@@ -3,6 +3,7 @@ from indicators import Indicator
 from indicators import MACD
 from indicators import RSI
 from indicators import BB
+from indicators import ROC
 from order import Order
 
 
@@ -51,3 +52,15 @@ class Bollinger(Strategy):
             self.set_index(2)
 
 
+class RateOfChange(Strategy):
+
+    def __init__(self, roc=ROC(), order=Order()):
+        super(RateOfChange, self).__init__(roc=roc, order=order)
+
+    def strategy(self, index=-1, beg=0):
+        if self.roc.real[index] <= -1.0:
+            self.order.is_bottom = True
+            self.set_index(1)
+        elif self.roc.real[index] >= 1.0:
+            self.order.is_top = True
+            self.set_index(2)

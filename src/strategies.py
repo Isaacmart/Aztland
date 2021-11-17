@@ -4,6 +4,7 @@ from indicators import BB
 from indicators import VolSMA
 from indicators import RSI
 from indicators import EMA
+from indicators import ROC
 from order import Order
 
 
@@ -13,7 +14,7 @@ class Strategy:
     error: str
     order: Order
 
-    def __init__(self, indicator=Indicator(), macd=MACD(), bands_1dev=BB(), bands_2dev=BB(), vol_sma=VolSMA(), rsi=RSI(), ema=EMA(), order=Order()):
+    def __init__(self, indicator=Indicator(), macd=MACD(), bands_1dev=BB(), bands_2dev=BB(), vol_sma=VolSMA(), rsi=RSI(), ema=EMA(), roc=ROC(), order=Order()):
         self.order = order
         self.indicator = indicator
         self.macd = macd
@@ -21,6 +22,7 @@ class Strategy:
         self.bands_2dev = bands_2dev
         self.volsma = vol_sma
         self.rsi = rsi
+        self.roc = roc
         self.ema_12p = ema
         self.error = None
 

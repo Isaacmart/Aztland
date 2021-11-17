@@ -9,14 +9,15 @@ from trade import Trade
 from new_strategies import MACDStrategy
 from new_strategies import RSISTrategy
 from new_strategies import Bollinger
+from new_strategies import RateOfChange
 import Data
 import csv
 
 
 #Body of script
 #token = "AGLD-USD"
-write = open("../../test_cases/bollinger_1dev_5m_test.txt", "w")
-write.write("Buy when price less than lower band, sell when price greater than upper band\n")
+write = open("../../test_cases/RateOfChange_5m_test.txt", "w")
+write.write("Buy when RCO is less than -1, sell when price greater than 1\n")
 write.write("token, capital, lapse, all_trades, prof_trades, success rate\n")
 write.close()
 
@@ -166,7 +167,7 @@ for token in new_dict:
             "success_rate": "%.2f" % success_rate
         }
 
-        awriter = open("../../test_cases/bollinger_1dev_5m_test.txt", "a")
+        awriter = open("../../test_cases/RateOfChange_5m_test.txt", "a")
         for key in final:
             awriter.write(f"{final[key]}, ")
         awriter.write("\n")
