@@ -41,98 +41,11 @@ class Strategy:
 
     def strategy(self, index=-1, beg=0):
 
-        if self.indicator.close_array[index] > self.ema_12p.real[index]:
-
-            if self.indicator.close_array[index] > self.bands_1dev.upperband[index]:
-
-                if self.indicator.close_array[index] > self.bands_2dev.upperband[index]:
-
-                    if self.rsi.real[index] > 70:
-
-                        if self.macd.hist[index] > self.macd.hist[index-1]:
-
-                            if self.indicator.close_array[-1] > float(self.indicator.candles[beg+1][3]):
-                                self.order.is_raising = True
-                                self.set_index(1)
-
-                            else:
-                                self.order.is_top = True
-                                self.set_index(2)
-
-                        else:
-                            self.order.is_top = True
-                            self.set_index(3)
-
-                    else:
-                        self.order.is_raising = True
-                        self.set_index(4)
-
-                else:
-
-                    if self.macd.hist[index] > self.macd.hist[index-1]:
-                        self.order.is_raising = True
-                        self.set_index(5)
-
-                    else:
-                        if self.indicator.close_array[index] >= float(self.indicator.candles[beg][2]):
-                            self.order.is_raising = True
-                            self.set_index(6)
-
-                        else:
-                            self.order.is_top = True
-                            self.set_index(7)
-
-            else:
-
-                if self.macd.hist[index] > self.macd.hist[index-1]:
-
-                    self.order.is_raising = True
-                    self.set_index(8)
-
-                else:
-                    self.order.is_falling = True
-                    self.set_index(9)
-        else:
-
-            if self.indicator.close_array[index] > self.bands_1dev.lowerband[index]:
-
-                if self.macd.hist[index] > self.macd.hist[index-1]:
-                    self.order.is_raising = True
-                    self.set_index(10)
-
-                else:
-                    self.order.is_falling = True
-                    self.set_index(11)
-            else:
-
-                if self.indicator.close_array[index] > self.bands_2dev.lowerband[index]:
-
-                    if self.macd.hist[index] > self.macd.hist[index-1]:
-
-                        if self.rsi.real[index] < 40:
-                            self.order.is_bottom = True
-                            self.set_index(12)
-
-                        else:
-                            self.order.is_raising = True
-                            self.set_index(13)
-
-                    else:
-
-                        if 0.0 > self.macd.macd[index]:
-                            self.order.is_bottom = True
-                            self.set_index(14)
-
-                        else:
-                            self.order.is_falling = True
-                            self.set_index(15)
-
-                else:
-
-                    if self.indicator.close_array[index] > float(self.indicator.candles[beg][3]):
-                        self.order.is_bottom = True
-                        self.set_index(16)
-
-                    else:
-                        self.order.is_falling = True
-                        self.set_index(17)
+        if self.macd.macd[index] <= self.macd.signal[index]:
+            if self.macd.macd[index - 1] > self.macd.signal[index - 1]:
+                self.order.is_top = True
+                self.set_index(1)
+        if self.macd.macd[index] >= self.macd.signal[index]:
+            if self.macd.macd[index - 1] < self.macd.signal[index - 1]:
+                self.order.is_bottom = True
+                self.set_index(2)
