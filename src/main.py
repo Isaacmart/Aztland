@@ -15,7 +15,7 @@ from app_methods import get_time
 from app_methods import get_ticker
 from app_methods import last_instance
 from app_methods import get_size
-from strategies import Strategy
+from new_strategies import MACDStrategy
 import time
 import Data
 
@@ -115,7 +115,7 @@ def application():
                 raise TypeError("indicator_values contain a non-float type")
 
         if passed:
-            strategy_5m = Strategy(indicator, macd_5m, bands_1dev, bands_2dev, volume_5m, rsi_5m, ema_12p, new_order)
+            strategy_5m = MACDStrategy(macd_5m, new_order)
             strategy_5m.strategy(-1)
 
             if position.get_position() is False:

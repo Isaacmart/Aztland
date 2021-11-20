@@ -5,31 +5,53 @@ from dict import new_dict
 import csv
 import time
 
-#token = "ETH-USD"
-times = [1, 5, 15, 60, 360, 1440]
+
+def append_data(file_name:str, new_data:list):
+    new_file = open(file_name, "r")
+    reader = csv.reader(new_file)
+    last_line = ""
+    index = 0
+    for line in reader:
+        if line < 2:
+            last_line = line
+            index +=1
+        else:
+            new_data.append(line)
+    return last_line
+
+
+token = "AGLD-USD"
+times = [1]
 
 for tim in times:
 
-    for token in new_dict:
+    if token in new_dict:
 
         file_name: str
         max_requests = 0
-        if tim <= 60:
-            max_requests = ((60/tim) * 17520)/300
-            try:
+        new_data = []
+        gra = tim * 60  # granularity in seconds
 
+        if tim <= 60:
             file_name = f"../../data_{str(tim)}m/{token}_{str(tim)}m.csv"
         else:
-            max_requests = ((1440/tim) * 730)/300
-            new_time = tim/60
+            new_time = tim / 60
             file_name = f"../../data_{str(new_time)}h/{token}_{str(new_time)}h.csv"
+
+        try:
+            last_date = float(append_data(file_name, new_data)[0])
+            diff = time.time() - last_date
+            req = diff / gra
+            max_requests = req / 300
+        except FileNotFoundError:
+            max_requests = ((60 / tim) * 17520) / 300
+
 
         indicator = Indicator()
         seconds = 300 * 60 * tim  # number of seconds in a request for 300 candles
         callback = seconds  # start requesting data from "seconds" seconds ago
         begin = 0  # stop requesting data at 0 seconds ago
         requests = 0  # number of request in the last second
-        gra = tim * 60  # granularity in seconds
         print(token)
 
         data = []

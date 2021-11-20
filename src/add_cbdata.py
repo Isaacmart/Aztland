@@ -10,10 +10,10 @@ index = 0
 last_line: str
 last_date: float
 try:
-    data = open("../../data_1m/BT-USD_1m.csv", "r")
+    data = open("../../data_1m/AGLD-USD_1m.csv", "r")
     reader = csv.reader(data)
     for line in reader:
-        if index < 2:
+        if index <= 1:
             last_line = line
             index += 1
         else:
