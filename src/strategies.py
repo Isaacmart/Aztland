@@ -24,7 +24,8 @@ class Strategy:
         self.rsi = rsi
         self.roc = roc
         self.ema_12p = ema
-        self.error = None
+        self.error = ""
+        self.index = 0
 
     def set_index(self, new_index):
         if self.index == 0:
