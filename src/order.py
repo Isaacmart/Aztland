@@ -29,74 +29,58 @@ class Order:
     }
     """
 
-    def __init__(self, client=AuthenticatedClient):
+    def __init__(self, client: AuthenticatedClient):
         """
         Creates an instance of Order
-
         :param client: instance of AuthenticatedClient
         """
 
-        self.client = client
-        self.new_id = None
+        self.__client = client
+        self.__new_id = None
+        self.__details = {}
+        self.__set_id()
+        self.__set_details()
         self.is_bottom = False
         self.is_raising = False
         self.is_top = False
         self.is_falling = False
-        self.details = {
-            "id": "",
-            "size": "",
-            "product_id": "",
-            "side": "",
-            "stp": "",
-            "funds": "",
-            "specified_funds": "",
-            "type": "",
-            "post_only": None,
-            "created_at": "",
-            "done_at": "",
-            "done_reason": "",
-            "fill_fees": "",
-            "filled_size": "",
-            "executed_value": "",
-            "status": "",
-            "settled": None
-        }
 
-    def set_details(self):
+    def __set_details(self):
         """
         Makes sure that the response contains a valid request
-
         :return: Whether the response is valid
         """
         confirm = False
         while confirm is False:
-            self.details = self.client.get_order(order_id=self.new_id)
-            if 'status' in self.details:
-                if self.details['status'] == 'done':
+            self.__details = self.__client.get_order(order_id=self.__new_id)
+            if 'status' in self.__details:
+                if self.__details['status'] == 'done':
                     confirm = True
             return confirm
+
+    def __set_id(self):
+        """
+        Opens a file where the Coinbase order ID number is stored and saves it in a variable
+        :return: The Id number for the latest trade executed
+        """
+        writer = open(Path, 'r')
+        self.__new_id = writer.read()
+        writer.close()
+        return self.__new_id
 
     def get_key(self, key):
         """
         returns the value mapped to parameter
-
         :param key: value to get the mapped value from
-
         :return: The mapped value or None
         """
+        try:
+            return self.__details[key]
+        except KeyError as ke:
+            return None
 
-        return self.details[key]
-
-    def get_id(self):
-        """
-        Opens a file where the Coibase order ID number is stored and saves it in a variable
-
-        :return: The Id number for the latest trade executed
-        """
-        writer = open(Path, 'r')
-        self.new_id = writer.read()
-        writer.close()
-        return self.new_id
+    def get_details(self):
+        return self.__details
 
     def get_bottom(self):
         return self.is_bottom
