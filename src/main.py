@@ -3,7 +3,6 @@ from open_position import OpenPosition
 from order import Order
 from capital import Capital
 from cbpro import AuthenticatedClient
-from cbpro import PublicClient
 from indicators import Indicator
 from indicators import MACD
 from indicators import BB
@@ -21,159 +20,125 @@ import Data
 
 app = Flask(__name__)
 
-#This is the debug mode of the actual application that will execute trades automatically, hence why it is printing
-#to stdio. It does it so that way the print statements can be accessed in the error log
-#The actual application will store all the logs errors.
-
 
 @app.route("/", methods=['GET', 'POST'])
 def application():
 
     if request.method == 'POST':
-        
-        new_request = request.get_json(force=True)
-        new_ticker = get_ticker('ticker', new_request)
 
-        client = PublicClient()
+        new_request = request.get_json(force=True)
+        new_ticker = get_ticker(new_request)
+
         private_client = AuthenticatedClient(Data.API_Public_Key, Data.API_Secret_Key, Data.Passphrase)
 
         new_order = Order(private_client)
-        new_order.get_id()
-        new_order.set_details()
-        """
-        if len(new_order.get_id()) > 0:
-          new_order.set_details()
-        else:
-            print("unable to get Id number")
-            """
         position = OpenPosition(new_order)
-        position.set_position()
         funds = Capital(private_client)
-        funds.set_capital()
 
         indicator = Indicator()
-        macd_5m = MACD()
-        volume_5m = VolSMA(timeperiod=20)
-        bands_2dev = BB()
-        bands_1dev = BB(ndbevup=1, nbdevdn=1)
-        rsi_5m = RSI()
-        ema_12p = EMA()
-        momentum = Momentum()
+        macd = MACD()
 
-        indicator.initiate_client(client)
+        candle_ticker: str
+        stop_time: int
+        candle_gra = int
+
         if position.get_position() and last_instance():
-            try:
-                indicator.set_candles(product=new_order.get_key("product_id"), callback=get_time(27976),
-                                      begin=get_time(0),
-                                      granularity=300)
-            except ValueError as ve:
-                print(new_ticker, ve)
-                
+
+            candle_ticker = new_order.get_key("product_id")
+            stop_time = get_time(27976)
+            candle_gra = 300
+
             writer = open(Data.Time, "w")
-            writer.write(str(time.time()))
+            writer.write(str(time.time() + 5.0))
             writer.close()
-            
+
         elif position.get_position() is False:
-            try:
-                indicator.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0), granularity=300)
-            except ValueError as ve:
-                print(new_ticker, ve)
-                
+
+            candle_ticker = new_ticker
+            stop_time = get_time(83925)
+            candle_gra = 900
+
+        try:
+            indicator.set_candles(product=candle_ticker, callback=stop_time, begin=get_time(0), granularity=candle_gra)
+        except ValueError as ve:
+            print(ve.with_traceback())
+        except NameError as ne:
+            print(ne.with_traceback())
+
+        indicator_list = [indicator, macd]
+        try:
+            for value in indicator_list:
+                value.candles = indicator.candles
+                value.set_indicator()
+                value.set_dates()
+        except Exception as e:
+            print(e.with_traceback())
+
+        indicator_5m = Indicator()
+        macd_5m = MACD()
+
+        if position.get_position() is False:
+
+            if macd.hist[-1] > macd.hist[-2]:
+                try:
+                    indicator_5m.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0),
+                                             granularity=900)
+                except ValueError as ve:
+                    print(ve.with_traceback())
         else:
-            pass
+            indicator_5m = indicator
+            macd_5m = macd
 
-        invalid_data = True
-        if len(indicator.candles) > 0:
-            invalid_data = False
-        else:
-            pass
+        volume_5m = VolSMA(timeperiod=20)
+        bands2dev_5m = BB()
+        bands1dev_5m = BB(ndbevup=1, nbdevdn=1)
+        rsi_5m = RSI()
+        ema_5m = EMA()
+        momentum_5m = Momentum()
 
-        indicator_values = []
-        if invalid_data is False:
-            indicator_list = [indicator, macd_5m, volume_5m, bands_2dev, bands_1dev, rsi_5m, ema_12p, momentum]
-            try:
-                for a_indicator in indicator_list:
-                    a_indicator.candles = indicator.candles
-                    a_indicator.get_data_set()
-                    a_indicator.reverse_data()
-                    a_indicator.get_dates()
-                    a_indicator.get_np_array()
-                    a_indicator.set_indicator()
-                    if a_indicator.get_index(-1).__class__ == list:
-                        for value in a_indicator.get_index(-1):
-                            indicator_values.append(value)
-                    else:
-                        indicator_values.append(a_indicator.get_index(-1))
-            except Exception as e:
-                print(e)
+        indicators = [indicator_5m, macd_5m, volume_5m, bands1dev_5m, bands2dev_5m, rsi_5m, ema_5m, momentum_5m]
 
-        passed = False
-        for value in indicator_values:
-            if value.__class__ == float:
-                passed = True
-            else:
-                raise TypeError("indicator_values contain a non-float type")
+        try:
+            for value in indicators:
+                value.candles = indicator_5m.candles
+                value.set_indicator()
+                value.set_dates()
+        except Exception as e:
+            print(e.with_traceback())
 
-        if passed:
-            strategy_5m = Strategy(indicator, macd_5m, bands_1dev, bands_2dev, volume_5m, rsi_5m, ema_12p, new_order)
+        strategy_5m = Strategy(indicator_5m, macd_5m, bands1dev_5m, bands2dev_5m, volume_5m, rsi_5m, ema_5m, new_order)
+
+        try:
             strategy_5m.strategy(-1)
+        except Exception as e:
+            print(e.with_traceback())
 
-            if position.get_position() is False:
-                if new_order.is_bottom:
-                    new_trade = private_client.place_market_order(product_id=new_ticker, side="buy",
-                                                                  funds=funds.get_capital())
-                    if "id" in new_trade:
-                        writer = open(Data.Path, "w")
-                        writer.write(new_trade['id'])
-                        writer.close()
-                        new_order.get_id()
-                        if new_order.set_details():
-                            writer = open(Data.Time, "w")
-                            writer.write(str(time.time()))
-                            writer.close()
-                            print("order sent: ", new_order.details)
-                        else:
-                            print("opening position details: ", new_trade)
-                    else:
-                        print(new_ticker, new_trade)
-                        pass
-                else:
-                    pass
-            elif position.get_position():
+        trade_side: str
+        trade_product: str
+        trade_funds: str
 
-                done_reason = 0
-                ready_to_trade = False
-                avg_cost = float(new_order.get_key("executed_value")) / float(new_order.get_key("filled_size"))
-                percentage = ((float(indicator.get_index(-1) * 100)) / avg_cost) - 100
-                
-                if new_order.is_top:
-                    ready_to_trade = True
-                    done_reason = 1
-                else:
-                    pass
+        if (new_order.is_bottom()) and (position.get_position() is False):
+            trade_side = "buy"
+            trade_product = new_ticker
+            trade_funds = funds.get_capital()
+        elif (new_order.is_top()) and (position.get_position()):
+            trade_side = "sell"
+            trade_product = new_order.get_key("product_id")
+            trade_funds = get_size(trade_product, new_order.get_key("filled_size"))
 
-                if ready_to_trade:
+        try:
+            new_trade = private_client.place_market_order(product_id=trade_product, side=trade_side, funds=trade_funds)
+            writer = open(Data.Path, "w")
+            writer.write(new_trade['id'])
+            writer.close()
+            writer = open(Data.Time, "w")
+            writer.write(new_trade['done_at'])
+            writer.close()
+        except NameError as ne:
+            print(ne.with_traceback())
+        except KeyError as ke:
+            print(ke.with_traceback())
 
-                    trade_size = get_size(new_order.get_key("product_id"), new_order.get_key("filled_size"))
-                    new_trade = private_client.place_market_order(product_id=new_order.get_key("product_id"),
-                                                                  side='sell',
-                                                                  size=trade_size)
-                    if "id" in new_trade:
-                        writer = open(Data.Path, "w")
-                        writer.write(new_trade['id'])
-                        writer.close()
-                        new_order.get_id()
-                        
-                        if new_order.set_details():                            
-                            print("order sent " + new_order.get_key('product_id'))
-                        else:
-                            pass
-                    else:
-                        print("order details", done_reason, new_trade, trade_size)
-                else:
-                    pass
-        else:
-            pass
         return 'success', 200
 
     elif request.method == 'GET':
@@ -192,8 +157,5 @@ def login():
         else:
             private_client = AuthenticatedClient(Data.API_Public_Key, Data.API_Secret_Key, Data.Passphrase)
             new_order = Order(private_client)
-            new_order.get_id()
-            new_order.set_details()
-            new_data = new_order.details
-            return new_data
+            return new_order.get_details()
     return render_template('login.html', error=error)
