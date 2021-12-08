@@ -14,29 +14,18 @@ class Indicator:
 
     def __init__(self, index=4, weight=True):
         """
-        Creates an instance of the Indicator class
-
+        Creates an instance of the Indicator class\n
         Args:
              index (int): type of price to work with, close price is default
              weight (bool): If
         """
-        self.new_client = PublicClient(timeout=45)
+        self.__new_client = PublicClient(timeout=45)
         self.candles = []
         self.close_array = []
         self.date_array = []
         self.np_array = []
         self.index = index
         self.weight = weight
-
-    def initiate_client(self, client=PublicClient):
-        """
-        Passes an instance class needed for getting indicators
-
-        Args:
-            client (PublicClient): Instance of PublicClient
-        """
-        self.__doc__ += PublicClient.__doc__
-        self.new_client = client
 
     def set_candles(self, product, callback, begin, granularity):
         """
@@ -47,33 +36,14 @@ class Indicator:
             begin (int): Last second to get rates from
             granularity (int): Number of seconds
         """
-        self.candles = self.new_client.get_product_historic_rates(product_id=product, start=callback, end=begin, granularity=granularity)
+        self.candles = self.__new_client.get_product_historic_rates(product_id=product, start=callback, end=begin, granularity=granularity)
         return self.candles
 
-    def get_data_set(self):
-        """
-        Gets a data set in a list
-        :return: A list with the closing prices of a product
-        """
-        for candle in self.candles:
-            self.close_array.append(float(candle[self.index]))
-        return self.close_array
-
-    def reverse_data(self):
-        """
-        Reverses the list containing the closing price.
-        Coinbase yields data in queue, that is latest last; however, to get accurate numbers,
-        the data passed to the indicators must be latest data last
-        :return: List with closing prices reversed
-        """
-        self.close_array.reverse()
-        return self.close_array
-
-    def get_dates(self):
+    def set_dates(self):
         """
         Puts of the dates in a list an reverses it the same method. That is because when we
         testing strategies sometimes we wanna see when it happened and we this method we just have to
-        reference the same index as the one in the closing prices list
+        reference the same index as the one in the closing prices list.\n
         :return: Reversed list of dates in Unix form
         """
         p = 0
@@ -83,49 +53,11 @@ class Indicator:
         self.date_array.reverse()
         return self.date_array
 
-    def get_np_array(self):
-        """
-        Ta-Lib takes data in a numpy array, this method coverts a regular list into a numpy array
-        :return: Numpy array of closing prices
-        """
-        self.np_array = numpy.array(self.close_array)
-        return self.np_array
-
-    def crossover(self, x=[], y=[]):
-        """
-        Checks whether a value is crossing over another
-        :param x: List that is crossing a value
-        :param y: List that is being crossed
-        :return:List of boolean values
-        """
-        cross_over = []
-        i = 1
-        while i < len(x):
-            if (x[i] > y[i]) and (x[i - 1] < y[i - 1]):
-                cross_over.insert(i, True)
-            else:
-                cross_over.insert(i, False)
-        return cross_over
-
-    def crossunder(self, x=[], y=[]):
-        """
-        Measures if a value is crossing another one under
-        :param x: List crossing y
-        :param y: List being crossed
-
-        :return: List of boolean values
-        """
-        cross_under = []
-        i = 1
-        while 1 < len(x):
-            if (x[i] < y[i]) and (x[i - 1] > y[i - 1]):
-                cross_under.insert(i, True)
-            else:
-                cross_under.insert(i, False)
-        return cross_under
-
     def set_indicator(self):
-        pass
+        for candle in self.candles:
+            self.close_array.append(float(candle[self.index]))
+        self.close_array.reverse()
+        self.np_array = numpy.array(self.close_array)
 
     def get_index(self, index):
         return float(self.close_array[index])
@@ -133,8 +65,7 @@ class Indicator:
 
 class MACD(Indicator):
     """
-    Child class of Indicator that implements the Moving Average Convergence Divergence indicator\n
-
+    Child class of Indicator that implements the Moving Average Convergence Divergence indicator.\n
     MACD = fastperiod - slowperiod\n
     Histogram = Exponential moving average (12-period default)\n
     Histogram = MACD - Histogram\n
@@ -142,12 +73,13 @@ class MACD(Indicator):
 
     def __init__(self, fastperiod=12, slowperiod=26, signalperiod=9, index=4, weight=True):
         """
-        Creates an instance variable of MACD class
-        :param fastperiod: period of fast exponential moving average
-        :param slowperiod: period of slow EMA
-        :param signalperiod: period of exponential moving average used as trigger line
-        :param index: index from where to get the data
-        :param weight:
+        Creates an instance variable of MACD class.\n
+        Args:
+            fastperiod: period of fast exponential moving average
+            slowperiod: period of slow EMA
+            signalperiod: period of exponential moving average used as trigger line
+            index: index from where to get the data
+            weight: whether the Indicator is weighted or not.
         """
         super(MACD, self).__init__(index=index, weight=weight)
         self.macd = []
@@ -175,13 +107,14 @@ class BB(Indicator):
 
     def __init__(self, timeperiod=5, ndbevup=2, nbdevdn=2, matype=0, index=4, weight=False):
         """
-        Creates an instance variable of class BB
-        :param timeperiod: Time period of the Bollinger Bands
-        :param ndbevup: Number of standard deviations for the upper band
-        :param nbdevdn: Number of standard deviations for the lower band
-        :param matype: Number of moving averages
-        :param index: Index of Indicator.candles to get the data from
-        :param weight: False if the indicator does not use Moving Averages
+        Creates an instance variable of class BB.\n
+        Args:
+            timeperiod: Time period of the Bollinger Bands
+            ndbevup: Number of standard deviations for the upper band
+            nbdevdn: Number of standard deviations for the lower band
+            matype: Number of moving averages
+            index: Index of Indicator.candles to get the data from
+            weight: False if the indicator does not use Moving Averages
         """
         super(BB, self).__init__(index=index, weight=weight)
         self.upperband = []
@@ -194,9 +127,10 @@ class BB(Indicator):
 
     def set_indicator(self):
         """
-        Calculates the Bollinger Bands upper, middle, and lower bands
+        Calculates the Bollinger Bands upper, middle, and lower bands.\n
         :return:
         """
+        super()
         self.upperband, self.middleband, self.lowerband = talib.BBANDS(real=self.np_array, timeperiod=self.timeperiod, nbdevup=self.ndbevup, nbdevdn=self.nbdevdn, matype=self.matye)
 
     def get_indicator(self):
@@ -227,6 +161,7 @@ class VolSMA(Indicator):
         """
         Calculates the moving average of the volume
         """
+        super()
         self.real = talib.SMA(real=self.np_array, timeperiod=self.timeperiod)
 
     def get_indicator(self):
@@ -256,6 +191,7 @@ class RSI(Indicator):
         """
         Calculates the Relative Strength Index from the array passed
         """
+        super()
         self.real = talib.RSI(real=self.np_array, timeperiod=self.timperiod)
 
     def get_indicator(self):
@@ -273,6 +209,7 @@ class EMA(Indicator):
         self.real = []
 
     def set_indicator(self):
+        super()
         self.real = talib.EMA(real=self.np_array, timeperiod=self.timeperiod)
 
     def get_indicator(self):
@@ -290,6 +227,7 @@ class Momentum(Indicator):
         self.real = []
 
     def set_indicator(self):
+        super()
         self.real = talib.MOM(real=self.np_array, timeperiod=self.timeperiod)
 
     def get_indicator(self):
@@ -307,6 +245,7 @@ class ROC(Indicator):
         self.real = []
 
     def set_indicator(self):
+        super()
         self.real = talib.ROC(real=self.np_array, timeperiod=self.time_period)
 
     def get_indicator(self):
