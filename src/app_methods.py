@@ -1,4 +1,6 @@
 import csv
+
+import flask
 import pytz
 from datetime import datetime
 import time
@@ -12,7 +14,7 @@ from Data import Time
 
 
 #Receives a_string to write to csv file
-def write_to_csv(path, a_string):
+def write_to_csv(path: str, a_string: str):
     to_write = open(path, 'a')
     writer = csv.writer(to_write)
     writer.writerow(a_string)
@@ -29,7 +31,7 @@ def get_time(amount):
 
 
 #Gets a flask.request ticker key and returns a matching product in coinbase'''
-def get_ticker(new_request):
+def get_ticker(new_request: dict):
     ticker_product: str
     if "ticker" in new_request:
         new_ticker = new_request["ticker"]

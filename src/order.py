@@ -37,7 +37,7 @@ class Order:
 
         self.__client = client
         self.__new_id = None
-        self.__details = {}
+        self.__details: dict
         self.__set_id()
         self.__set_details()
         self.is_bottom = False
