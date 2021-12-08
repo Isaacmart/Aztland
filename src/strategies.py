@@ -14,7 +14,7 @@ class Strategy:
     error: str
     order: Order
 
-    def __init__(self, indicator=Indicator(), macd=MACD(), bands_1dev=BB(), bands_2dev=BB(), vol_sma=VolSMA(), rsi=RSI(), ema=EMA(), roc=ROC(), order=Order()):
+    def __init__(self, indicator: Indicator, macd: MACD, bands_1dev: BB, bands_2dev: BB, vol_sma: VolSMA, rsi: RSI, ema: EMA, roc: ROC, order: Order):
         self.order = order
         self.indicator = indicator
         self.macd = macd

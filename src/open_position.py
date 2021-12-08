@@ -9,14 +9,16 @@ class OpenPosition:
     and the side was buying
     """
 
-    def __init__(self, order=Order()):
-        self.long_position = False
-        self.order = order
+    def __init__(self, order: Order):
+        self.__long_position: bool
+        self.__order = order
+        self.__set_position()
+
+    def __set_position(self):
+        if self.__order.get_key('side') == 'buy':
+            self.__long_position = True
+        else:
+            self.__long_position = False
 
     def get_position(self):
-        return self.long_position
-
-    def set_position(self):
-        if self.order.set_details():
-            if self.order.get_key('side') == 'buy':
-                self.long_position = True
+        return self.__long_position

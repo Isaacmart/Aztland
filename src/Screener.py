@@ -1,0 +1,4 @@
+new: str
+print(new)
+
+
