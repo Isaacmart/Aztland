@@ -53,6 +53,7 @@ class Order:
         confirm = False
         while confirm is False:
             self.__details = self.__client.get_order(order_id=self.__new_id)
+            print(self.__details)
             if 'status' in self.__details:
                 if self.__details['status'] == 'done':
                     confirm = True
@@ -77,6 +78,8 @@ class Order:
         try:
             return self.__details[key]
         except KeyError as ke:
+            return None
+        except TypeError as te:
             return None
 
     def get_details(self):
