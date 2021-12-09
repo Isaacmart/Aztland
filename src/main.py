@@ -1,3 +1,5 @@
+import sys
+
 from flask import Flask, request, abort, render_template, redirect, url_for
 from open_position import OpenPosition
 from order import Order
@@ -61,9 +63,9 @@ def application():
         try:
             indicator.set_candles(product=candle_ticker, callback=stop_time, begin=get_time(0), granularity=candle_gra)
         except ValueError as ve:
-            print(ve.with_traceback())
+            print(ve.with_traceback(tb=sys.exc_info()[0]))
         except NameError as ne:
-            print(ne.with_traceback())
+            print(ne.with_traceback(tb=sys.exc_info()[0]))
 
         indicator_list = [indicator, macd]
         try:
@@ -72,7 +74,7 @@ def application():
                 value.set_indicator()
                 value.set_dates()
         except Exception as e:
-            print(e.with_traceback())
+            print(e.with_traceback(tb=sys.exc_info()[0]))
 
         indicator_5m = Indicator()
         macd_5m = MACD()
@@ -84,7 +86,7 @@ def application():
                     indicator_5m.set_candles(product=new_ticker, callback=get_time(27976), begin=get_time(0),
                                              granularity=900)
                 except ValueError as ve:
-                    print(ve.with_traceback())
+                    print(ve.with_traceback(tb=sys.exc_info()[0]))
         else:
             indicator_5m = indicator
             macd_5m = macd
@@ -104,14 +106,14 @@ def application():
                 value.set_indicator()
                 value.set_dates()
         except Exception as e:
-            print(e.with_traceback())
+            print(e.with_traceback(tb=sys.exc_info()[0]))
 
         strategy_5m = Strategy(indicator_5m, macd_5m, bands1dev_5m, bands2dev_5m, volume_5m, rsi_5m, ema_5m, new_order)
 
         try:
             strategy_5m.strategy(-1)
         except Exception as e:
-            print(e.with_traceback())
+            print(e.with_traceback(tb=sys.exc_info()[0]))
 
         trade_side: str
         trade_product: str
@@ -130,9 +132,9 @@ def application():
             print(trade_side + ", " + trade_funds + ", " + trade_side)
             
         except NameError as ne:
-            print(ne.with_traceback())
+            print(ne.with_traceback(tb=sys.exc_info()[0]))
         except KeyError as ke:
-            print(ke.with_traceback())
+            print(ke.with_traceback(tb=sys.exc_info()[0]))
 
         return 'success', 200
 
