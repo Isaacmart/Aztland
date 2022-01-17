@@ -12,7 +12,7 @@ def append_data(file_name:str, new_data:list):
     last_line = ""
     index = 0
     for line in reader:
-        if line < 2:
+        if index < 1:
             last_line = line
             index +=1
         else:
@@ -20,12 +20,12 @@ def append_data(file_name:str, new_data:list):
     return last_line
 
 
-token = "AGLD-USD"
+#token = "SNX-USD"
 times = [1]
 
 for tim in times:
 
-    if token in new_dict:
+    for token in new_dict:
 
         file_name: str
         max_requests = 0
@@ -45,7 +45,6 @@ for tim in times:
             max_requests = req / 300
         except FileNotFoundError:
             max_requests = ((60 / tim) * 17520) / 300
-
 
         indicator = Indicator()
         seconds = 300 * 60 * tim  # number of seconds in a request for 300 candles

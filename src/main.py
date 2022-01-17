@@ -1,5 +1,4 @@
 import sys
-
 from flask import Flask, request, abort, render_template, redirect, url_for
 from open_position import OpenPosition
 from order import Order

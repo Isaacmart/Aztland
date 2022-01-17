@@ -42,11 +42,4 @@ class Strategy:
 
     def strategy(self, index=-1, beg=0):
 
-        if self.macd.macd[index] <= self.macd.signal[index]:
-            if self.macd.macd[index - 1] > self.macd.signal[index - 1]:
-                self.order.is_top = True
-                self.set_index(1)
-        if self.macd.macd[index] >= self.macd.signal[index]:
-            if self.macd.macd[index - 1] < self.macd.signal[index - 1]:
-                self.order.is_bottom = True
-                self.set_index(2)
+        is_top = True

@@ -10,7 +10,7 @@ index = 0
 last_line: str
 last_date: float
 try:
-    data = open("../../data_1m/AGLD-USD_1m.csv", "r")
+    data = open("../../data_1m/ETH-USD_1m.csv", "r")
     reader = csv.reader(data)
     for line in reader:
         if index <= 1:
