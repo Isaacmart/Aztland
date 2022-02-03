@@ -90,6 +90,7 @@ class MACD(Indicator):
         self.signal_period = signalperiod
 
     def set_indicator(self):
+        super(MACD, self).set_indicator()
         self.macd, self.signal, self.hist = talib.MACD(real=self.np_array, fastperiod=self.fast_period, slowperiod=self.slow_period, signalperiod=self.signal_period)
 
     def get_indicator(self):
@@ -130,7 +131,7 @@ class BB(Indicator):
         Calculates the Bollinger Bands upper, middle, and lower bands.\n
         :return:
         """
-        super()
+        super(BB, self).set_indicator()
         self.upperband, self.middleband, self.lowerband = talib.BBANDS(real=self.np_array, timeperiod=self.timeperiod, nbdevup=self.ndbevup, nbdevdn=self.nbdevdn, matype=self.matye)
 
     def get_indicator(self):
