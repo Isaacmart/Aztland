@@ -42,7 +42,3 @@ for line in product_data:
     writer.write(str(line) + "\n")
 
 writer.close()
-
-
-new_list = []
-new_list.f

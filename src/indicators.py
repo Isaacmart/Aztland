@@ -62,6 +62,9 @@ class Indicator:
     def get_index(self, index):
         return float(self.close_array[index])
 
+    def price(self):
+        return self.close_array[-1]
+
 
 class MACD(Indicator):
     """
