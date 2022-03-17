@@ -1,4 +1,4 @@
-from indicators import Indicator
+﻿from indicators import Indicator
 from app_methods import get_time
 from dict import new_dict
 import csv

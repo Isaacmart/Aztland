@@ -44,3 +44,16 @@ ips used by TradingView
   
 }
 
+Webhook received from Coinbase
+{
+  'type': 'last_match',
+  'trade_id': 240804279,
+  'maker_order_id': '107f2b21-b952-4618-a93f-cf9c9d2674c5',
+  'taker_order_id': '2ba4f851-8469-4014-a83a-6a0912f5ebdd',
+  'side': 'buy',
+  'size': '0.31182198',
+  'price': '2764.09',
+  'product_id': 'ETH-USD',
+  'sequence': 26942940188,
+  'time': '2022-03-16T20:12:15.778128Z'
+  }

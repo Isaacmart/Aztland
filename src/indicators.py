@@ -65,6 +65,15 @@ class Indicator:
     def price(self):
         return self.close_array[-1]
 
+    def carray_pop(self):
+        pass
+
+    def carray_append(self):
+        pass
+
+    def carray_replace(self):
+        pass
+
 
 class MACD(Indicator):
     """
