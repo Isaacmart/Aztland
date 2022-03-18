@@ -29,6 +29,9 @@ class Indicator:
         self.weight = weight
         self.lock = Lock()
 
+    def __str__(self):
+        return "indicator"
+
     def set_candles(self, product, callback, begin, granularity):
         """
         Makes requests to the Coinbase API for Historic rates\n
@@ -70,15 +73,6 @@ class Indicator:
     def price(self):
         return self.close_array[-1]
 
-    def carray_pop(self):
-        pass
-
-    def carray_append(self):
-        pass
-
-    def carray_replace(self):
-        pass
-
 
 class MACD(Indicator):
     """
@@ -105,6 +99,9 @@ class MACD(Indicator):
         self.fast_period = fastperiod
         self.slow_period = slowperiod
         self.signal_period = signalperiod
+
+    def __str__(self):
+        return "MACD"
 
     def set_indicator(self):
         #super(MACD, self).set_indicator()
@@ -135,13 +132,19 @@ class BB(Indicator):
             weight: False if the indicator does not use Moving Averages
         """
         super(BB, self).__init__(index=index, weight=weight)
-        self.upperband = []
-        self.middleband = []
-        self.lowerband = []
+        self.upper = []
+        self.middle = []
+        self.lower = []
+        self.bb_width = []
+        self.sma_bbw = []
+        self.pbb = []
         self.timeperiod = timeperiod
         self.ndbevup = ndbevup
         self.nbdevdn = nbdevdn
         self.matye = matype
+
+    def __str__(self):
+        return "BB"
 
     def set_indicator(self):
         """
@@ -149,15 +152,41 @@ class BB(Indicator):
         :return:
         """
         #super(BB, self).set_indicator()
-        self.upperband, self.middleband, self.lowerband = talib.BBANDS(real=self.np_array, timeperiod=self.timeperiod, nbdevup=self.ndbevup, nbdevdn=self.nbdevdn, matype=self.matye)
+        self.upper, self.middle, self.lower = talib.BBANDS(real=self.np_array, timeperiod=self.timeperiod, nbdevup=self.ndbevup, nbdevdn=self.nbdevdn, matype=self.matye)
+        self.get_pBB()
+        self.get_bbWidth()
+        self.width_SMA()
 
     def get_indicator(self):
-        return self.upperband, self.middleband, self.lowerband
+        return self.upper, self.middle, self.lower
 
     def get_index(self, index):
-        real = [float(self.upperband[index]), float(self.middleband[index]), float(self.lowerband[index])]
+        real = [float(self.upper[index]), float(self.middle[index]), float(self.lower[index]), float(self.pbb[index]), float(self.bb_width[index]), float(self.sma_bbw[index])]
         return real
 
+    def get_pBB(self, index=-1):
+        for i in range(len(self.middle)):
+            try:
+                value = (float(self.np_array[i]) - float(self.lower[i])) / (float(self.upper[i]) - float(self.lower[i]))
+                self.pbb.append(value)
+            except ValueError:
+                self.pbb.append("NaN")
+            except ZeroDivisionError:
+                self.pbb.append("NAN")
+
+    def get_bbWidth(self, index=-1):
+        for i in range(len(self.middle)):
+            try:
+                value = ((float(self.upper[i]) - float(self.lower[i])) / self.middle[i]) * 100
+                self.bb_width.append(value)
+            except ValueError:
+                self.bb_width.append("NaN")
+            except ZeroDivisionError:
+                self.bb_width.append("NaN")
+
+    def width_SMA(self):
+        np_array = numpy.array(self.bb_width)
+        self.sma_bbw = talib.SMA(real=np_array, timeperiod=self.timeperiod)
 
 
 class VolSMA(Indicator):
@@ -176,11 +205,14 @@ class VolSMA(Indicator):
         self.timeperiod = timeperiod
         self.real = []
 
+    def __str__(self):
+        return "VolSMA"
+
     def set_indicator(self):
         """
         Calculates the moving average of the volume
         """
-        super()
+        #super()
         self.real = talib.SMA(real=self.np_array, timeperiod=self.timeperiod)
 
     def get_indicator(self):
@@ -206,6 +238,9 @@ class RSI(Indicator):
         self.timperiod = timeperiod
         self.real = []
 
+    def __str__(self):
+        return "RSI"
+
     def set_indicator(self):
         """
         Calculates the Relative Strength Index from the array passed
@@ -227,8 +262,11 @@ class EMA(Indicator):
         self.timeperiod = time_period
         self.real = []
 
+    def __str__(self):
+        return "EMA"
+
     def set_indicator(self):
-        super()
+        #super()
         self.real = talib.EMA(real=self.np_array, timeperiod=self.timeperiod)
 
     def get_indicator(self):
@@ -245,8 +283,11 @@ class Momentum(Indicator):
         self.timeperiod = time_period
         self.real = []
 
+    def __str__(self):
+        return "Momentum"
+
     def set_indicator(self):
-        super()
+        #super()
         self.real = talib.MOM(real=self.np_array, timeperiod=self.timeperiod)
 
     def get_indicator(self):
@@ -263,8 +304,11 @@ class ROC(Indicator):
         self.time_period = time_period
         self.real = []
 
+    def __str__(self):
+        return "ROC"
+
     def set_indicator(self):
-        super()
+        #super()
         self.real = talib.ROC(real=self.np_array, timeperiod=self.time_period)
 
     def get_indicator(self):

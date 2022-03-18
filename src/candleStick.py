@@ -20,6 +20,7 @@ class CandleStick:
         self.candlesticks = []
         self.indicator = Indicator()
         self.indicators = [MACD(), RSI(), BB(), BB(ndbevup=1, nbdevdn=1)]
+        self.indicator_values = []
         self.np_array = numpy.ndarray([])
         self.name = name
         self.timeline = timeline
@@ -143,10 +144,11 @@ class CandleStick:
         indicator.lock.acquire()
         indicator.np_array = self.indicator.np_array
         indicator.set_indicator()
-        print(self.name, self.timeline, indicator.get_index(-1))
+        self.indicator_values.extend(indicator.get_index(-1))
         indicator.lock.release()
 
     def read_indicators(self):
         for indicator in self.indicators:
             thread = Thread(target=self.calculate_indicator, args=[indicator])
             thread.start()
+

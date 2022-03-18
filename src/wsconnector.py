@@ -8,11 +8,6 @@ from threading import Thread
 from websocket import create_connection, WebSocketConnectionClosedException
 
 
-n_dict = {
-    "ETH-USD": 1
-}
-
-
 #Populates a dict with classes using the keys from the products dict
 def populate_dict(a_dict):
     cl_dict = {}
@@ -61,6 +56,7 @@ def main():
                 candle = get_candlesticks(candlesticks, obj["product_id"], i)
                 candle.candle_input(obj)
                 candle.read_indicators()
+                print(candle.indicator_values)
 
 
 if __name__ == "__main__":
