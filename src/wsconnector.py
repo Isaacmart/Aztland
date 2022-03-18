@@ -1,71 +1,73 @@
 import json
+import time
 from dict import new_dict
-from indicator import Indicator
-from indicator import MACD
-from indicator import BB
-from indicator import RSI
-from indicator import EMA
-from indicator import VolSMA
-
+from datetime import datetime
+from candleStick import CandleStick
+from indicators import MACD
+from threading import Thread
 from websocket import create_connection, WebSocketConnectionClosedException
 
 
-#Represents a candlestick lists
-class CandleStick:
-
-    def __init__(self, name):
-        self.candlesticks = []
-        self.indicators = []
-        self.name = name
-
-    def __str__(self):
-        return self.name
-
-    #Checks whether there are candlesticks already in the list
-    def candle_started(self):
-        if self.candlesticks[0] > 0:
-            return True
-        else:
-            return False
-
-    #Deletes the oldest candlestick from the list
-    def candle_pop(self):
-        self.candlesticks.pop(0)
-
-    #Adds a candlestick to the list
-    def candle_append(self, candle):
-        self.candle_pop()
-        self.candlesticks.append(candle)
-
-    #Replace a candlestick from the list
-    def candle_replace(self, candle):
-        self.candlesticks.pop(-1)
-        self.candlesticks.append(candle)
+n_dict = {
+    "ETH-USD": 1
+}
 
 
 #Populates a dict with classes using the keys from the products dict
 def populate_dict(a_dict):
     cl_dict = {}
     for key in a_dict:
-        cl_dict[key] = []
-        cl_dict[key].append(CandleStick(key))
+        cl_dict[key] = [CandleStick(key, 60), CandleStick(key, 300), CandleStick(key, 900)]
     return cl_dict
 
 
 #access a candlesticks dict and gets the list representing the candlesticks for the product
-def get_candlesticks(a_dict, product):
+def get_candlesticks(a_dict, product, timeline: int):
     try:
-        a_candle = a_dict[product][0]
+        a_candle = a_dict[product][timeline]
         return a_candle
     except ValueError as ve:
         return f"Tried to get candlesticks for {product}."
 
 
-a_dict = {
-    "ETH-USD": 1
-}
+def populate_list(a_dict):
+    products = []
+    for key in a_dict:
+        products.append(key)
+    return products
 
-n_dict = populate_dict(a_dict)
-a_candle = get_candlesticks(n_dict, "ETH-USD")
-print(a_candle)
+
+def main():
+
+    candlesticks = populate_dict(new_dict)
+    product_ids = populate_list(new_dict)
+    ws = create_connection("wss://ws-feed.pro.coinbase.com")
+    ws.send(
+        json.dumps(
+            {
+                "type": "subscribe",
+                "product_ids": product_ids,
+                "channels": ["matches"]
+            }
+        )
+    )
+
+    while ws.connected:
+        obj = json.loads(ws.recv())
+        candle = None
+        if "product_id" in obj:
+            i = 0
+            for i in range(3):
+                candle = get_candlesticks(candlesticks, obj["product_id"], i)
+                candle.candle_input(obj)
+                candle.read_indicators()
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
 

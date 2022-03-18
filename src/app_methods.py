@@ -21,6 +21,7 @@ def write_to_csv(path: str, a_string: str):
     to_write.close()
 
 
+#Converts a number into ISO 8601 from the seconds back from this moment
 #Amount equals seconds to go back to take time, returns
 #actual time is zero
 def get_time(amount):

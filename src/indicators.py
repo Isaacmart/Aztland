@@ -1,6 +1,7 @@
 import numpy
 import talib
 from cbpro import PublicClient
+from threading import Lock
 
 
 class Indicator:
@@ -26,6 +27,7 @@ class Indicator:
         self.np_array = []
         self.index = index
         self.weight = weight
+        self.lock = Lock()
 
     def set_candles(self, product, callback, begin, granularity):
         """
@@ -58,6 +60,9 @@ class Indicator:
             self.close_array.append(float(candle[self.index]))
         self.close_array.reverse()
         self.np_array = numpy.array(self.close_array)
+
+    def get_indicator(self):
+        return self.np_array
 
     def get_index(self, index):
         return float(self.close_array[index])
@@ -102,7 +107,7 @@ class MACD(Indicator):
         self.signal_period = signalperiod
 
     def set_indicator(self):
-        super(MACD, self).set_indicator()
+        #super(MACD, self).set_indicator()
         self.macd, self.signal, self.hist = talib.MACD(real=self.np_array, fastperiod=self.fast_period, slowperiod=self.slow_period, signalperiod=self.signal_period)
 
     def get_indicator(self):
@@ -118,7 +123,7 @@ class BB(Indicator):
     Child class of Indicator that calculates Bollinger Bands from a list of values
     """
 
-    def __init__(self, timeperiod=5, ndbevup=2, nbdevdn=2, matype=0, index=4, weight=False):
+    def __init__(self, timeperiod=20, ndbevup=2, nbdevdn=2, matype=0, index=4, weight=False):
         """
         Creates an instance variable of class BB.\n
         Args:
@@ -143,7 +148,7 @@ class BB(Indicator):
         Calculates the Bollinger Bands upper, middle, and lower bands.\n
         :return:
         """
-        super(BB, self).set_indicator()
+        #super(BB, self).set_indicator()
         self.upperband, self.middleband, self.lowerband = talib.BBANDS(real=self.np_array, timeperiod=self.timeperiod, nbdevup=self.ndbevup, nbdevdn=self.nbdevdn, matype=self.matye)
 
     def get_indicator(self):
@@ -152,6 +157,7 @@ class BB(Indicator):
     def get_index(self, index):
         real = [float(self.upperband[index]), float(self.middleband[index]), float(self.lowerband[index])]
         return real
+
 
 
 class VolSMA(Indicator):
@@ -204,7 +210,7 @@ class RSI(Indicator):
         """
         Calculates the Relative Strength Index from the array passed
         """
-        super()
+        #super()
         self.real = talib.RSI(real=self.np_array, timeperiod=self.timperiod)
 
     def get_indicator(self):

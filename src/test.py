@@ -1,15 +1,15 @@
+from indicators import MACD
 from indicators import Indicator
 from app_methods import get_time
-import sys
-import numpy
 
+cb = get_time(94 * 60)
+bn = get_time(0)
 indicator = Indicator()
-indicator.set_candles(product="ETH-USD", callback=get_time(27976), begin=get_time(0), granularity=300)
+indicator.set_candles("ETH-USD", cb, bn, 60)
 indicator.set_indicator()
-indicator.set_dates()
-print(indicator.np_array)
-print(sys.getsizeof(indicator.np_array))
 
-arr = numpy.delete(indicator.np_array, 0)
 
-print(sys.getsizeof(arr))
+macd = MACD()
+macd.np_array = indicator.np_array
+macd.set_indicator()
+
