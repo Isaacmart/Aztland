@@ -103,7 +103,7 @@ class MACD(Indicator):
     def __str__(self):
         return "MACD"
 
-    def set_indicator(self):
+    def set_indicator(self, array=[]):
         #super(MACD, self).set_indicator()
         self.macd, self.signal, self.hist = talib.MACD(real=self.np_array, fastperiod=self.fast_period, slowperiod=self.slow_period, signalperiod=self.signal_period)
 
@@ -150,6 +150,7 @@ class BB(Indicator):
         """
         Calculates the Bollinger Bands upper, middle, and lower bands.\n
         :return:
+
         """
         #super(BB, self).set_indicator()
         self.upper, self.middle, self.lower = talib.BBANDS(real=self.np_array, timeperiod=self.timeperiod, nbdevup=self.ndbevup, nbdevdn=self.nbdevdn, matype=self.matye)
@@ -170,19 +171,19 @@ class BB(Indicator):
                 value = (float(self.np_array[i]) - float(self.lower[i])) / (float(self.upper[i]) - float(self.lower[i]))
                 self.pbb.append(value)
             except ValueError:
-                self.pbb.append("NaN")
+                self.pbb.append(0.0)
             except ZeroDivisionError:
-                self.pbb.append("NAN")
+                self.pbb.append(0.0)
 
     def get_bbWidth(self, index=-1):
-        for i in range(len(self.middle)):
+        for i in range(len(self.middle)-1):
             try:
                 value = ((float(self.upper[i]) - float(self.lower[i])) / self.middle[i]) * 100
                 self.bb_width.append(value)
             except ValueError:
-                self.bb_width.append("NaN")
+                self.bb_width.append(0.0)
             except ZeroDivisionError:
-                self.bb_width.append("NaN")
+                self.bb_width.append(0.0)
 
     def width_SMA(self):
         np_array = numpy.array(self.bb_width)
