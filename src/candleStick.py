@@ -59,9 +59,16 @@ class CandleStick:
             cb = get_time(callback * self.timeline)
             bn = get_time(begin)
             self.candlesticks = self.indicator.set_candles(self.name, cb, bn, self.timeline)
-            l = len(self.candlesticks)
-            if l < 94:
-                self.candle_start(callback=callback + (94-l))
+            if type(self.candlesticks) == list:
+                l = len(self.candlesticks)
+                if l < 94:
+                    self.candle_start(callback=callback + (94-l))
+                else:
+                    return
+            else:
+                time.sleep(.50)
+                self.candle_start(callback=callback)
+                    
         else:
             self.analyze = False
             return
@@ -96,10 +103,9 @@ class CandleStick:
             self.candle_start()
 
         # reference to latest candle in the list
-        print(type(self.candlesticks))
-        last_candle = self.candlesticks[0]
+        last_candle = list(self.candlesticks)[0]
 
-        if timestamp >= (last_candle[0] + self.timeline):
+        if timestamp >= (float(last_candle[0]) + self.timeline):
             #Creates new candle and populates it with data from the last trade
             #[time, low, high, open, close, volume]
             ts = timestamp - (timestamp % self.timeline)
