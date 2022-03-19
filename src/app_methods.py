@@ -7,7 +7,6 @@ import time
 import math
 import os
 from dict import new_dict
-from dateutil import parser
 from Data import Time
 
 #multiple methods used throughout the program

@@ -96,6 +96,7 @@ class CandleStick:
             self.candle_start()
 
         # reference to latest candle in the list
+        print(type(self.candlesticks))
         last_candle = self.candlesticks[0]
 
         if timestamp >= (last_candle[0] + self.timeline):
