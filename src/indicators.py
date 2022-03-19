@@ -68,7 +68,7 @@ class Indicator:
         return self.np_array
 
     def get_index(self, index):
-        return float(self.close_array[index])
+        return {"price": float(self.close_array[index])}
 
     def price(self):
         return self.close_array[-1]
@@ -111,8 +111,11 @@ class MACD(Indicator):
         return self.macd, self.signal, self.hist
 
     def get_index(self, index):
-        real = [float(self.macd[index]), float(self.signal[index]), float(self.hist[index])]
-        return real
+        return {
+            "macd_macd": float(self.macd[index]),
+            "macd_signal": float(self.signal[index]),
+            "macd_hist": float(self.hist[index])
+        }
 
 
 class BB(Indicator):
@@ -162,8 +165,14 @@ class BB(Indicator):
         return self.upper, self.middle, self.lower
 
     def get_index(self, index):
-        real = [float(self.upper[index]), float(self.middle[index]), float(self.lower[index]), float(self.pbb[index]), float(self.bb_width[index]), float(self.sma_bbw[index])]
-        return real
+        return {
+            f"bb{self.ndbevup}_upper": float(self.upper[index]),
+            f"bb{self.ndbevup}_middle": float(self.middle[index]),
+            f"bb{self.ndbevup}_lower": float(self.lower[index]),
+            f"bb{self.ndbevup}_%bb": float(self.pbb[index]),
+            f"bb{self.ndbevup}_width": float(self.bb_width[index]),
+            f"bb{self.ndbevup}_sma(bbw)": float(self.sma_bbw[index])
+        }
 
     def get_pBB(self, index=-1):
         for i in range(len(self.middle)):
@@ -220,7 +229,7 @@ class VolSMA(Indicator):
         return self.real
 
     def get_index(self, index):
-        return float(self.real[index])
+        return {"sma(vol)": float(self.real[index])}
 
 
 class RSI(Indicator):
@@ -253,7 +262,7 @@ class RSI(Indicator):
         return self.real
 
     def get_index(self, index):
-        return float(self.real[index])
+        return {"rsi": float(self.real[index])}
 
 
 class EMA(Indicator):
@@ -274,7 +283,7 @@ class EMA(Indicator):
         return self.real
 
     def get_index(self, index):
-        return float(self.real[index])
+        return {"sma": float(self.real[index])}
 
 
 class Momentum(Indicator):
@@ -295,7 +304,7 @@ class Momentum(Indicator):
         return self.real
 
     def get_index(self, index):
-        return float(self.real[index])
+        return {"momentum": float(self.real[index])}
 
 
 class ROC(Indicator):
@@ -316,4 +325,4 @@ class ROC(Indicator):
         return self.real
 
     def get_index(self, index):
-        return float(self.real[index])
+        return {"roc": float(self.real[index])}

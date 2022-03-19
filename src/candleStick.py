@@ -1,11 +1,7 @@
 from datetime import datetime
 from app_methods import get_time
 from indicators import Indicator
-from indicators import MACD
-from indicators import BB
-from indicators import RSI
-from indicators import EMA
-from indicators import VolSMA
+from candleTest import CandleTest
 from threading import Thread
 from threading import Lock
 from numpy import ndarray
@@ -17,11 +13,10 @@ import numpy
 class CandleStick:
 
     def __init__(self, name, timeline):
-        self.candlesticks = []
         self.indicator = Indicator()
-        self.indicators = [MACD(), RSI(), BB(), BB(ndbevup=1, nbdevdn=1)]
-        self.indicator_values = []
-        self.np_array = numpy.ndarray([])
+        self.candlesticks = self.indicator.candles
+        self.test = CandleTest()
+        self.np_array = []
         self.name = name
         self.timeline = timeline
         self.lock = Lock()
@@ -125,29 +120,7 @@ class CandleStick:
         # Updates the high price if this price is higher
         elif price > last_candle[2]:
             last_candle[2] = price
-
         # Updates the closing price to this price
         last_candle[4] = price
         # Add this volume to the overall volume for the timeline
         last_candle[5] = last_candle[5] + volume
-
-    #Calculates the given indicator
-    def calculate_indicator(self, indicator: Indicator):
-        indicator.np_array = self.indicator.np_array
-        indicator.set_indicator()
-        values = indicator.get_index(-1)
-
-        if type(values) is list:
-            self.indicator_values.extend(values)
-
-        else:
-            self.indicator_values.append(values)
-
-    def read_indicators(self):
-        self.indicator.set_indicator()
-        self.indicator_values = []
-
-        for indicator in self.indicators:
-            self.calculate_indicator(indicator)
-
-        print(self.name, self.timeline, self.indicator_values)
