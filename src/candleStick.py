@@ -144,7 +144,11 @@ class CandleStick:
         indicator.lock.acquire()
         indicator.np_array = self.indicator.np_array
         indicator.set_indicator()
-        self.indicator_values.extend(indicator.get_index(-1))
+        values = indicator.get_index(-1)
+        if values.__class__() == list:
+            self.indicator_values.extend(values)
+        else:
+            self.indicator_values.append(values)
         indicator.lock.release()
 
     def read_indicators(self):
