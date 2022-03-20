@@ -27,7 +27,6 @@ class Indicator:
         self.np_array = []
         self.index = index
         self.weight = weight
-        self.lock = Lock()
 
     def __str__(self):
         return "indicator"
@@ -41,6 +40,7 @@ class Indicator:
             begin (int): Last second to get rates from
             granularity (int): Number of seconds
         """
+
         self.candles = self.__new_client.get_product_historic_rates(product_id=product, start=callback, end=begin, granularity=granularity)
         return self.candles
 

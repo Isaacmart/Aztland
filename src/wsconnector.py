@@ -48,7 +48,7 @@ def populate_list(a_dict):
 
 
 #Process an incoming json file
-def process_json(job, candlesticks):
+def handle_json(job, candlesticks):
     thread = Thread(target=json_thread(job, candlesticks))
     thread.start()
 
@@ -61,18 +61,13 @@ def json_thread(job, candlesticks):
         candle = get_candlesticks(candlesticks, job["product_id"], i)
         # Updates candlesticks with the given json object
         candle.candle_input(job)
-        # updates the indicators with the updated candlesticks
-        if candle.analyze:
-            candle.read_indicators()
 
 
 def main():
 
-    #
     candlesticks = populate_dict(new_dict)
     product_ids = populate_list(new_dict)
     ws = create_connection("wss://ws-feed.pro.coinbase.com")
-    lock = Lock()
     ws.send(
         json.dumps(
             {
@@ -86,9 +81,9 @@ def main():
     while ws.connected:
         #Json objects obtained from Coinbase
         obj = json.loads(ws.recv())
-        if "product_id" in obj:
 
-            process_json(obj, candlesticks)
+        if "product_id" in obj:
+            handle_json(obj, candlesticks)
 
 
 if __name__ == "__main__":

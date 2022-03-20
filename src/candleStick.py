@@ -10,17 +10,15 @@ import numpy
 
 
 #Represents a candlestick lists
-class CandleStick:
+class CandleStick(Indicator):
 
     def __init__(self, name, timeline):
-        self.indicator = Indicator()
-        self.candlesticks = self.indicator.candles
-        self.test = CandleTest()
-        self.np_array = []
+        super(CandleStick, self).__init__()
+        self.analysis = CandleTest(name, timeline)
         self.name = name
         self.timeline = timeline
-        self.lock = Lock()
         self.analyze = True
+        self.lock = Lock()
 
     def __str__(self):
         return self.name
@@ -28,40 +26,59 @@ class CandleStick:
     #Checks whether there are candlesticks already in the list
     def candle_started(self):
         try:
-            start = self.candlesticks[0]
-            return True
+            start = self.candles[0]
+            if type(start) == list:
+                return True
 
-        except IndexError:
-            return False
-
-    #Deletes the oldest candlestick from the list
-    def candle_pop(self):
-        try:
-            self.candlesticks.pop(-1)
-            return True
         except IndexError:
             return False
 
     #Adds a candlestick to the list
     def candle_prepend(self, candle):
-        if self.candle_pop():
-            self.candlesticks.insert(0, candle)
+
+        length = len(self.candles)
+        i = -1
+
+        while i > (-length):
+            self.candles[i] = self.candles[i-1]
+            i -= 1
+
+        self.candles[i] = candle
+
+    def candle_update(self, price, volume):
+
+        # Updates low price if this price is lower
+        if price < self.candles[0][1]:
+            self.candles[0][1] = price
+
+        # Updates the high price if this price is higher
+        elif price > self.candles[0][2]:
+            self.candles[0][2] = price
+
+        # Updates the closing price to this price
+        self.candles[0][4] = price
+        # Add this volume to the overall volume for the timeline
+        self.candles[0][5] = self.candles[0][5] + volume
 
     #Makes a request to Coinbase for historical data
     def candle_start(self, callback=94, begin=0):
 
-        if callback < 300:
+        if callback <= 300:
             cb = get_time(callback * self.timeline)
             bn = get_time(begin)
-            self.candlesticks = self.indicator.set_candles(self.name, cb, bn, self.timeline)
-            if type(self.candlesticks) == list:
-                l = len(self.candlesticks)
+            self.set_candles(self.name, cb, bn, self.timeline)
+
+            if type(self.candles) == list:
+                l = len(self.candles)
+
                 if l < 94:
-                    self.candle_start(callback=callback + (94-l))
+                    nc = callback * (1 + (100 - ((l * 100) / callback)))
+                    self.candle_start(callback=int(nc))
+
                 else:
                     return
             else:
-                time.sleep(.50)
+                time.sleep(.10)
                 self.candle_start(callback=callback)
                     
         else:
@@ -77,7 +94,8 @@ class CandleStick:
         if "time" in js_obj:
             a_str = js_obj["time"]
             n_str = a_str.replace("Z", "+00:00")
-            timestamp = int(datetime.fromisoformat(n_str).timestamp())
+            timestamp = float(datetime.fromisoformat(n_str).timestamp())
+
         else:
             timestamp = time.time()
 
@@ -89,38 +107,42 @@ class CandleStick:
 
         return timestamp, price, vol
 
+    def reset_analyze(self):
+
+        if not self.analyze:
+
+            if len(self.candles) > 94:
+                self.analyze = True
+
     #Takes a json object to modify the candlesticks
     def candle_input(self, js_obj):
-        timestamp, price, vol = self.candle_create(js_obj)
 
-        #Populates the candlestick list if is empty
-        if not self.candle_started():
-            self.candle_start()
+        with self.lock:
+            timestamp, price, vol = self.candle_create(js_obj)
 
-        # reference to latest candle in the list
-        last_candle = list(self.candlesticks)[0]
+            # Populates the candlestick list if is empty
+            if not self.candle_started():
+                self.candle_start()
 
-        if timestamp >= (float(last_candle[0]) + self.timeline):
-            #Creates new candle and populates it with data from the last trade
-            #[time, low, high, open, close, volume]
-            ts = timestamp - (timestamp % self.timeline)
-            new_candle = [ts, price, price, price, price, vol]
-            #Insert candle into candlesticks
-            self.candle_prepend(new_candle)
+            if timestamp >= (float(self.candles[0][0]) + self.timeline):
 
-        else:
-            #Updates last candle
-            self.candle_update(price, vol, last_candle)
+                if self.analyze:
+                    self.make_test()
+                    print(self.analysis.values)
 
-    def candle_update(self, price, volume, last_candle: list):
-        # Updates low price if this price is lower
-        if price < last_candle[1]:
-            last_candle[1] = price
+                # Creates new candle and populates it with data from the last trade
+                # [time, low, high, open, close, volume]
+                ts = timestamp - (timestamp % self.timeline)
+                new_candle = [ts, price, price, price, price, vol]
+                # Insert candle into candlesticks
+                self.candle_prepend(new_candle)
+                self.reset_analyze()
 
-        # Updates the high price if this price is higher
-        elif price > last_candle[2]:
-            last_candle[2] = price
-        # Updates the closing price to this price
-        last_candle[4] = price
-        # Add this volume to the overall volume for the timeline
-        last_candle[5] = last_candle[5] + volume
+            else:
+                # Updates last candle
+                self.candle_update(price, vol)
+
+    def make_test(self):
+        self.set_indicator()
+        self.analysis.update_time(self.candles[0][0])
+        self.analysis.test(self.np_array)
