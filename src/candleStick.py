@@ -12,6 +12,7 @@ import numpy
 #Represents a candlestick lists
 class CandleStick(Indicator):
 
+    #Creates candlesticks for the given name and timeline
     def __init__(self, name, timeline):
         super(CandleStick, self).__init__()
         self.analysis = CandleTest(name, timeline)
@@ -20,11 +21,13 @@ class CandleStick(Indicator):
         self.analyze = True
         self.lock = Lock()
 
+    #Returns the name of this candlesticks when referenced
     def __str__(self):
         return self.name
 
     #Checks whether there are candlesticks already in the list
     def candle_started(self):
+
         try:
             start = self.candles[0]
             if type(start) == list:
@@ -45,6 +48,7 @@ class CandleStick(Indicator):
 
         self.candles[i] = candle
 
+    #Updates the latest candlestick
     def candle_update(self, price, volume):
 
         # Updates low price if this price is lower
@@ -77,6 +81,7 @@ class CandleStick(Indicator):
 
                 else:
                     return
+
             else:
                 time.sleep(.10)
                 self.candle_start(callback=callback)
@@ -142,7 +147,11 @@ class CandleStick(Indicator):
                 # Updates last candle
                 self.candle_update(price, vol)
 
+    #Makes a new test for this candlestick
     def make_test(self):
+        #Updates the np_array for this candlesticks
         self.set_indicator()
+        #Records the time for when the test was made
         self.analysis.update_time(self.candles[0][0])
+        #Passes the np array to the indicators and makes math
         self.analysis.test(self.np_array)

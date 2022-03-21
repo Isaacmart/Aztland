@@ -20,7 +20,7 @@ def write_to_csv(path: str, a_string: str):
     to_write.close()
 
 
-#Converts a number into ISO 8601 from the seconds back from this moment
+#Converts a number into ISO 8601 from amount of seconds ago
 #Amount equals seconds to go back to take time, returns
 #actual time is zero
 def get_time(amount):
@@ -43,6 +43,7 @@ def get_ticker(new_request: dict):
         return ticker_product
 
 
+#Gets the number of seconds to go back based on a given period
 def get_callback(weight=True, period=0, granularity=0):
     if weight:
         callback = (3.453877639 * (period + 1)) * granularity
@@ -52,16 +53,7 @@ def get_callback(weight=True, period=0, granularity=0):
     return callback
 
 
-def get_begin(current=0, granularity=60):
-    if current != 0:
-        begin = granularity + 1
-    else:
-        begin = 0
-
-    return begin
-
-
-#rounds down a float number to a 'decimals' number of decimals
+#Rounds down a float number to a 'decimals' number of decimals
 def round_down(n, decimals=0):
     if decimals >= 0:
         multiplier = 10 ** decimals
@@ -103,35 +95,6 @@ def last_instance():
     reader.close()
 
     return greater
-
-
-#Checks whether two values are crossing value
-def crossover(self, x, y):
-    cross_over = []
-    i = 1
-
-    while i < len(x):
-        if (x[i] > y[i]) and (x[i - 1] < y[i - 1]):
-            cross_over.insert(i, True)
-
-        else:
-            cross_over.insert(i, False)
-
-    return cross_over
-
-
-def crossunder(self, x, y):
-    cross_under = []
-    i = 1
-
-    while 1 < len(x):
-        if (x[i] < y[i]) and (x[i - 1] > y[i - 1]):
-            cross_under.insert(i, True)
-
-        else:
-            cross_under.insert(i, False)
-
-    return cross_under
 
 
 
