@@ -41,21 +41,17 @@ class CandleTest:
             "bb1_sma(bbw)": 0.0
         }
 
-    def update_np_array(self, array):
-        for indicator in self.indicators:
-            indicator.np_array = array
-
-    def update_indicator(self, indicator: Indicator):
-        indicator.set_indicator()
+    def update_indicator(self, indicator: Indicator, array):
+        indicator.set_indicator(array)
         values_dict = indicator.get_index(-1)
         #Adds the values of indicator to the values of the test
         for key in values_dict:
             if key in self.values:
                 self.values[key] = values_dict[key]
 
-    def update_values(self):
+    def update_values(self, array):
         for indicator in self.indicators:
-            self.update_indicator(indicator)
+            self.update_indicator(indicator, array)
 
     def update_price(self, np_array):
         self.values["price"] = np_array[-1]
@@ -75,8 +71,7 @@ class CandleTest:
         return not self.longTest()
 
     def test(self, array):
-        self.update_np_array(array)
         self.update_price(array)
-        self.update_values()
+        self.update_values(array)
         if self.longTest():
             self.values["buy"] = True
