@@ -36,33 +36,21 @@ class CandleStick(Indicator):
         except IndexError:
             return False
 
-    #Adds a candlestick to the list
-    def candle_prepend(self, candle):
-
-        length = len(self.candles)
-        i = -1
-
-        while i > (-length):
-            self.candles[i] = self.candles[i-1]
-            i -= 1
-
-        self.candles[i] = candle
-
     #Updates the latest candlestick
     def candle_update(self, price, volume):
 
         # Updates low price if this price is lower
-        if price < self.candles[0][1]:
-            self.candles[0][1] = price
+        if price < self.candles[-1][1]:
+            self.candles[-1][1] = price
 
         # Updates the high price if this price is higher
-        elif price > self.candles[0][2]:
-            self.candles[0][2] = price
+        elif price > self.candles[-1][2]:
+            self.candles[-1][2] = price
 
         # Updates the closing price to this price
-        self.candles[0][4] = price
+        self.candles[-1][4] = price
         # Add this volume to the overall volume for the timeline
-        self.candles[0][5] = self.candles[0][5] + volume
+        self.candles[-1][5] = self.candles[1][5] + volume
 
     #Makes a request to Coinbase for historical data
     def candle_start(self, callback=94, begin=0):
@@ -129,7 +117,7 @@ class CandleStick(Indicator):
             if not self.candle_started():
                 self.candle_start()
 
-            if timestamp >= (float(self.candles[0][0]) + self.timeline):
+            if timestamp >= (float(self.candles[-1][0]) + self.timeline):
 
                 if self.analyze:
                     self.make_test()
@@ -140,7 +128,7 @@ class CandleStick(Indicator):
                 ts = timestamp - (timestamp % self.timeline)
                 new_candle = [ts, price, price, price, price, vol]
                 # Insert candle into candlesticks
-                self.candle_prepend(new_candle)
+                self.candle.append(new_candle)
                 self.reset_analyze()
 
             else:
@@ -152,6 +140,6 @@ class CandleStick(Indicator):
         #Updates the np_array for this candlesticks
         self.set_indicator()
         #Records the time for when the test was made
-        self.analysis.update_time(self.candles[0][0])
+        self.analysis.update_time(self.candles[-1][0])
         #Passes the np array to the indicators and makes math
         self.analysis.test(self.np_array)

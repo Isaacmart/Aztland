@@ -2,6 +2,7 @@ import numpy
 import talib
 from cbpro import PublicClient
 from threading import Lock
+from collections import deque
 
 
 class Indicator:
@@ -13,17 +14,21 @@ class Indicator:
     weight = True will get that many elements automatically
     """
 
-    def __init__(self, index=4, weight=True):
+    def __init__(self, index=4, weight=True, max_length=0):
         """
         Creates an instance of the Indicator class\n
         Args:
              index (int): type of price to work with, close price is default
              weight (bool): If
         """
-        self.__new_client = PublicClient(timeout=45)
-        self.candles = []
-        self.close_array = []
-        self.date_array = []
+        if max_length:
+            self.candles = deque(maxlen=max_length)
+            self.close_array = deque(maxlen=max_length)
+            self.date_array = deque(maxlen=max_length)
+        else:
+            self.candles = deque()
+            self.close_array = deque()
+            self.date_array = deque()
         self.np_array = []
         self.index = index
         self.weight = weight
@@ -41,8 +46,19 @@ class Indicator:
             granularity (int): Number of seconds
         """
 
-        self.candles = self.__new_client.get_product_historic_rates(product_id=product, start=callback, end=begin,
-                                                                    granularity=granularity)
+        client = PublicClient(timeout=45)
+        new_candles = client.get_product_historic_rates(product_id=product, start=callback, end=begin,
+                                                        granularity=granularity)
+
+        bound = 0
+        if self.candles.maxlen:
+            bound = self.candles.maxlen
+        else:
+            bound = len(new_candles)
+
+        for i in range(bound):
+            self.candles.appendleft(new_candles[i])
+
         return self.candles
 
     def set_dates(self):
@@ -52,11 +68,9 @@ class Indicator:
         reference the same index as the one in the closing prices list.\n
         :return: Reversed list of dates in Unix form
         """
-        p = 0
-        while p < len(self.candles):
+        l = len(self.candles)
+        for p in range(l):
             self.date_array.append(self.candles[p][0])
-            p = p + 1
-        self.date_array.reverse()
         return self.date_array
 
     def set_indicator(self, array=None):
@@ -64,7 +78,6 @@ class Indicator:
         if array is None:
             for candle in self.candles:
                 self.close_array.append(float(candle[self.index]))
-            self.close_array.reverse()
             self.np_array = numpy.array(self.close_array)
 
         else:
