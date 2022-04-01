@@ -1,6 +1,7 @@
 from indicators import Indicator
 from cbpro import PublicClient
 from app_methods import get_time
+from candleStick import CandleStick
 import numpy
 
 
@@ -97,11 +98,16 @@ def store_prices_test(n, g):
         print(clarray)
 
 
-grans = [60, 300, 900, 3600, 21600, 86400]
-num = [1, 100, 150, 200]
+def candle_start_test(n, g):
+    candlesticks = CandleStick(name="ETH-USD", timeline=g)
+    candlesticks.candle_start(n)
 
-for n in num:
-    for g in grans:
-        deque_test(n, g)
-        set_size_test(n, g)
-        store_prices_test(n,g)
+    client = PublicClient()
+    data = client.get_product_historic_rates(product_id="ETH-USD", start=get_time(n * g), end=get_time(0),
+                                             granularity=g)
+
+    print(candlesticks.candles)
+    print(data)
+
+
+candle_start_test(10, 60)

@@ -66,6 +66,7 @@ class CandleTest:
                     if self.values["bb1_bbw"] >= self.values["bb1_sma(bbw)"]:
                         if self.values["rsi"] >= 70:
                             return True
+        return False
 
     def shortTest(self):
         return not self.longTest()
@@ -73,5 +74,9 @@ class CandleTest:
     def test(self, array):
         self.update_price(array)
         self.update_values(array)
-        if self.longTest():
-            self.values["buy"] = True
+        prev_state = self.values["buy"]
+        self.values["buy"] = self.longTest()
+        if self.values["buy"] != prev_state:
+            writer = open("../txt_files/trades.txt", "a")
+            writer.write(str(self.values) + "\n")
+            writer.close()

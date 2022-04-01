@@ -65,6 +65,7 @@ def json_thread(job, candlesticks):
 
 def main():
 
+    print(os.getpid())
     candlesticks = populate_dict(new_dict)
     product_ids = populate_list(new_dict)
     ws = create_connection("wss://ws-feed.pro.coinbase.com")

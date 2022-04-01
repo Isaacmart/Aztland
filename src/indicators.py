@@ -50,11 +50,7 @@ class Indicator:
         new_candles = client.get_product_historic_rates(product_id=product, start=callback, end=begin,
                                                         granularity=granularity)
 
-        bound = 0
-        if self.candles.maxlen:
-            bound = self.candles.maxlen
-        else:
-            bound = len(new_candles)
+        bound = len(new_candles)
 
         for i in range(bound):
             self.candles.appendleft(new_candles[i])

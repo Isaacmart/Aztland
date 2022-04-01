@@ -1,7 +1,16 @@
-class Trade:
+from dbconnector import create_TIMELINES
+from dbconnector import insert_values
+from dbconnector import fetch_timelines
+from dbconnector import create_TRADES
+from dbconnector import insert_new_trade
+from dbconnector import fetch_last_trade
+import sqlite3
 
-    def __init__(self):
-        self.buy_price = 0.0
-        self.sell_price = 0.0
-        self.b_size = 0.0
-        self.s_size = 0.0
+connect = sqlite3.connect("../../trading.db")
+connect.execute("DROP TABLE TIMELINES")
+
+create_TIMELINES(connect)
+
+insert_values(connect, True, 60, "BTCUSD")
+
+fetch_timelines(connect, 'BTCUSD')

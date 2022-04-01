@@ -14,7 +14,7 @@ class CandleStick(Indicator):
 
     #Creates candlesticks for the given name and timeline
     def __init__(self, name, timeline):
-        super(CandleStick, self).__init__()
+        super(CandleStick, self).__init__(max_length=94)
         self.analysis = CandleTest(name, timeline)
         self.name = name
         self.timeline = timeline
@@ -36,22 +36,6 @@ class CandleStick(Indicator):
         except IndexError:
             return False
 
-    #Updates the latest candlestick
-    def candle_update(self, price, volume):
-
-        # Updates low price if this price is lower
-        if price < self.candles[-1][1]:
-            self.candles[-1][1] = price
-
-        # Updates the high price if this price is higher
-        elif price > self.candles[-1][2]:
-            self.candles[-1][2] = price
-
-        # Updates the closing price to this price
-        self.candles[-1][4] = price
-        # Add this volume to the overall volume for the timeline
-        self.candles[-1][5] = self.candles[1][5] + volume
-
     #Makes a request to Coinbase for historical data
     def candle_start(self, callback=94, begin=0):
 
@@ -60,20 +44,13 @@ class CandleStick(Indicator):
             bn = get_time(begin)
             self.set_candles(self.name, cb, bn, self.timeline)
 
-            if type(self.candles) == list:
-                l = len(self.candles)
+            l = len(self.candles)
 
-                if l < 94:
-                    nc = callback * (1 + (100 - ((l * 100) / callback)))
-                    self.candle_start(callback=int(nc))
-
-                else:
-                    return
-
+            if l < callback:
+                nc = callback * (1 + (100 - ((l * 100) / callback)))
+                self.candle_start(callback=int(nc))
             else:
-                time.sleep(.10)
-                self.candle_start(callback=callback)
-                    
+                return
         else:
             self.analyze = False
             return
@@ -121,19 +98,34 @@ class CandleStick(Indicator):
 
                 if self.analyze:
                     self.make_test()
-                    print(self.analysis.values)
 
                 # Creates new candle and populates it with data from the last trade
                 # [time, low, high, open, close, volume]
                 ts = timestamp - (timestamp % self.timeline)
                 new_candle = [ts, price, price, price, price, vol]
                 # Insert candle into candlesticks
-                self.candle.append(new_candle)
+                self.candles.append(new_candle)
                 self.reset_analyze()
 
             else:
                 # Updates last candle
                 self.candle_update(price, vol)
+
+    #Updates the latest candlestick
+    def candle_update(self, price, volume):
+
+        # Updates low price if this price is lower
+        if price < self.candles[-1][1]:
+            self.candles[-1][1] = price
+
+        # Updates the high price if this price is higher
+        elif price > self.candles[-1][2]:
+            self.candles[-1][2] = price
+
+        # Updates the closing price to this price
+        self.candles[-1][4] = price
+        # Add this volume to the overall volume for the timeline
+        self.candles[-1][5] = self.candles[1][5] + volume
 
     #Makes a new test for this candlestick
     def make_test(self):
@@ -143,3 +135,4 @@ class CandleStick(Indicator):
         self.analysis.update_time(self.candles[-1][0])
         #Passes the np array to the indicators and makes math
         self.analysis.test(self.np_array)
+
