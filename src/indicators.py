@@ -8,8 +8,9 @@ from collections import deque
 class Indicator:
     """
     Base class for any indicator.\n
-    Coinbase returns data in the following way: [1415398768, 0.32, 4.2, 0.35, 4.2, 12.3],
-    indicators work with close prices as default, therefore we append data from index 4.\n
+    Coinbase returns data in the following way:\n
+    [1415398768, 0.32, 4.2, 0.35, 4.2, 12.3],\n
+    Indicator work with close prices as default, therefore we append data from index 4.\n
     If the indicator is weighted, certain amount of elements back are needed,
     weight = True will get that many elements automatically
     """

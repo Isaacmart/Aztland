@@ -95,7 +95,3 @@ def last_instance():
     reader.close()
 
     return greater
-
-
-
-

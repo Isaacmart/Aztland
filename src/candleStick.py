@@ -96,8 +96,9 @@ class CandleStick(Indicator):
 
             if timestamp >= (float(self.candles[-1][0]) + self.timeline):
 
+                value = None
                 if self.analyze:
-                    self.make_test()
+                    value = self.make_test()
 
                 # Creates new candle and populates it with data from the last trade
                 # [time, low, high, open, close, volume]
@@ -125,7 +126,7 @@ class CandleStick(Indicator):
         # Updates the closing price to this price
         self.candles[-1][4] = price
         # Add this volume to the overall volume for the timeline
-        self.candles[-1][5] = self.candles[1][5] + volume
+        self.candles[-1][5] = self.candles[-1][5] + volume
 
     #Makes a new test for this candlestick
     def make_test(self):
@@ -134,5 +135,4 @@ class CandleStick(Indicator):
         #Records the time for when the test was made
         self.analysis.update_time(self.candles[-1][0])
         #Passes the np array to the indicators and makes math
-        self.analysis.test(self.np_array)
-
+        return self.analysis.test(self.np_array)

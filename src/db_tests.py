@@ -1,9 +1,5 @@
-from dbconnector import create_TIMELINES
-from dbconnector import insert_values
-from dbconnector import fetch_timelines
-from dbconnector import create_TRADES
-from dbconnector import insert_new_trade
-from dbconnector import fetch_last_trade
+from dbconnector import Timelines
+from dbconnector import Trades
 import sqlite3
 
 
@@ -34,34 +30,36 @@ trade3 = {
 
 def test_timelines():
 
-    connect = sqlite3.connect("../../trading.db")
-    connect.execute("DROP TABLE TIMELINES")
+    timeline = Timelines()
 
-    create_TIMELINES(connect)
+    timeline.create_table()
 
-    insert_values(connect, True, 60, "BTCUSD")
-    insert_values(connect, True, 300, "BTCUSD")
-    insert_values(connect, False, 900, "BTCUSD")
-    insert_values(connect, True, 60, "ETHUSD")
-    insert_values(connect, True, 300, "ETHUSD")
-    insert_values(connect, True, 900, "ETHUSD")
+    timeline.insert_values(True, 60, "BTCUSD")
+    timeline.insert_values(True, 300, "BTCUSD")
+    timeline.insert_values(False, 900, "BTCUSD")
+    timeline.insert_values(True, 60, "ETHUSD")
+    timeline.insert_values(True, 300, "ETHUSD")
+    timeline.insert_values(True, 900, "ETHUSD")
 
-    fetch_timelines(connect, 'ETHUSD')
-
-
-def test_trades(a_dict):
-    connect = sqlite3.connect("../../trading.db")
-    connect.execute("DROP TABLE TRADES")
-
-    create_TRADES(connect)
-
-    insert_new_trade(connect, a_dict)
-    fetch_last_trade(connect)
+    cursor = timeline.fetch_row('ETHUSD')
+    for line in cursor:
+        print(line)
 
 
-trades = [trade1, trade2, trade3]
-for trade in trades:
-    test_trades(trade)
+def test_trades(vals):
+
+    trades = Trades()
+
+    trades.create_table()
+
+    for v in vals:
+        trades.insert_values(v)
+        cursor = trades.fetch_row()
+
+        for line in cursor:
+            print(line)
 
 
-
+vals = [trade1, trade2, trade3]
+test_timelines()
+test_trades(vals)

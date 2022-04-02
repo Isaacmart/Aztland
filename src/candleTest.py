@@ -4,6 +4,7 @@ from indicators import RSI
 from indicators import VolSMA
 from indicators import Indicator
 from threading import Thread
+from dbconnector import Timelines
 
 
 class CandleTest:
@@ -76,7 +77,14 @@ class CandleTest:
         self.update_values(array)
         prev_state = self.values["buy"]
         self.values["buy"] = self.longTest()
+
         if self.values["buy"] != prev_state:
-            writer = open("../txt_files/trades.txt", "a")
-            writer.write(str(self.values) + "\n")
-            writer.close()
+            pr = self.values['product'].replace('-', '')
+            connect = Timelines()
+            connect.insert_values(self.values['buy'], self.values['timeline'], pr)
+
+            if self.values["buy"]:
+                cursor = connect.fetch_row(pr)
+                if cursor[1] and cursor[2] and cursor[3]:
+                    print(str(self.values) + "\n")
+                    return True
