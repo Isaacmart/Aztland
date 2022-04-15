@@ -1,7 +1,7 @@
 from indicators import *
 from datetime import datetime
 import pytz
-from app_methods import get_time
+from util import get_time
 
 p_client = PublicClient()
 indicator = Indicator()

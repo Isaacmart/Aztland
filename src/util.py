@@ -1,5 +1,4 @@
 import csv
-
 import flask
 import pytz
 from datetime import datetime
@@ -80,7 +79,7 @@ def get_unix(a_date):
     return parsed_t.timestamp()
 
 
-#makes sure that there are no too consecutive requests made to coinbase
+#makes sure that there are no two consecutive requests made to coinbase
 def last_instance():
     file_size = os.path.getsize(Time)
     reader = open(Time, "r")

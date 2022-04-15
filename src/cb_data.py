@@ -1,6 +1,6 @@
 from cbpro import PublicClient
 from indicators import Indicator
-from app_methods import get_time
+from util import get_time
 from dict import new_dict
 import csv
 import time

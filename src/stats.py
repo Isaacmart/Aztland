@@ -2,7 +2,7 @@ import numpy as np
 import scipy.stats as sps
 import matplotlib.pyplot as plt
 from cbpro import PublicClient
-from app_methods import get_time
+from util import get_time
 
 client = PublicClient()
 data = client.get_product_historic_rates(product_id="ETH-USD", start=get_time(60000), end=get_time(0), granularity=300)

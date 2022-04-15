@@ -11,10 +11,10 @@ from indicators import RSI
 from indicators import VolSMA
 from indicators import EMA
 from indicators import Momentum
-from app_methods import get_time
-from app_methods import get_ticker
-from app_methods import last_instance
-from app_methods import get_size
+from util import get_time
+from util import get_ticker
+from util import last_instance
+from util import get_size
 from strategies import Strategy
 import time
 import Data

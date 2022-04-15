@@ -60,6 +60,7 @@ def test_trades(vals):
             print(line)
 
 
-vals = [trade1, trade2, trade3]
-test_timelines()
-test_trades(vals)
+timelines = Timelines()
+cursor = timelines.fetch_all()
+for c in cursor:
+    print(c)

@@ -1,6 +1,6 @@
 from indicators import Indicator
 from cbpro import PublicClient
-from app_methods import get_time
+from util import get_time
 from candleStick import CandleStick
 import numpy
 

@@ -1,5 +1,5 @@
 from datetime import datetime
-from app_methods import get_time
+from util import get_time
 from indicators import Indicator
 from candleTest import CandleTest
 from threading import Thread

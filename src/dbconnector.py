@@ -7,6 +7,12 @@ class Database:
     def __init__(self):
         self.connect = sqlite3.connect("../../trading.db")
 
+    def create_table(self):
+        pass
+
+    def fetch_all(self):
+        pass
+
 
 class Timelines(Database):
 
@@ -47,6 +53,10 @@ class Timelines(Database):
         cursor = self.connect.execute(f"SELECT * FROM TIMELINES WHERE PRODUCT = '{product}';")
         return cursor
 
+    def fetch_all(self):
+        cursor = self.connect.execute(f"SELECT * FROM TIMELINES")
+        return cursor
+
 
 class Trades(Database):
 
@@ -72,4 +82,8 @@ class Trades(Database):
 
     def fetch_row(self):
         cursor = self.connect.execute(f"SELECT * FROM TRADES ORDER BY TIME DESC LIMIT 1")
+        return cursor
+
+    def fetch_all(self):
+        cursor = self.connect.execute(f"SELECT * FROM TRADES ORDER BY TIME DESC")
         return cursor
