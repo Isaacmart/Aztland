@@ -47,7 +47,6 @@ class Timelines(Database):
                 self.connect.execute(f"UPDATE TIMELINES SET {column} = {value} WHERE PRODUCT = '{product}';")
 
         self.connect.commit()
-        self.connect.close()
 
     def fetch_row(self, product):
         cursor = self.connect.execute(f"SELECT * FROM TIMELINES WHERE PRODUCT = '{product}';")

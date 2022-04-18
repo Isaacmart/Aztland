@@ -42,8 +42,9 @@ def test_timelines():
     timeline.insert_values(True, 900, "ETHUSD")
 
     cursor = timeline.fetch_row('ETHUSD')
+    print(type(cursor))
     for line in cursor:
-        print(line)
+        print(type(line))
 
 
 def test_trades(vals):
@@ -60,7 +61,4 @@ def test_trades(vals):
             print(line)
 
 
-timelines = Timelines()
-cursor = timelines.fetch_all()
-for c in cursor:
-    print(c)
+test_timelines()

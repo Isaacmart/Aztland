@@ -192,7 +192,7 @@ class BB(Indicator):
         self.width_SMA()
 
     def get_indicator(self):
-        return self.upper, self.middle, self.lower
+        return self.upper, self.middle, self.lower, self.pbb, self.bb_width, self.sma_bbw
 
     def get_index(self, index):
         return {
@@ -215,7 +215,7 @@ class BB(Indicator):
                 self.pbb.append(0.0)
 
     def get_bbWidth(self, index=-1):
-        for i in range(len(self.middle)-1):
+        for i in range(len(self.middle)):
             try:
                 value = (float(self.upper[i]) - float(self.lower[i])) / float(self.middle[i])
                 self.bb_width.append(value)

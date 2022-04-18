@@ -62,7 +62,7 @@ class CandleTest:
 
     def longTest(self):
         if self.values["macd_hist"] >= 0:
-            if self.values["macd_macd"] >= 0:
+            if self.values["macd_macd"] >= self.values["macd_signal"]:
                 if self.values["bb1_%bb"] >= 1.0:
                     if self.values["bb1_bbw"] >= self.values["bb1_sma(bbw)"]:
                         if self.values["rsi"] >= 70:
@@ -78,13 +78,7 @@ class CandleTest:
         prev_state = self.values["buy"]
         self.values["buy"] = self.longTest()
 
-        if self.values["buy"] != prev_state:
+        if self.values["buy"] >= prev_state:
             pr = self.values['product'].replace('-', '')
             connect = Timelines()
             connect.insert_values(self.values['buy'], self.values['timeline'], pr)
-
-            if self.values["buy"]:
-                cursor = connect.fetch_row(pr)
-                if cursor[1] and cursor[2] and cursor[3]:
-                    print(str(self.values) + "\n")
-                    return True

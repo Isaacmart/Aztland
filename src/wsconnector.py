@@ -8,11 +8,12 @@ from candleStick import CandleStick
 from indicators import MACD
 from threading import Thread
 from threading import Lock
+from dbconnector import Timelines
 from websocket import create_connection, WebSocketConnectionClosedException
 
 
 n_dict = {
-    "ETH-USD": 1
+    "UNFI-USD": 1
 }
 
 
@@ -51,6 +52,8 @@ def populate_list(a_dict):
 def handle_json(job, candlesticks):
     thread = Thread(target=json_thread(job, candlesticks))
     thread.start()
+    thread.join()
+    print("finished processing json", time.time())
 
 
 #Body of thread that process a json object
@@ -62,12 +65,19 @@ def json_thread(job, candlesticks):
         # Updates candlesticks with the given json object
         candle.candle_input(job)
 
+    pr = job["product_id"].replace('-', '')
+    connect = Timelines()
+    cursor = connect.fetch_row(pr)
+    for line in cursor:
+        if line[1] and line[2] and line[3]:
+            print(job["product_id"] + + str(time.time()))
+
 
 def main():
 
     print(os.getpid())
-    candlesticks = populate_dict(new_dict)
-    product_ids = populate_list(new_dict)
+    candlesticks = populate_dict(n_dict)
+    product_ids = populate_list(n_dict)
     ws = create_connection("wss://ws-feed.pro.coinbase.com")
     ws.send(
         json.dumps(
@@ -84,6 +94,7 @@ def main():
         obj = json.loads(ws.recv())
 
         if "product_id" in obj:
+            print("started processing websocket", time.time())
             handle_json(obj, candlesticks)
 
 
